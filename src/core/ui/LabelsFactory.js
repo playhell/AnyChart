@@ -1174,17 +1174,8 @@ anychart.core.ui.LabelsFactory.prototype.disposeInternal = function() {
  * @param {!Object} config .
  */
 anychart.core.ui.LabelsFactory.prototype.setThemeSettings = function(config) {
-  for (var name in this.TEXT_DESCRIPTORS) {
-    var val = config[name];
-    if (goog.isDef(val))
-      this.themeSettings[name] = val;
-  }
-  for (var name in this.SIMPLE_PROPS_DESCRIPTORS) {
-    var val = config[name];
-    if (goog.isDef(val))
-      this.themeSettings[name] = val;
-  }
-
+  anychart.core.settings.deserializeToObject(this.themeSettings, this.TEXT_DESCRIPTORS, config);
+  anychart.core.settings.deserializeToObject(this.themeSettings, this.SIMPLE_PROPS_DESCRIPTORS, config);
   if ('enabled' in config) this.themeSettings['enabled'] = config['enabled'];
 };
 

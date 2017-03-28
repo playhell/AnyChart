@@ -23,49 +23,110 @@ goog.inherits(anychart.core.ui.CircularLabelsFactory, anychart.core.ui.LabelsFac
 
 
 //region --- Settings
+/**
+ * Pix X coord of center.
+ * @param {?(number)=} opt_value Pixel value of radial center.
+ * @return {!anychart.core.ui.CircularLabelsFactory|number} Pix X coord of center or itself for chaining.
+ */
+anychart.core.ui.CircularLabelsFactory.prototype.cx = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    opt_value = anychart.utils.toNumber(opt_value);
+    if (this.cx_ != opt_value) {
+      this.cx_ = opt_value;
+      this.invalidate(anychart.ConsistencyState.BOUNDS,
+          anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED);
+    }
+    return this;
+  } else {
+    return this.cx_;
+  }
+};
+
+
+/**
+ * Pix Y coord of center.
+ * @param {?(number)=} opt_value Pixel value of radial center.
+ * @return {!anychart.core.ui.CircularLabelsFactory|number} Pix Y coord of center or itself for chaining.
+ */
+anychart.core.ui.CircularLabelsFactory.prototype.cy = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    opt_value = anychart.utils.toNumber(opt_value);
+    if (this.cy_ != opt_value) {
+      this.cy_ = opt_value;
+      this.invalidate(anychart.ConsistencyState.BOUNDS,
+          anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED);
+    }
+    return this;
+  } else {
+    return this.cy_;
+  }
+};
+
+
+/**
+ * Parent radius.
+ * @param {?(number)=} opt_value Parent radius.
+ * @return {!anychart.core.ui.CircularLabelsFactory|number} Parent radius or itself for chaining.
+ */
+anychart.core.ui.CircularLabelsFactory.prototype.parentRadius = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    opt_value = anychart.utils.toNumber(opt_value);
+    if (this.parentRadius_ != opt_value) {
+      this.parentRadius_ = opt_value;
+      this.invalidate(anychart.ConsistencyState.BOUNDS,
+          anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED);
+    }
+    return this;
+  } else {
+    return this.parentRadius_;
+  }
+};
+
+
+/**
+ * Set start angle.
+ * @param {(null|string|number)=} opt_value .
+ * @return {(number|anychart.core.ui.CircularLabelsFactory)} .
+ */
+anychart.core.ui.CircularLabelsFactory.prototype.startAngle = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    opt_value = goog.isNull(opt_value) ? opt_value : goog.math.standardAngle(anychart.utils.toNumber(opt_value) || 0);
+    if (this.startAngle_ != opt_value) {
+      this.startAngle_ = opt_value;
+      this.invalidate(anychart.ConsistencyState.BOUNDS,
+          anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED);
+    }
+    return this;
+  } else {
+    return this.startAngle_;
+  }
+};
+
+
+/**
+ * Set sweep angle.
+ * @param {(null|string|number)=} opt_value .
+ * @return {(number|anychart.core.ui.CircularLabelsFactory)} .
+ */
+anychart.core.ui.CircularLabelsFactory.prototype.sweepAngle = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    opt_value = goog.isNull(opt_value) ? opt_value : goog.math.clamp(anychart.utils.toNumber(opt_value) || 0, -360, 360);
+    if (this.sweepAngle_ != opt_value) {
+      this.sweepAngle_ = opt_value;
+      this.invalidate(anychart.ConsistencyState.BOUNDS,
+          anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED);
+    }
+    return this;
+  } else {
+    return this.sweepAngle_;
+  }
+};
+
+
 /** @inheritDoc */
 anychart.core.ui.CircularLabelsFactory.prototype.SIMPLE_PROPS_DESCRIPTORS = (function() {
   /** @type {!Object.<string, anychart.core.settings.PropertyDescriptor>} */
   var map = goog.object.clone(anychart.core.ui.LabelsFactory.prototype.SIMPLE_PROPS_DESCRIPTORS);
-
-  map['cx'] = anychart.core.settings.createDescriptor(
-      anychart.enums.PropertyHandlerType.SINGLE_ARG,
-      'cx',
-      anychart.core.settings.numberNormalizer,
-      anychart.ConsistencyState.BOUNDS,
-      anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED);
-
-  map['cy'] = anychart.core.settings.createDescriptor(
-      anychart.enums.PropertyHandlerType.SINGLE_ARG,
-      'cy',
-      anychart.core.settings.numberNormalizer,
-      anychart.ConsistencyState.BOUNDS,
-      anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED);
-
-  map['parentRadius'] = anychart.core.settings.createDescriptor(
-      anychart.enums.PropertyHandlerType.SINGLE_ARG,
-      'parentRadius',
-      anychart.core.settings.numberNormalizer,
-      anychart.ConsistencyState.BOUNDS,
-      anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED);
-
-  map['startAngle'] = anychart.core.settings.createDescriptor(
-      anychart.enums.PropertyHandlerType.SINGLE_ARG,
-      'startAngle',
-      function(val) {
-        return goog.isNull(val) ? val : goog.math.standardAngle(anychart.utils.toNumber(val) || 0);
-      },
-      anychart.ConsistencyState.BOUNDS,
-      anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED);
-
-  map['sweepAngle'] = anychart.core.settings.createDescriptor(
-      anychart.enums.PropertyHandlerType.SINGLE_ARG,
-      'sweepAngle',
-      function(val) {
-        return goog.isNull(val) ? val : goog.math.clamp(anychart.utils.toNumber(val) || 0, -360, 360);
-      },
-      anychart.ConsistencyState.BOUNDS,
-      anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED);
 
   map['autoRotate'] = anychart.core.settings.createDescriptor(
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
@@ -95,10 +156,10 @@ anychart.core.ui.CircularLabelsFactory.prototype.getDimensionInternal = function
 
   var cx = 0;
   var cy = 0;
-  var factoryCx = this.getOption('cx');
-  var factoryCy = this.getOption('cy');
-  var factorySweepAngle = /** @type {number} */(this.getOption('sweepAngle'));
-  var factoryParentRadius = /** @type {number} */(this.getOption('parentRadius'));
+  var factoryCx = this.cx();
+  var factoryCy = this.cy();
+  var factorySweepAngle = /** @type {number} */(this.sweepAngle());
+  var factoryParentRadius = /** @type {number} */(this.parentRadius());
 
   if (parentBounds || (!isNaN(factoryCx) && !isNaN(factoryCy))) {
     //bounds

@@ -2777,7 +2777,7 @@ goog.provide('anychart.themes.defaultTheme');
         'choropleth': {
           'labels': {
             'fontColor': fontColorDark,
-            'anchor': null
+            'anchor': 'center'
           },
           'markers': {
             'anchor': null

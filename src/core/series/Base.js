@@ -4283,6 +4283,12 @@ anychart.core.series.Base.prototype.setupByJSON = function(config, opt_default) 
   this.clip(config['clip']);
   this.a11y(config['a11y']);
 
+  if (this.supportsLabels()) {
+    this.labels().setupByVal(config['labels'], opt_default);
+    this.hoverLabels().setupByVal(config['hoverLabels'], opt_default);
+    this.selectLabels().setupByVal(config['selectLabels'], opt_default);
+  }
+
   anychart.core.settings.deserialize(this, anychart.core.series.Base.PROPERTY_DESCRIPTORS, config);
 
   this.applyDefaultsToElements(config, false, opt_default);
