@@ -2461,12 +2461,7 @@ goog.provide('anychart.themes.defaultTheme');
       'defaultSeriesType': 'line',
       'defaultSeriesSettings': {
         'base': {
-          'enabled': true,
-          'hatchFill': null,
-          'a11y': {
-            'enabled': true,
-            'titleFormatter': 'Series named {%SeriesName} with {%SeriesPointsCount} points. Min value is {%SeriesYMin}, max value is {%SeriesYMax}'
-          }
+          'clip': false
         },
         'area': {},
         'line': {},
@@ -2474,7 +2469,22 @@ goog.provide('anychart.themes.defaultTheme');
       },
       'xAxis': {
         'scale': 0,
-        'zIndex': 25
+        'zIndex': 25,
+        'labels': {
+          'zIndex': 25
+        },
+        'minorLabels': {
+          'zIndex': 25
+        },
+        'ticks': {
+          'zIndex': 25
+        },
+        'minorTicks': {
+          'zIndex': 25
+        }
+      },
+      'yAxis': {
+        'scale': 1
       },
       'startAngle': 0,
       'grids': [{}, {'layout': 'circuit'}],
@@ -2490,7 +2500,7 @@ goog.provide('anychart.themes.defaultTheme');
       'xScale': 0,
       'yScale': 1,
       'a11y': {
-        'titleFormatter': scatterA11yTitleFormatter
+        'titleFormatter': cartesianBaseA11yTitleFormatter
       }
     },
     // merge with chart
@@ -2498,9 +2508,8 @@ goog.provide('anychart.themes.defaultTheme');
       'defaultSeriesType': 'marker',
       'defaultSeriesSettings': {
         'base': {
-          'enabled': true,
-          'hatchFill': null,
-          'closed': true
+          'closed': true,
+          'clip': false
         },
         'area': {},
         'line': {},
@@ -2508,59 +2517,32 @@ goog.provide('anychart.themes.defaultTheme');
       },
       'xAxis': {
         'scale': 0,
-        'zIndex': 25
+        'zIndex': 25,
+        'labels': {
+          'zIndex': 25
+        },
+        'minorLabels': {
+          'zIndex': 25
+        },
+        'ticks': {
+          'zIndex': 25
+        },
+        'minorTicks': {
+          'zIndex': 25
+        }
+      },
+      'yAxis': {
+        'scale': 1
       },
       'startAngle': 0,
       'grids': [{}, {'layout': 'circuit'}],
       'minorGrids': [],
       'scales': [
         {
-          'type': 'linear',
-          'maxTicksCount': 1000,
-          'inverted': false,
-          'maximum': null,
-          'minimum': null,
-          'minimumGap': 0.1,
-          'maximumGap': 0.1,
-          'softMinimum': null,
-          'softMaximum': null,
-          'ticks': {
-            'mode': 'linear',
-            'base': 0,
-            'minCount': 4,
-            'maxCount': 6
-          },
-          'minorTicks': {
-            'mode': 'linear',
-            'base': 0,
-            'count': 5
-          },
-          'stackMode': 'none',
-          'stickToZero': true
+          'type': 'linear'
         },
         {
-          'type': 'linear',
-          'maxTicksCount': 1000,
-          'inverted': false,
-          'maximum': null,
-          'minimum': null,
-          'minimumGap': 0.1,
-          'maximumGap': 0.1,
-          'softMinimum': null,
-          'softMaximum': null,
-          'ticks': {
-            'mode': 'linear',
-            'base': 0,
-            'minCount': 4,
-            'maxCount': 6
-          },
-          'minorTicks': {
-            'mode': 'linear',
-            'base': 0,
-            'count': 5
-          },
-          'stackMode': 'none',
-          'stickToZero': true
+          'type': 'linear'
         }
       ],
       'xScale': 0,

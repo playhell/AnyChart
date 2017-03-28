@@ -164,10 +164,7 @@ anychart.core.ChartWithOrthogonalScales.prototype.barsPadding = function(opt_val
 //  Scales
 //
 //----------------------------------------------------------------------------------------------------------------------
-/**
- * If the legend categories mode should be considered by the scale.
- * @return {boolean}
- */
+/** @inheritDoc */
 anychart.core.ChartWithOrthogonalScales.prototype.allowLegendCategoriesMode = function() {
   return true;
 };
@@ -342,6 +339,13 @@ anychart.core.ChartWithOrthogonalScales.prototype.ensureStatisticsReady = functi
 };
 
 
+/** @inheritDoc */
+anychart.core.ChartWithOrthogonalScales.prototype.drawInternal = function() {
+  if (!this.isConsistent(anychart.ConsistencyState.SCALE_CHART_STATISTICS))
+    anychart.core.ChartWithOrthogonalScales.base(this, 'drawInternal');
+};
+
+
 /**
  * Performs full calculations of drawing plans and statistics.
  */
@@ -391,7 +395,7 @@ anychart.core.ChartWithOrthogonalScales.prototype.makeScaleMaps = function() {
     this.yScales = yScales;
     this.xScales = xScales;
     if (changed) {
-      this.annotations().invalidateAnnotations();
+      this.invalidateAnnotations();
       this.invalidate(
           anychart.ConsistencyState.CARTESIAN_ZOOM |
           anychart.ConsistencyState.AXES_CHART_ANNOTATIONS |
@@ -1376,10 +1380,7 @@ anychart.core.ChartWithOrthogonalScales.prototype.getZoomEndRatio = function() {
 };
 
 
-/**
- * Calculate for 3d.
- * @protected
- */
+/** @inheritDoc */
 anychart.core.ChartWithOrthogonalScales.prototype.prepare3d = function() {};
 
 
@@ -1978,9 +1979,55 @@ anychart.core.ChartWithOrthogonalScales.prototype.setupByJSON = function(config,
 
 
 /**
+ * Setups elements defined by an array of json with scale instances map.
+ * @param {*} items
+ * @param {Function} itemConstructor
+ * @param {Object} scaleInstances
+ * @protected
+ */
+anychart.core.ChartWithOrthogonalScales.prototype.setupElementsWithScales = function(items, itemConstructor, scaleInstances) {
+  if (goog.isArray(items)) {
+    for (var i = 0; i < items.length; i++) {
+      var json = items[i];
+      var element = itemConstructor.call(this, i);
+      element.setup(json);
+      if (goog.isObject(json) && 'scale' in json && json['scale'] > 1)
+        element.scale(scaleInstances[json['scale']]);
+    }
+  }
+};
+
+
+/**
+ * Serializes a list of items and writes it to json[propName] if the resulting list is not empty.
+ * @param {!Object} json
+ * @param {string} propName
+ * @param {Array.<T>} list
+ * @param {function(T, Array, Object, Array):Object} serializer
+ * @param {Array} scales
+ * @param {Object} scaleIds
+ * @param {Array} axesIds
+ * @protected
+ * @template T
+ */
+anychart.core.ChartWithOrthogonalScales.prototype.serializeElementsWithScales = function(json, propName, list, serializer, scales, scaleIds, axesIds) {
+  var res = [];
+  for (var i = 0; i < list.length; i++) {
+    var item = list[i];
+    if (item) {
+      res.push(serializer.call(this, item, scales, scaleIds, axesIds));
+    }
+  }
+  if (res.length) {
+    json[propName] = res;
+  }
+};
+
+
+/**
  * Serialization function with scales context.
  * @param {!Object} json
- * @param {Array.<anychart.scales.Base>} scales
+ * @param {Array.<Object>} scales
  * @param {Object} scaleIds
  * @protected
  */

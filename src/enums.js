@@ -5505,7 +5505,9 @@ anychart.enums.SeriesDrawerTypes = {
   CONNECTOR: 21,
   MAP_MARKER: 22,
   MAP_BUBBLE: 23,
-  CHOROPLETH: 24
+  CHOROPLETH: 24,
+  POLAR_LINE: 25,
+  POLAR_AREA: 26
 };
 
 
