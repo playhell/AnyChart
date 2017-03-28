@@ -2407,7 +2407,15 @@ goog.provide('anychart.themes.defaultTheme');
     },
     // merge with mekko
     'mosaic': {
-      'pointsPadding': 5
+      'pointsPadding': 5,
+      'defaultXAxisSettings': {
+        'stroke': 0,
+        'ticks': {'enabled': false}
+      },
+      'defaultYAxisSettings': {
+        'stroke': 0,
+        'ticks': {'enabled': false}
+      }
     },
     // merge with mekko
     'barmekko': {
