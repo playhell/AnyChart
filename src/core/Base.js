@@ -128,8 +128,8 @@ anychart.ConsistencyState = {
   HEATMAP_X_SCROLLER: 1 << 17,
   HEATMAP_Y_SCROLLER: 1 << 18,
   HEATMAP_ZOOM: 1 << 19,
-  //---------------------------------- MOSAIC STATES (AXES_CHART) ---------------------------------
-  MOSAIC_CATEGORY_SCALE: 1 << 25,
+  //---------------------------------- MEKKO STATES (AXES_CHART) ---------------------------------
+  MEKKO_CATEGORY_SCALE: 1 << 25,
   //---------------------------------- SERIES STATES (VB) ---------------------------------
   // also combined, due to a very big prefix
   SERIES_HATCH_FILL: 1 << 6, //

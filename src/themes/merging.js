@@ -552,7 +552,7 @@ anychart.themes.merging.mergingMap_ = [
       'chart.defaultLabelSettings',
       'cartesianBase.defaultTextMarkerSettings',
       'scatter.defaultTextMarkerSettings',
-      'marimekko.defaultTextMarkerSettings',
+      'mekko.defaultTextMarkerSettings',
       'standalones.label',
       'standalones.table',
       'standalones.textAxisMarker',
@@ -824,7 +824,7 @@ anychart.themes.merging.mergingMap_ = [
       'linearGauge',
       'pert',
       'resource',
-      'marimekko'
+      'mekko'
     ]
   },
   {
@@ -979,7 +979,7 @@ anychart.themes.merging.mergingMap_ = [
   {
     defaultObj: 'cartesianBase.defaultSeriesSettings.column',
     targets: [
-      'marimekko.defaultSeriesSettings.mosaic'
+      'mekko.defaultSeriesSettings.mekko'
     ]
   },
   {
@@ -1309,41 +1309,41 @@ anychart.themes.merging.mergingMap_ = [
   {
     defaultObj: 'cartesianBase.defaultXAxisSettings',
     targets: [
-      'marimekko.defaultXAxisSettings'
+      'mekko.defaultXAxisSettings'
     ]
   },
   {
     defaultObj: 'cartesianBase.defaultYAxisSettings',
     targets: [
-      'marimekko.defaultYAxisSettings'
+      'mekko.defaultYAxisSettings'
     ]
   },
   {
-    defaultObj: 'marimekko',
+    defaultObj: 'mekko',
     targets: [
       'mosaic',
       'barmekko'
     ]
   },
   {
-    defaultObj: 'marimekko.defaultAnnotationSettings.base',
+    defaultObj: 'mekko.defaultAnnotationSettings.base',
     targets: [
-      'marimekko.defaultAnnotationSettings.ray',
-      'marimekko.defaultAnnotationSettings.line',
-      'marimekko.defaultAnnotationSettings.infiniteLine',
-      'marimekko.defaultAnnotationSettings.verticalLine',
-      'marimekko.defaultAnnotationSettings.horizontalLine',
-      'marimekko.defaultAnnotationSettings.rectangle',
-      'marimekko.defaultAnnotationSettings.ellipse',
-      'marimekko.defaultAnnotationSettings.triangle',
-      'marimekko.defaultAnnotationSettings.trendChannel',
-      'marimekko.defaultAnnotationSettings.andrewsPitchfork',
-      'marimekko.defaultAnnotationSettings.fibonacciFan',
-      'marimekko.defaultAnnotationSettings.fibonacciArc',
-      'marimekko.defaultAnnotationSettings.fibonacciRetracement',
-      'marimekko.defaultAnnotationSettings.fibonacciTimezones',
-      'marimekko.defaultAnnotationSettings.marker',
-      'marimekko.defaultAnnotationSettings.label'
+      'mekko.defaultAnnotationSettings.ray',
+      'mekko.defaultAnnotationSettings.line',
+      'mekko.defaultAnnotationSettings.infiniteLine',
+      'mekko.defaultAnnotationSettings.verticalLine',
+      'mekko.defaultAnnotationSettings.horizontalLine',
+      'mekko.defaultAnnotationSettings.rectangle',
+      'mekko.defaultAnnotationSettings.ellipse',
+      'mekko.defaultAnnotationSettings.triangle',
+      'mekko.defaultAnnotationSettings.trendChannel',
+      'mekko.defaultAnnotationSettings.andrewsPitchfork',
+      'mekko.defaultAnnotationSettings.fibonacciFan',
+      'mekko.defaultAnnotationSettings.fibonacciArc',
+      'mekko.defaultAnnotationSettings.fibonacciRetracement',
+      'mekko.defaultAnnotationSettings.fibonacciTimezones',
+      'mekko.defaultAnnotationSettings.marker',
+      'mekko.defaultAnnotationSettings.label'
     ]
   },
 ];

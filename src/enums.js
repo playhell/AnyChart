@@ -51,7 +51,7 @@ anychart.enums.ChartTypes = {
   JUMP_LINE: 'jumpLine',
   STICK: 'stick',
   PARETO: 'pareto',
-  MARIMEKKO: 'marimekko',
+  MEKKO: 'mekko',
   MOSAIC: 'mosaic',
   BARMEKKO: 'barmekko'
 };
@@ -3004,31 +3004,31 @@ anychart.enums.normalizeHeatMapSeriesType = function(value, opt_default) {
 
 //----------------------------------------------------------------------------------------------------------------------
 //
-//  MosaicSeriesType
+//  MekkoSeriesType
 //
 //----------------------------------------------------------------------------------------------------------------------
 /**
  * List of all series types.
  * @enum {string}
  */
-anychart.enums.MosaicSeriesType = {
-  MOSAIC: 'mosaic'
+anychart.enums.MekkoSeriesType = {
+  MEKKO: 'mekko'
 };
 
 
 /**
- * Normalizes mosaic series type.
+ * Normalizes mekko series type.
  * @param {*} value Series type to normalize.
- * @param {anychart.enums.MosaicSeriesType=} opt_default Custom default value (defaults to LINE).
- * @return {anychart.enums.MosaicSeriesType}
+ * @param {anychart.enums.MekkoSeriesType=} opt_default Custom default value (defaults to LINE).
+ * @return {anychart.enums.MekkoSeriesType}
  */
-anychart.enums.normalizeMosaicSeriesType = function(value, opt_default) {
+anychart.enums.normalizeMekkoSeriesType = function(value, opt_default) {
   value = (String(value)).toLowerCase();
   switch (value) {
-    case 'mosaic':
-      return anychart.enums.MosaicSeriesType.MOSAIC;
+    case 'mekko':
+      return anychart.enums.MekkoSeriesType.MEKKO;
   }
-  return opt_default || anychart.enums.MosaicSeriesType.MOSAIC;
+  return opt_default || anychart.enums.MekkoSeriesType.MEKKO;
 };
 
 

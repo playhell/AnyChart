@@ -2370,10 +2370,10 @@ goog.provide('anychart.themes.defaultTheme');
     'bubble': {},
 
     // merge with chart
-    'marimekko': {
-      'defaultSeriesType': 'mosaic',
+    'mekko': {
+      'defaultSeriesType': 'mekko',
       'defaultSeriesSettings': {
-        'mosaic': {
+        'mekko': {
           'stroke': returnStrokeSourceColor1
         }
       },
@@ -2405,11 +2405,11 @@ goog.provide('anychart.themes.defaultTheme');
         'zIndex': 2000
       }
     },
-    // merge with marimekko
+    // merge with mekko
     'mosaic': {
       'pointsPadding': 5
     },
-    // merge with marimekko
+    // merge with mekko
     'barmekko': {
       'scales': [
         {
@@ -2427,7 +2427,7 @@ goog.provide('anychart.themes.defaultTheme');
         }
       ],
       'defaultSeriesSettings': {
-        'mosaic': {
+        'mekko': {
           /**
            * @this {*}
            * @return {*}
