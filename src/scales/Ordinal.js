@@ -228,10 +228,9 @@ anychart.scales.Ordinal.prototype.weights = function(opt_value) {
     if (length < this.values_.length || badValue) {
       // add average weights values for undefined indexes
       var avg = count > 0 ? (sum / count) : 1;
-      for (var j = 0; j < this.values_.length; j++) {
+      for (var j = 0; j < this.values_.length; j++)
         if (!this.resultWeights_[j])
           this.resultWeights_[j] = avg;
-      }
     }
   }
 

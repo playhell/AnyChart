@@ -172,7 +172,7 @@ anychart.core.series.Cartesian.prototype.applyDefaultsToElements = function(defa
 /** @inheritDoc */
 anychart.core.series.Cartesian.prototype.getCategoryWidth = function(opt_categoryIndex) {
   var ratio;
-  if (goog.isDef(opt_categoryIndex)) {
+  if (goog.isDef(opt_categoryIndex) && this.xScale() instanceof anychart.scales.Ordinal) {
     ratio = this.xScale().weightRatios()[opt_categoryIndex];
   } else {
     ratio = this.xScale().getPointWidthRatio();
