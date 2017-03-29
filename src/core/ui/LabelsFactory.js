@@ -672,7 +672,7 @@ anychart.core.ui.LabelsFactory.prototype.getSettingsChangedStatesObj = function(
 anychart.core.ui.LabelsFactory.prototype.getChangedSettings = function() {
   var result = {};
   goog.object.forEach(this.ownSettings, function(value, key) {
-    if (value) {
+    if (goog.isDef(value)) {
       if (key == 'adjustByHeight' || key == 'adjustByWidth') {
         key = 'adjustFontSize';
       }
@@ -1199,7 +1199,6 @@ anychart.core.ui.LabelsFactory.prototype.serialize = function() {
 
 /** @inheritDoc */
 anychart.core.ui.LabelsFactory.prototype.setupByJSON = function(config, opt_default) {
-  debugger;
   var enabledState = this.enabled();
   anychart.core.ui.LabelsFactory.base(this, 'setupByJSON', config, opt_default);
 

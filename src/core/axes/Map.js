@@ -1767,6 +1767,7 @@ anychart.core.axes.Map.prototype.serialize = function() {
   json['ticks'] = this.ticks().serialize();
   json['minorTicks'] = this.minorTicks().serialize();
 
+  debugger;
   var labelsConfig = this.labels().getChangedSettings();
   if (!goog.object.isEmpty(labelsConfig))
     json['labels'] = labelsConfig;

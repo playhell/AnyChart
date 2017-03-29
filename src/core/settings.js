@@ -287,12 +287,11 @@ anychart.core.settings.populate = function(classConstructor, descriptors) {
  */
 anychart.core.settings.deserialize = function(target, descriptors, config) {
   for (var name in descriptors) {
-    var descriptor = descriptors[name];
     var val = config[name];
     if (goog.isDef(val))
       target.getOption ?
           target[name](val) :
-          target[name] = descriptor.normalizer(descriptor.handler == anychart.enums.PropertyHandlerType.MULTI_ARG ? [val] : val);
+          target[name] = val;
   }
 };
 
@@ -336,7 +335,7 @@ anychart.core.settings.serialize = function(target, descriptors, json, opt_warni
           descriptor.normalizer == anychart.core.settings.strokeNormalizer) && !goog.isNull(val)) {
         val = anychart.color.serialize(descriptor.normalizer([val]));
       }
-      json[name] = val;
+      json[name] = goog.isObject(val) ? goog.object.clone(val) : val;
     }
   }
 };
