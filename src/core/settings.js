@@ -651,7 +651,7 @@ anychart.core.settings.stringNormalizer = function(val) {
 /**
  * Single arg normalizer for string params.
  * @param {*} val
- * @return {string|null}
+ * @return {?string}
  */
 anychart.core.settings.stringOrNullNormalizer = function(val) {
   return goog.isNull(val) ? val : String(val);
