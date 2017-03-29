@@ -68,13 +68,13 @@ anychart.core.ui.LabelsFactory = function() {
 
   /**
    * Theme settings.
-   * @type {Object}
+   * @type {!Object}
    */
   this.themeSettings = {};
 
   /**
    * Own settings (Settings set by user with API).
-   * @type {Object}
+   * @type {!Object}
    */
   this.ownSettings = {};
 
