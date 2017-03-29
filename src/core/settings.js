@@ -281,31 +281,18 @@ anychart.core.settings.populate = function(classConstructor, descriptors) {
 
 /**
  * Deserializes passed config to a target using descriptors.
- * @param {!anychart.core.settings.IObjectWithSettings} target
+ * @param {!(anychart.core.settings.IObjectWithSettings|Object)} target
  * @param {!Object.<anychart.core.settings.PropertyDescriptor>} descriptors
  * @param {!Object} config
  */
 anychart.core.settings.deserialize = function(target, descriptors, config) {
   for (var name in descriptors) {
-    var val = config[name];
-    if (goog.isDef(val))
-      target[name](val);
-  }
-};
-
-
-/**
- * Deserializes passed config to a target using descriptors.
- * @param {!Object} target
- * @param {!Object.<anychart.core.settings.PropertyDescriptor>} descriptors
- * @param {!Object} config
- */
-anychart.core.settings.deserializeToObject = function(target, descriptors, config) {
-  for (var name in descriptors) {
     var descriptor = descriptors[name];
     var val = config[name];
     if (goog.isDef(val))
-      target[name] = descriptor.normalizer(descriptor.handler == anychart.enums.PropertyHandlerType.MULTI_ARG ? [val] : val);
+      target.getOption ?
+          target[name](val) :
+          target[name] = descriptor.normalizer(descriptor.handler == anychart.enums.PropertyHandlerType.MULTI_ARG ? [val] : val);
   }
 };
 

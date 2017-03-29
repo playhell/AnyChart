@@ -1169,17 +1169,6 @@ anychart.core.ui.LabelsFactory.prototype.disposeInternal = function() {
 };
 
 
-/**
- * Sets default settings.
- * @param {!Object} config .
- */
-anychart.core.ui.LabelsFactory.prototype.setThemeSettings = function(config) {
-  anychart.core.settings.deserializeToObject(this.themeSettings, this.TEXT_DESCRIPTORS, config);
-  anychart.core.settings.deserializeToObject(this.themeSettings, this.SIMPLE_PROPS_DESCRIPTORS, config);
-  if ('enabled' in config) this.themeSettings['enabled'] = config['enabled'];
-};
-
-
 /** @inheritDoc */
 anychart.core.ui.LabelsFactory.prototype.serialize = function() {
   var json = anychart.core.ui.LabelsFactory.base(this, 'serialize');
@@ -1214,7 +1203,9 @@ anychart.core.ui.LabelsFactory.prototype.setupByJSON = function(config, opt_defa
   anychart.core.ui.LabelsFactory.base(this, 'setupByJSON', config, opt_default);
 
   if (opt_default) {
-    this.setThemeSettings(config);
+    anychart.core.settings.deserialize(this.themeSettings, this.TEXT_DESCRIPTORS, config);
+    anychart.core.settings.deserialize(this.themeSettings, this.SIMPLE_PROPS_DESCRIPTORS, config);
+    if ('enabled' in config) this.themeSettings['enabled'] = config['enabled'];
   } else {
     anychart.core.settings.deserialize(this, this.TEXT_DESCRIPTORS, config);
     anychart.core.settings.deserialize(this, this.SIMPLE_PROPS_DESCRIPTORS, config);
