@@ -249,6 +249,10 @@ anychart.scales.Ordinal.prototype.weightRatios = function() {
     this.weightRatios_ = weights.map(function(val) {
       return val / sum;
     });
+
+    this.weightRatiosSums_ = [0];
+    for (var j = 0; j < this.weightRatios_.length; j++)
+      this.weightRatiosSums_.push(this.weightRatios_[j] + this.weightRatiosSums_[j]);
   }
   return this.weightRatios_;
 };
@@ -395,16 +399,13 @@ anychart.scales.Ordinal.prototype.getPointWidthRatio = function() {
  */
 anychart.scales.Ordinal.prototype.transform = function(value, opt_subRangeRatio) {
   var index = this.getIndexByValue(value);
+  var k = index;
   if (isNaN(index)) return NaN;
 
   var result;
   if (this.checkWeights()) {
-    var weightRatios = this.weightRatios();
-    result = (opt_subRangeRatio || 0) * weightRatios[index];
+    result = (opt_subRangeRatio || 0) * this.weightRatios()[k] + this.weightRatiosSums_[k]
 
-    while (index > 0) {
-      result += weightRatios[--index];
-    }
   } else {
     result = index / this.values_.length +
         (opt_subRangeRatio || 0) / this.values_.length; // sub scale part
@@ -433,22 +434,20 @@ anychart.scales.Ordinal.prototype.transform = function(value, opt_subRangeRatio)
  */
 anychart.scales.Ordinal.prototype.inverseTransform = function(ratio) {
   ratio = this.reverseZoomAndInverse(ratio);
-  var i;
+  var index;
   if (this.checkWeights()) {
-    var weightRatios = this.weightRatios();
-    var min;
-    var max = 0;
-    for (i = 0; i < weightRatios.length; i++) {
-      min = max;
-      max = min + weightRatios[i];
-      if (ratio > min && ratio <= max) break;
-    }
+    // to be sure that this.weightRatiosSums_ is initialized
+    this.weightRatios();
+    for (var j = 1; j < this.weightRatiosSums_.length; j++)
+      if (ratio <= this.weightRatiosSums_[j]) break;
+
+    index = j - 1;
   } else {
     //todo(Anton Saukh): needs improvement.
-    i = goog.math.clamp(Math.ceil(ratio * this.values_.length) - 1, 0, this.values_.length - 1);
+    index = goog.math.clamp(Math.ceil(ratio * this.values_.length) - 1, 0, this.values_.length - 1);
   }
 
-  return this.values_[i];
+  return this.values_[index];
 };
 
 
