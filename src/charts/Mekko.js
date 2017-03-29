@@ -292,10 +292,7 @@ anychart.charts.Mekko.prototype.normalizeSeriesType = function(type) {
 anychart.charts.Mekko.prototype.serialize = function() {
   var json = anychart.charts.Mekko.base(this, 'serialize');
   json['type'] = this.getType();
-
-  if (this.pointsPadding())
-    json['pointsPadding'] = this.pointsPadding();
-
+  json['pointsPadding'] = this.pointsPadding();
   return {'chart': json};
 };
 

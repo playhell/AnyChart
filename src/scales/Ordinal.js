@@ -211,22 +211,27 @@ anychart.scales.Ordinal.prototype.weights = function(opt_value) {
     // validate weights values
     var sum = 0;
     var count = 0;
-    for (var i = 0; i < this.values_.length; i++) {
+    var length = Math.min(this.weights_.length, this.values_.length);
+    var badValue = false;
+    for (var i = 0; i < length; i++) {
       var weight = anychart.utils.toNumber(this.weights_[i]);
-      if (!isNaN(weight) && weight > 0) {
+      if (weight > 0) {
         sum += weight;
         count++;
         this.resultWeights_.push(weight);
       } else {
+        badValue = true;
         this.resultWeights_.push(undefined);
       }
     }
 
-    // add average weights values for undefined indexes
-    var avg = count > 0 ? (sum / count) : 1;
-    for (var j = 0; j < this.resultWeights_.length; j++) {
-      if (!this.resultWeights_[j])
-        this.resultWeights_[j] = avg;
+    if (length < this.values_.length || badValue) {
+      // add average weights values for undefined indexes
+      var avg = count > 0 ? (sum / count) : 1;
+      for (var j = 0; j < this.values_.length; j++) {
+        if (!this.resultWeights_[j])
+          this.resultWeights_[j] = avg;
+      }
     }
   }
 
@@ -487,7 +492,8 @@ anychart.scales.Ordinal.prototype.setupByJSON = function(config, opt_default) {
   this.values(config['values']);
   this.ticks(config['ticks']);
   this.names(config['names']);
-  this.weights(config['weights']);
+  if (config['weights'])
+    this.weights(config['weights']);
 };
 
 
