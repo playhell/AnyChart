@@ -489,6 +489,7 @@ anychart.enums.normalizeAnchor = function(value, opt_default) {
     case 'br':
       return anychart.enums.Anchor.RIGHT_BOTTOM;
     case 'auto':
+    case 'null':
       return anychart.enums.Anchor.AUTO;
   }
   return goog.isDef(opt_default) ? opt_default : anychart.enums.Anchor.LEFT_TOP;

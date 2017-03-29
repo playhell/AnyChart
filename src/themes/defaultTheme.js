@@ -2910,7 +2910,7 @@ goog.provide('anychart.themes.defaultTheme');
           'padding': 2,
           'rotation': null,
           'fontSize': 10,
-          'anchor': null
+          'anchor': 'auto'
         },
         'minorLabels': {
           'enabled': false,
@@ -4532,10 +4532,12 @@ goog.provide('anychart.themes.defaultTheme');
           'format': returnMilestoneName
         },
         'hoverLabels': {
+          'enabled': null,
           'fontColor': '#fff',
           'fontOpacity': 1
         },
         'selectLabels': {
+          'enabled': null,
           'fontWeight': 'bold'
         },
 

@@ -1172,7 +1172,7 @@ anychart.core.ui.LabelsFactory.prototype.disposeInternal = function() {
 /** @inheritDoc */
 anychart.core.ui.LabelsFactory.prototype.serialize = function() {
   var json = anychart.core.ui.LabelsFactory.base(this, 'serialize');
-  if (goog.isNull(json['enabled'])) delete json['enabled'];
+  if (goog.isNull(json['enabled']) || !goog.isDef(json['enabled'])) delete json['enabled'];
 
   var val;
   if (goog.isDef(this.hasOwnOption('background'))) {
@@ -1199,6 +1199,7 @@ anychart.core.ui.LabelsFactory.prototype.serialize = function() {
 
 /** @inheritDoc */
 anychart.core.ui.LabelsFactory.prototype.setupByJSON = function(config, opt_default) {
+  debugger;
   var enabledState = this.enabled();
   anychart.core.ui.LabelsFactory.base(this, 'setupByJSON', config, opt_default);
 

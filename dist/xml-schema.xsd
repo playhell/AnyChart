@@ -938,8 +938,8 @@
         <xsd:attribute name="align" type="enums.Align" default="center"/>
         <xsd:attribute name="layout" type="enums.Layout"/>
         <xsd:attribute name="rotation" type="simple.DoubleOrNull" default="0"/>
-        <xsd:attribute name="offset_x" type="xsd:double" default="0"/>
-        <xsd:attribute name="offset_y" type="xsd:double" default="0"/>
+        <xsd:attribute name="offset_x" type="simple.NumberOrPercent" default="0"/>
+        <xsd:attribute name="offset_y" type="simple.NumberOrPercent" default="0"/>
         <xsd:attribute name="text" type="xsd:string"/>
         <xsd:attribute name="height" type="simple.NumberOrPercentOrNull" default="null"/>
         <xsd:attribute name="width" type="simple.NumberOrPercentOrNull" default="null"/>

@@ -2964,9 +2964,9 @@ anychart.charts.Pert.prototype.setupByJSON = function(config, opt_default) {
   this.defaultTooltipSettings_ = /** @type {Object} */(anychart.getFullTheme('defaultTooltip'));
 
   if ('treeData' in config) this.data(anychart.data.Tree.fromJson(config['treeData']));
-  if ('milestones' in config) this.milestones().setupByJSON(config['milestones']);
-  if ('tasks' in config) this.tasks().setupByJSON(config['tasks']);
-  if ('criticalPath' in config) this.criticalPath().setupByJSON(config['criticalPath']);
+  if ('milestones' in config) this.milestones().setupByJSON(config['milestones'], opt_default);
+  if ('tasks' in config) this.tasks().setupByJSON(config['tasks'], opt_default);
+  if ('criticalPath' in config) this.criticalPath().setupByJSON(config['criticalPath'], opt_default);
 
   this.verticalSpacing(config['verticalSpacing']);
   this.horizontalSpacing(config['horizontalSpacing']);

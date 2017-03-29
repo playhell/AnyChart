@@ -5046,7 +5046,7 @@ anychart.charts.Map.prototype.setupByJSON = function(config, opt_default) {
   if ('defaultCalloutSettings' in config)
     this.defaultCalloutSettings(config['defaultCalloutSettings']);
 
-  this.colorRange(config['colorRange']);
+  this.colorRange().setupByVal(config['colorRange'], opt_default);
   this.unboundRegions(config['unboundRegions']);
   this.geoIdField(config['geoIdField']);
   this.overlapMode(config['overlapMode']);

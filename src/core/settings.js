@@ -117,7 +117,7 @@ anychart.core.settings.createTextPropertiesDescriptors = function(invalidateBoun
   map['fontColor'] = anychart.core.settings.createDescriptor(
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'fontColor',
-      anychart.core.settings.stringNormalizer,
+      anychart.core.settings.stringOrNullNormalizer,
       nonBoundsState,
       nonBoundsSignal);
 
@@ -645,6 +645,16 @@ anychart.core.settings.numberOrZeroNormalizer = function(val) {
  */
 anychart.core.settings.stringNormalizer = function(val) {
   return String(val);
+};
+
+
+/**
+ * Single arg normalizer for string params.
+ * @param {*} val
+ * @return {string|null}
+ */
+anychart.core.settings.stringOrNullNormalizer = function(val) {
+  return goog.isNull(val) ? val : String(val);
 };
 
 
