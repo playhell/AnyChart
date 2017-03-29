@@ -1093,21 +1093,21 @@ anychart.core.axes.Circular.prototype.draw = function() {
   if (this.hasInvalidationState(anychart.ConsistencyState.AXIS_LABELS)) {
     var labels = this.labels();
     labels.parentBounds(this.gauge_.getGaugeBounds());
-    labels['cx'](cx);
-    labels['cy'](cy);
-    labels['startAngle'](startAngle);
-    labels['sweepAngle'](sweepAngle);
-    labels['parentRadius'](this.gauge_.getPixRadius());
+    labels.cx(cx);
+    labels.cy(cy);
+    labels.startAngle(startAngle);
+    labels.sweepAngle(sweepAngle);
+    labels.parentRadius(this.gauge_.getPixRadius());
     labels.clear();
     labelsDrawer = this.drawLabel_;
 
     var minorLabels = this.minorLabels();
     minorLabels.parentBounds(this.gauge_.getGaugeBounds());
-    minorLabels['cx'](cx);
-    minorLabels['cy'](cy);
-    minorLabels['startAngle'](startAngle);
-    minorLabels['sweepAngle'](sweepAngle);
-    minorLabels['parentRadius'](this.gauge_.getPixRadius());
+    minorLabels.cx(cx);
+    minorLabels.cy(cy);
+    minorLabels.startAngle(startAngle);
+    minorLabels.sweepAngle(sweepAngle);
+    minorLabels.parentRadius(this.gauge_.getPixRadius());
     minorLabels.clear();
     minorLabelsDrawer = this.drawLabel_;
     this.markConsistent(anychart.ConsistencyState.AXIS_LABELS);

@@ -1407,11 +1407,11 @@ anychart.charts.Pie.prototype.calculate_ = function(bounds) {
 
   var labels = this.labels();
   labels.suspendSignalsDispatching();
-  labels['cx'](this.cx_);
-  labels['cy'](this.cy_);
-  labels['parentRadius'](this.radiusValue_);
-  labels['startAngle'](this.startAngle_);
-  labels['sweepAngle'](360);
+  labels.cx(this.cx_);
+  labels.cy(this.cy_);
+  labels.parentRadius(this.radiusValue_);
+  labels.startAngle(this.startAngle_);
+  labels.sweepAngle(360);
   labels.parentBounds(this.pieBounds_);
   labels.resumeSignalsDispatching(false);
 
