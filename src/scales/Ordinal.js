@@ -174,10 +174,9 @@ anychart.scales.Ordinal.prototype.checkWeights = function() {
   if (!this.weights_.length) return false;
 
   // If all values are equal
-  for (var i = 1; i < this.weights_.length; i++) {
+  for (var i = 1; i < this.weights_.length; i++)
     if (this.weights_[i] != this.weights_[0])
       break;
-  }
 
   return i != this.weights_.length;
 };

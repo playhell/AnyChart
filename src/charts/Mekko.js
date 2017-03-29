@@ -68,7 +68,7 @@ anychart.charts.Mekko.prototype.seriesConfig = (function() {
   var capabilities = (
       anychart.core.series.Capabilities.ALLOW_INTERACTIVITY |
       anychart.core.series.Capabilities.ALLOW_POINT_SETTINGS |
-      anychart.core.series.Capabilities.ALLOW_ERROR |
+      // anychart.core.series.Capabilities.ALLOW_ERROR |
       anychart.core.series.Capabilities.SUPPORTS_MARKERS |
       anychart.core.series.Capabilities.SUPPORTS_LABELS |
       0);
