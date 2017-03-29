@@ -159,13 +159,6 @@ anychart.core.drawers.Base.prototype.startDrawing = function(shapeManager) {
    */
   this.crispEdges = (this.series.categoryWidthCache - this.pointWidth) > 2.5 && this.pointWidth > 10;
 
-  /**
-   * If point is category width.
-   * @type {boolean}
-   * @protected
-   */
-  this.fullWidth = this.series.categoryWidthCache == this.pointWidth;
-
   this.series.rendering().callStart(this.series);
 };
 

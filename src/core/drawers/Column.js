@@ -79,42 +79,20 @@ anychart.core.drawers.Column.prototype.updatePointOnAnimate = function(point) {
  * @private
  */
 anychart.core.drawers.Column.prototype.drawPoint_ = function(point, shapes) {
-  if (point.get('value') == 0) return;
-
   var x = /** @type {number} */(point.meta('x'));
   var zero = /** @type {number} */(point.meta('zero'));
   var y = /** @type {number} */(point.meta('value'));
 
-  var pointsPadding = this.series.chart.pointsPadding && this.series.chart.pointsPadding() || 0;
-  this.pointWidth -= pointsPadding * 2;
-  var leftX = (x - this.pointWidth / 2);
+  var leftX = x - this.pointWidth / 2;
   var rightX = leftX + this.pointWidth;
 
   var thickness = acgraph.vector.getThickness(/** @type {acgraph.vector.Stroke} */(shapes['path'].stroke()));
-
-  if (this.fullWidth) {
-    var halfThickness = thickness / 2;
-    leftX += halfThickness;
-    rightX -= halfThickness;
-    y += this.isVertical ? -halfThickness : halfThickness;
-    zero -= this.isVertical ? -halfThickness : halfThickness;
-  }
-
-  if (this.crispEdges || this.fullWidth) {
+  if (this.crispEdges) {
     leftX = anychart.utils.applyPixelShift(leftX, thickness);
     rightX = anychart.utils.applyPixelShift(rightX, thickness);
   }
-
   y = anychart.utils.applyPixelShift(y, thickness);
   zero = anychart.utils.applyPixelShift(zero, thickness);
-
-  if (pointsPadding) {
-    // Adjust vertical padding depend on available space
-    var height = Math.abs(zero - y);
-    var vPadding = (height > pointsPadding * 2) ? pointsPadding : (height / 2 - 1);
-    zero -= this.isVertical ? -vPadding : vPadding;
-    y += this.isVertical ? -vPadding : vPadding;
-  }
 
   var path = /** @type {acgraph.vector.Path} */(shapes['path']);
   anychart.core.drawers.move(path, this.isVertical, leftX, y);

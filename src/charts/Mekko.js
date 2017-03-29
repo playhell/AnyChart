@@ -74,7 +74,7 @@ anychart.charts.Mekko.prototype.seriesConfig = (function() {
       0);
 
   res[anychart.enums.MekkoSeriesType.MEKKO] = {
-    drawerType: anychart.enums.SeriesDrawerTypes.COLUMN,
+    drawerType: anychart.enums.SeriesDrawerTypes.MEKKO,
     shapeManagerType: anychart.enums.ShapeManagerTypes.PER_POINT,
     shapesConfig: [
       anychart.core.shapeManagers.pathFillStrokeConfig,
@@ -340,7 +340,7 @@ anychart.charts.Mekko.prototype.setupByJSON = function(config, opt_default) {
   proto['markerPalette'] = proto.markerPalette;
   proto['hatchFillPalette'] = proto.hatchFillPalette;
   proto['getType'] = proto.getType;
-  proto['defaultSeriesType'] = proto.defaultSeriesType;
+  // proto['defaultSeriesType'] = proto.defaultSeriesType;
   proto['addSeries'] = proto.addSeries;
   proto['getSeriesAt'] = proto.getSeriesAt;
   proto['getSeriesCount'] = proto.getSeriesCount;

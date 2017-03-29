@@ -6,6 +6,7 @@
 goog.provide('anychart.modules.mekko');
 
 goog.require('anychart.charts.Mekko');
+goog.require('anychart.core.drawers.Mekko');
 goog.require('anychart.modules.base');
 
 
@@ -19,9 +20,7 @@ goog.require('anychart.modules.base');
 anychart.mekko = function(var_args) {
   var chart = new anychart.charts.Mekko(false);
 
-  chart.defaultSeriesType(anychart.enums.MekkoSeriesType.MEKKO);
   chart.setType(anychart.enums.ChartTypes.MEKKO);
-
   chart.setupByVal(anychart.getFullTheme('mekko'), true);
 
   for (var i = 0, count = arguments.length; i < count; i++) {
@@ -41,7 +40,6 @@ anychart.mekko = function(var_args) {
 anychart.mosaic = function(var_args) {
   var chart = new anychart.charts.Mekko(true);
 
-  chart.defaultSeriesType(anychart.enums.MekkoSeriesType.MEKKO);
   chart.setType(anychart.enums.ChartTypes.MOSAIC);
 
   chart.setupByVal(anychart.getFullTheme('mosaic'), true);
@@ -63,7 +61,6 @@ anychart.mosaic = function(var_args) {
 anychart.barmekko = function(var_args) {
   var chart = new anychart.charts.Mekko(false);
 
-  chart.defaultSeriesType(anychart.enums.MekkoSeriesType.MEKKO);
   chart.setType(anychart.enums.ChartTypes.BARMEKKO);
 
   chart.setupByVal(anychart.getFullTheme('barmekko'), true);

@@ -1051,7 +1051,7 @@ anychart.core.series.Base.prototype.getWhiskerWidth = function(point, pointState
  * @return {number} Category width in pixels.
  * @public
  */
-anychart.core.series.Base.prototype.getCategoryWidth = function(opt_categoryIndex) {return NaN;};
+anychart.core.series.Base.prototype.getCategoryWidth = function(opt_categoryIndex) {return 0;};
 
 
 /**

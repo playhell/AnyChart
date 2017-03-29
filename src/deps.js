@@ -121,6 +121,7 @@ goog.addDependency('../../../../src/core/drawers/Column3d.js', ['anychart.core.d
 goog.addDependency('../../../../src/core/drawers/JumpLine.js', ['anychart.core.drawers.JumpLine'], ['anychart.core.drawers', 'anychart.core.drawers.Base', 'anychart.enums'], false);
 goog.addDependency('../../../../src/core/drawers/Line.js', ['anychart.core.drawers.Line'], ['anychart.core.drawers', 'anychart.core.drawers.Base', 'anychart.enums'], false);
 goog.addDependency('../../../../src/core/drawers/Marker.js', ['anychart.core.drawers.Marker'], ['anychart.core.drawers', 'anychart.core.drawers.Base', 'anychart.enums'], false);
+goog.addDependency('../../../../src/core/drawers/Mekko.js', ['anychart.core.drawers.Mekko'], ['anychart.core.drawers', 'anychart.core.drawers.Column', 'anychart.enums'], false);
 goog.addDependency('../../../../src/core/drawers/OHLC.js', ['anychart.core.drawers.OHLC'], ['anychart.core.drawers', 'anychart.core.drawers.Base', 'anychart.enums'], false);
 goog.addDependency('../../../../src/core/drawers/PolarArea.js', ['anychart.core.drawers.PolarArea'], ['anychart.core.drawers', 'anychart.core.drawers.Base', 'anychart.math', 'goog.math'], false);
 goog.addDependency('../../../../src/core/drawers/PolarLine.js', ['anychart.core.drawers.PolarLine'], ['anychart.core.drawers', 'anychart.core.drawers.Line', 'anychart.math', 'goog.math'], false);

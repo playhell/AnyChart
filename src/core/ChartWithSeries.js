@@ -761,6 +761,7 @@ anychart.core.ChartWithSeries.seriesReferenceValues = {
   'splineArea': ['value'],
   'jumpLine': ['value'],
   'stick': ['value'],
+  'mekko': ['value'],
   'bubble': ['value', 'size'],
   'rangeBar': ['high', 'low'],
   'rangeArea': ['high', 'low'],
