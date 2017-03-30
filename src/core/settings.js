@@ -335,7 +335,7 @@ anychart.core.settings.serialize = function(target, descriptors, json, opt_warni
           descriptor.normalizer == anychart.core.settings.strokeNormalizer) && !goog.isNull(val)) {
         val = anychart.color.serialize(descriptor.normalizer([val]));
       }
-      json[name] = goog.isObject(val) ? goog.object.clone(val) : val;
+      json[name] = goog.isObject(val) ? val.serialize ? val.serialize() : goog.object.clone(val) : val;
     }
   }
 };

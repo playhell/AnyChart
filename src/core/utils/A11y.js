@@ -208,7 +208,6 @@ anychart.core.utils.A11y.prototype.setupByJSON = function(json, opt_default) {
 };
 
 
-
 /**
  * @inheritDoc
  * @suppress {deprecated}

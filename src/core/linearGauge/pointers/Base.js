@@ -1579,8 +1579,8 @@ anychart.core.linearGauge.pointers.Base.prototype.serialize = function() {
   json['offset'] = this.offset();
   json['dataIndex'] = this.dataIndex();
   json['label'] = this.label().serialize();
-  json['hoverLabel'] = this.hoverLabel().serialize();
-  json['selectLabel'] = this.selectLabel().serialize();
+  json['hoverLabel'] = this.hoverLabel().getChangedSettings();
+  json['selectLabel'] = this.selectLabel().getChangedSettings();
   json['legendItem'] = this.legendItem().serialize();
 
   if (this.id_)
@@ -1691,9 +1691,9 @@ anychart.core.linearGauge.pointers.Base.prototype.setupByJSON = function(config,
   this.width(config['width']);
   this.offset(config['offset']);
   this.dataIndex(config['dataIndex']);
-  this.label().setup(config['label']);
-  this.hoverLabel().setup(config['hoverLabel']);
-  this.selectLabel().setup(config['selectLabel']);
+  this.label().setupByVal(config['label'], opt_default);
+  this.hoverLabel().setupByVal(config['hoverLabel'], opt_default);
+  this.selectLabel().setupByVal(config['selectLabel'], opt_default);
   this.legendItem().setup(config['legendItem']);
 
   this.color(config['color']);
