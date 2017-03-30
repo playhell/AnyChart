@@ -437,9 +437,12 @@ anychart.core.ui.LabelsFactory.prototype.textSettings = function(opt_objectOrNam
   }
 
   var res = {};
-  for (var key in this.ownSettings) {
-    if (key in this.TEXT_DESCRIPTORS)
-      res[key] = this.ownSettings[key];
+  for (var key in this.TEXT_DESCRIPTORS) {
+    if (key in this.TEXT_DESCRIPTORS) {
+      var value = this.getOption(key);
+      if (goog.isDef(value))
+        res[key] = this.getOption(key);
+    }
   }
   return res;
 };
@@ -1422,7 +1425,7 @@ anychart.core.ui.LabelsFactory.Label.prototype.currentLabelsFactory = function(o
  * @return {!Array}
  */
 anychart.core.ui.LabelsFactory.Label.prototype.getDrawingPlan = function() {
-  return this.drawingPlan_ || goog.array.slice(this.defaultDrawingPlan_, 0);
+  return this.drawingPlan_ || (this.drawingPlan_ = goog.array.slice(this.defaultDrawingPlan_, 0));
 };
 
 
@@ -1441,7 +1444,7 @@ anychart.core.ui.LabelsFactory.Label.prototype.state = function(name, opt_value,
     if (this.states_[name] != opt_value || drawingPlan.indexOf(name) != opt_priority) {
       this.states_[name] = opt_value;
 
-      if (drawingPlan.indexOf(name) == -1)
+      if (drawingPlan.indexOf(name) == -1 && !goog.isDef(opt_priority))
         opt_priority = drawingPlan.length;
 
       if (!isNaN(opt_priority))
@@ -1475,7 +1478,7 @@ anychart.core.ui.LabelsFactory.Label.prototype.stateOrder = function(nameOrSet, 
       return this;
 
     if (index != -1) {
-      goog.array.moveItem(drawingPlan, index, isNaN(opt_value) ? drawingPlan.length - 1 : opt_value - 1);
+      goog.array.moveItem(drawingPlan, index, isNaN(opt_value) ? drawingPlan.length - 1 : opt_value);
     } else {
       goog.array.insertAt(drawingPlan, nameOrSet, isNaN(opt_value) ? drawingPlan.length : opt_value);
     }

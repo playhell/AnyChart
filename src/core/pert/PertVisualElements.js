@@ -674,8 +674,8 @@ anychart.core.pert.PertVisualElements.prototype.setupByJSON = function(config, o
   this.selectStroke(config['selectStroke']);
 
   this.labels().setupByVal(config['labels'], opt_default);
-  this.selectLabels().setupByVal(config['selectLabels'], opt_default);
   this.hoverLabels().setupByVal(config['hoverLabels'], opt_default);
+  this.selectLabels().setupByVal(config['selectLabels'], opt_default);
 
   if ('tooltip' in config)
     this.tooltip().setupByVal(config['tooltip'], opt_default);
