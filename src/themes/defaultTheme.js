@@ -2360,6 +2360,8 @@ goog.provide('anychart.themes.defaultTheme');
     'marker': {},
     'bubble': {},
 
+    'quadrant': {},
+
     // merge with chart
     'radar': {
       'defaultSeriesType': 'line',
