@@ -174,9 +174,10 @@ anychart.scales.Ordinal.prototype.checkWeights = function() {
   if (!this.weights_.length) return false;
 
   // If all values are equal
-  for (var i = 1; i < this.weights_.length; i++)
+  for (var i = 1; i < this.weights_.length; i++) {
     if (this.weights_[i] != this.weights_[0])
       break;
+  }
 
   return i != this.weights_.length;
 };
@@ -207,7 +208,6 @@ anychart.scales.Ordinal.prototype.weights = function(opt_value) {
 
   if (!this.resultWeights_ || this.resultWeights_.length != this.values_.length) {
     this.resultWeights_ = [];
-
     // validate weights values
     var sum = 0;
     var count = 0;
@@ -215,7 +215,7 @@ anychart.scales.Ordinal.prototype.weights = function(opt_value) {
     var badValue = false;
     for (var i = 0; i < length; i++) {
       var weight = anychart.utils.toNumber(this.weights_[i]);
-      if (weight > 0) {
+      if (weight >= 0) {
         sum += weight;
         count++;
         this.resultWeights_.push(weight);
@@ -408,7 +408,7 @@ anychart.scales.Ordinal.prototype.transform = function(value, opt_subRangeRatio)
 
   var result;
   if (this.checkWeights()) {
-    result = (opt_subRangeRatio || 0) * this.weightRatios()[k] + this.weightRatiosSums_[k]
+    result = (opt_subRangeRatio || 0) * this.weightRatios()[k] + this.weightRatiosSums_[k];
 
   } else {
     result = index / this.values_.length +
@@ -442,8 +442,9 @@ anychart.scales.Ordinal.prototype.inverseTransform = function(ratio) {
   if (this.checkWeights()) {
     // to be sure that this.weightRatiosSums_ is initialized
     this.weightRatios();
-    for (var j = 1; j < this.weightRatiosSums_.length; j++)
+    for (var j = 1; j < this.weightRatiosSums_.length; j++) {
       if (ratio <= this.weightRatiosSums_[j]) break;
+    }
 
     index = j - 1;
   } else {

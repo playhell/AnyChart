@@ -616,9 +616,9 @@ anychart.core.series.Cartesian.prototype.isPointVisible = function(point) {
  * @param {Function} xMissingChecker
  * @param {string=} opt_nameField
  * @return {anychart.core.series.Cartesian.DrawingPlan}
- * @private
+ * @protected
  */
-anychart.core.series.Cartesian.prototype.getDrawingData_ = function(data, dataPusher, xNormalizer, xMissingChecker, opt_nameField) {
+anychart.core.series.Cartesian.prototype.getDrawingData = function(data, dataPusher, xNormalizer, xMissingChecker, opt_nameField) {
   // anychart.performance.start('Drawing plan calc');
   var dataSource = /** @type {anychart.data.IView} */(this.data());
   var iterator = dataSource.getIterator();
@@ -776,7 +776,7 @@ anychart.core.series.Cartesian.prototype.getScatterDrawingPlan = function(sorted
       };
   var xMissingChecker = isNaN;
 
-  var result = this.getDrawingData_([], dataPusher, xNormalizer, xMissingChecker);
+  var result = this.getDrawingData([], dataPusher, xNormalizer, xMissingChecker);
   if (needsSorting)
     goog.array.sort(result.data, anychart.core.series.Cartesian.comparePointsXNumericAsc);
   return result;
@@ -826,7 +826,7 @@ anychart.core.series.Cartesian.prototype.getOrdinalDrawingPlan = function(xHashM
     return a === undefined;
   };
 
-  var result = this.getDrawingData_(new Array(xArray.length), dataPusher, xNormalizer, xMissingChecker, opt_namesField);
+  var result = this.getDrawingData(new Array(xArray.length), dataPusher, xNormalizer, xMissingChecker, opt_namesField);
   var data = result.data;
   for (var i = 0; i < data.length; i++) {
     if (!data[i])

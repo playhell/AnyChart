@@ -1,6 +1,7 @@
 goog.provide('anychart.charts.Mekko');
 goog.require('anychart.core.ChartWithAxes');
 goog.require('anychart.core.series');
+goog.require('anychart.core.series.Mekko');
 goog.require('anychart.core.shapeManagers');
 goog.require('anychart.enums');
 
@@ -152,7 +153,7 @@ anychart.charts.Mekko.prototype.categoriesScaleInvalidated = function(event) {
 
 /** @inheritDoc */
 anychart.charts.Mekko.prototype.allowLegendCategoriesMode = function() {
-  return false;
+  return true;
 };
 
 
@@ -207,8 +208,13 @@ anychart.charts.Mekko.prototype.calculate = function() {
     for (i = 0; i < this.drawingPlans.length; i++) {
       seriesData = this.drawingPlans[i].data;
       for (j = 0; j < seriesData.length; j++) {
-        var value = seriesData[j].data['value'];
-        if (weights[j] == undefined) {
+        var value;
+        if (this.getType() == anychart.enums.ChartTypes.BARMEKKO)
+          value = Math.abs(seriesData[j].data['value']);
+        else
+          value = seriesData[j].data['value'] > 0 ? seriesData[j].data['value'] : 0;
+
+        if (weights[j] == void 0) {
           weights.push(value);
         } else {
           weights[j] += value;
@@ -271,7 +277,9 @@ anychart.charts.Mekko.prototype.pointsPadding = function(opt_value) {
 
 /** @inheritDoc */
 anychart.charts.Mekko.prototype.createSeriesInstance = function(type, config) {
-  return new anychart.core.series.Cartesian(this, this, type, config, false);
+  return this.getType() == anychart.enums.ChartTypes.BARMEKKO ?
+      new anychart.core.series.Cartesian(this, this, type, config, false) :
+      new anychart.core.series.Mekko(this, this, type, config, false);
 };
 
 
