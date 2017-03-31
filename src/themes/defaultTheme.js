@@ -2441,7 +2441,7 @@ goog.provide('anychart.themes.defaultTheme');
            * @return {*}
            */
           'fill': function() {
-            var color = this['chart'].palette().itemAt(this['iterator'].currentIndex);
+            var color = this['chart'].getSeriesCount() > 1 ? this['sourceColor'] : this['chart'].palette().itemAt(this['iterator'].currentIndex);
             return returnSourceColor85(/** @type {Object} */(this), color);
           },
           /**
@@ -2449,7 +2449,7 @@ goog.provide('anychart.themes.defaultTheme');
            * @return {*}
            */
           'hoverFill': function() {
-            var color = this['chart'].palette().itemAt(this['iterator'].currentIndex);
+            var color = this['chart'].getSeriesCount() > 1 ? this['sourceColor'] : this['chart'].palette().itemAt(this['iterator'].currentIndex);
             return returnSourceColor65(/** @type {Object} */(this), color);
           },
           /**
@@ -2457,7 +2457,7 @@ goog.provide('anychart.themes.defaultTheme');
            * @return {*}
            */
           'stroke': function() {
-            var color = this['chart'].palette().itemAt(this['iterator'].currentIndex);
+            var color = this['chart'].getSeriesCount() > 1 ? this['sourceColor'] : this['chart'].palette().itemAt(this['iterator'].currentIndex);
             return returnStrokeSourceColor1(/** @type {Object} */(this), color);
           }
         }

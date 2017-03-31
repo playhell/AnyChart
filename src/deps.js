@@ -121,7 +121,7 @@ goog.addDependency('../../../../src/core/drawers/Column3d.js', ['anychart.core.d
 goog.addDependency('../../../../src/core/drawers/JumpLine.js', ['anychart.core.drawers.JumpLine'], ['anychart.core.drawers', 'anychart.core.drawers.Base', 'anychart.enums'], false);
 goog.addDependency('../../../../src/core/drawers/Line.js', ['anychart.core.drawers.Line'], ['anychart.core.drawers', 'anychart.core.drawers.Base', 'anychart.enums'], false);
 goog.addDependency('../../../../src/core/drawers/Marker.js', ['anychart.core.drawers.Marker'], ['anychart.core.drawers', 'anychart.core.drawers.Base', 'anychart.enums'], false);
-goog.addDependency('../../../../src/core/drawers/Mekko.js', ['anychart.core.drawers.Mekko'], ['anychart.core.drawers', 'anychart.core.drawers.Column', 'anychart.enums'], false);
+goog.addDependency('../../../../src/core/drawers/Mekko.js', ['anychart.core.drawers.Mekko'], ['anychart.core.drawers', 'anychart.core.drawers.Base', 'anychart.enums'], false);
 goog.addDependency('../../../../src/core/drawers/OHLC.js', ['anychart.core.drawers.OHLC'], ['anychart.core.drawers', 'anychart.core.drawers.Base', 'anychart.enums'], false);
 goog.addDependency('../../../../src/core/drawers/PolarArea.js', ['anychart.core.drawers.PolarArea'], ['anychart.core.drawers', 'anychart.core.drawers.Base', 'anychart.math', 'goog.math'], false);
 goog.addDependency('../../../../src/core/drawers/PolarLine.js', ['anychart.core.drawers.PolarLine'], ['anychart.core.drawers', 'anychart.core.drawers.Line', 'anychart.math', 'goog.math'], false);
@@ -425,7 +425,7 @@ goog.addDependency('../../../../src/modules/heatMap.js', ['anychart.modules.heat
 goog.addDependency('../../../../src/modules/line.js', ['anychart.modules.line'], ['anychart.charts.Cartesian', 'anychart.core.drawers.JumpLine', 'anychart.core.drawers.Line', 'anychart.core.drawers.Spline', 'anychart.core.drawers.StepLine', 'anychart.modules.base'], false);
 goog.addDependency('../../../../src/modules/linearGauge.js', ['anychart.modules.linearGauge'], ['anychart.charts.LinearGauge', 'anychart.modules.base'], false);
 goog.addDependency('../../../../src/modules/markerMap.js', ['anychart.modules.markerMap'], ['anychart.charts.Map', 'anychart.core.drawers.map.Marker', 'anychart.modules.base'], false);
-goog.addDependency('../../../../src/modules/mekko.js', ['anychart.modules.mekko'], ['anychart.charts.Mekko', 'anychart.modules.base'], false);
+goog.addDependency('../../../../src/modules/mekko.js', ['anychart.modules.mekko'], ['anychart.charts.Mekko', 'anychart.core.drawers.Mekko', 'anychart.modules.base'], false);
 goog.addDependency('../../../../src/modules/pareto.js', ['anychart.modules.pareto'], ['anychart.charts.Pareto', 'anychart.core.drawers.Column', 'anychart.core.drawers.Line', 'anychart.core.drawers.Spline', 'anychart.core.drawers.StepLine', 'anychart.modules.base'], false);
 goog.addDependency('../../../../src/modules/pert.js', ['anychart.modules.pert'], ['anychart.charts.Pert', 'anychart.modules.base'], false);
 goog.addDependency('../../../../src/modules/pie.js', ['anychart.modules.pie'], ['anychart.charts.Pie', 'anychart.modules.base'], false);
