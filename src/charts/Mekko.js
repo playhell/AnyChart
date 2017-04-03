@@ -157,6 +157,14 @@ anychart.charts.Mekko.prototype.allowLegendCategoriesMode = function() {
 };
 
 
+/** @inheritDoc */
+anychart.charts.Mekko.prototype.createLegendItemsProvider = function(sourceMode, itemsFormat) {
+  // if (this.getSeriesCount() == 1){
+  //   sourceMode = anychart.enums.LegendItemsSourceMode.CATEGORIES;
+  // }
+  return anychart.charts.Mekko.base(this, 'createLegendItemsProvider', sourceMode, itemsFormat);
+};
+
 //endregion
 //region --- Axes
 //----------------------------------------------------------------------------------------------------------------------
