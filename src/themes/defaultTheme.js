@@ -2363,7 +2363,13 @@ goog.provide('anychart.themes.defaultTheme');
     'marker': {},
     'bubble': {},
 
-    'quadrant': {},
+    'quadrant': {
+      'defaultQuarterSettings': {
+        'fill': {},
+        'stroke': {},
+        'title': {}
+      }
+    },
 
     // merge with chart
     'radar': {

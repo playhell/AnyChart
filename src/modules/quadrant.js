@@ -22,9 +22,9 @@ anychart.quadrant = function(var_args) {
   var chart = new anychart.charts.Quadrant();
   chart.setupByVal(anychart.getFullTheme('quadrant'), true);
 
-  //for (var i = 0, count = arguments.length; i < count; i++) {
-  //  chart['marker'](arguments[i]);
-  //}
+  for (var i = 0, count = arguments.length; i < count; i++) {
+    chart['marker'](arguments[i]);
+  }
 
   return chart;
 };

@@ -1020,7 +1020,8 @@ anychart.themes.merging.mergingMap_ = [
     defaultObj: 'scatter',
     targets: [
       'marker',
-      'bubble'
+      'bubble',
+      'quadrant'
     ]
   },
   {

@@ -5747,6 +5747,43 @@ anychart.enums.normalizeMilestoneShape = function(value) {
 };
 
 
+/**
+ * A enum for quadrant quarters.
+ * @enum {string}
+ */
+anychart.enums.Quarter = {
+  RIGHT_TOP: 'righttop',
+  LEFT_TOP: 'lefttop',
+  LEFT_BOTTOM: 'leftbottom',
+  RIGHT_BOTTOM: 'rightbottom'
+};
+
+
+/**
+ * Normalizes quarter.
+ * @param {string} value Value to normalize.
+ * @return {anychart.enums.Quarter} Normalized quarter.
+ */
+anychart.enums.normalizeQuarter = function(value) {
+  value = String(value).toLowerCase();
+  switch (value) {
+    case 'lt':
+    case 'lefttop':
+      return anychart.enums.Quarter.LEFT_TOP;
+    case 'lb':
+    case 'leftbottom':
+      return anychart.enums.Quarter.LEFT_BOTTOM;
+    case 'rb':
+    case 'rightbottom':
+      return anychart.enums.Quarter.RIGHT_BOTTOM;
+    case 'rt':
+    case 'righttop':
+    default:
+      return anychart.enums.Quarter.RIGHT_TOP;
+  }
+};
+
+
 // DVF-1826
 // goog.exportSymbol('anychart.enums.XGroupingMode.FIRST', anychart.enums.XGroupingMode.FIRST);
 // goog.exportSymbol('anychart.enums.XGroupingMode.LAST', anychart.enums.XGroupingMode.LAST);
