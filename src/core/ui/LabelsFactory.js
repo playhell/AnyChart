@@ -61,9 +61,44 @@ anychart.core.ui.LabelsFactory = function() {
    * @type {Array.<string>}
    * @protected
    */
-  this.settingsFieldsForMerge = ['background', 'padding', 'height', 'width', 'offsetY', 'offsetX', 'position', 'anchor',
-    'rotation', 'format', 'positionFormatter', 'minFontSize', 'maxFontSize', 'fontSize', 'fontWeight', 'clip',
-    'connectorStroke', 'textWrap', 'adjustFontSize', 'useHtml'
+  this.settingsFieldsForMerge = [
+    'background',
+    'padding',
+    'height',
+    'width',
+    'offsetY',
+    'offsetX',
+    'position',
+    'anchor',
+    'rotation',
+    'format',
+    'positionFormatter',
+    'minFontSize',
+    'maxFontSize',
+    'clip',
+    'connectorStroke',
+    'textWrap',
+    'adjustFontSize',
+    'useHtml',
+    'fontSize',
+    'fontWeight',
+
+    'fontFamily',
+    'fontColor',
+    'textDirection',
+    'textWrap',
+    'fontOpacity',
+    'fontDecoration',
+    'fontStyle',
+    'fontVariant',
+    'letterSpacing',
+    'lineHeight',
+    'textIndent',
+    'vAlign',
+    'hAlign',
+    'textOverflow',
+    'selectable',
+    'disablePointerEvents'
   ];
 
   /**
@@ -2516,20 +2551,28 @@ anychart.core.ui.LabelsFactory.Label.prototype.draw = function() {
 
     this.layer_.setTransformationMatrix(1, 0, 0, 1, 0, 0);
 
-    if (!this.backgroundElement_) {
-      this.backgroundElement_ = new anychart.core.ui.Background();
-      this.backgroundElement_.zIndex(0);
-      this.backgroundElement_.container(this.layer_);
+    var backgroundJson, isBackgroundEnabled;
+    var bgSettings = mergedSettings['background'];
+    if (bgSettings instanceof anychart.core.ui.Background) {
+      if (bgSettings.enabled())
+        backgroundJson = bgSettings.serialize();
+    } else {
+      backgroundJson = bgSettings;
     }
-    if (mergedSettings['background'] instanceof anychart.core.ui.Background) {
-      var json = mergedSettings['background'].serialize();
-      if (!('enabled' in json))
-        json['enabled'] = false;
-      this.backgroundElement_.setupByJSON(json);
-    } else
-      this.backgroundElement_.setup(mergedSettings['background']);
-    this.backgroundElement_.draw();
+    if (backgroundJson && !('enabled' in backgroundJson))
+      backgroundJson['enabled'] = false;
 
+    isBackgroundEnabled = backgroundJson && backgroundJson['enabled'];
+
+    if (isBackgroundEnabled) {
+      if (!this.backgroundElement_) {
+        this.backgroundElement_ = new anychart.core.ui.Background();
+        this.backgroundElement_.zIndex(0);
+        this.backgroundElement_.container(this.layer_);
+      }
+      this.backgroundElement_.setup(backgroundJson);
+      this.backgroundElement_.draw();
+    }
 
     if (!this.textElement) {
       this.textElement = acgraph.text();
@@ -2569,14 +2612,15 @@ anychart.core.ui.LabelsFactory.Label.prototype.draw = function() {
     if (isHtml) this.textElement.htmlText(goog.isDef(text) ? String(text) : '');
     else this.textElement.text(goog.isDef(text) ? String(text) : '');
 
-    this.iterateDrawingPlans_(function(state, settings, index) {
-      var isInit = index == 0;
-      if (settings instanceof anychart.core.ui.LabelsFactory || settings instanceof anychart.core.ui.LabelsFactory.Label) {
-        this.applyTextSettings.call(settings, this.textElement, isInit);
-      } else {
-        this.applyTextSettings(this.textElement, isInit, settings);
-      }
-    }, true);
+    this.applyTextSettings(this.textElement, true, mergedSettings);
+    // this.iterateDrawingPlans_(function(state, settings, index) {
+    //   var isInit = index == 0;
+    //   if (settings instanceof anychart.core.ui.LabelsFactory || settings instanceof anychart.core.ui.LabelsFactory.Label) {
+    //     this.applyTextSettings.call(settings, this.textElement, isInit);
+    //   } else {
+    //     this.applyTextSettings(this.textElement, isInit, settings);
+    //   }
+    // }, true);
 
     //define is width and height set from settings
     var isWidthSet = !goog.isNull(mergedSettings['width']);
@@ -2715,8 +2759,10 @@ anychart.core.ui.LabelsFactory.Label.prototype.draw = function() {
 
     this.drawLabel(outerBounds, parentBounds);
 
-    this.backgroundElement_.parentBounds(outerBounds);
-    this.backgroundElement_.draw();
+    if (isBackgroundEnabled) {
+      this.backgroundElement_.parentBounds(outerBounds);
+      this.backgroundElement_.draw();
+    }
 
     var coordinateByAnchor = anychart.utils.getCoordinateByAnchor(outerBounds, mergedSettings['anchor']);
     this.layer_.setRotation(/** @type {number} */(mergedSettings['rotation']), coordinateByAnchor.x, coordinateByAnchor.y);
