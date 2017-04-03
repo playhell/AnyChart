@@ -191,13 +191,14 @@ anychart.charts.Mekko.prototype.createLegendItemsProvider = function(sourceMode,
         'iconType': anychart.enums.LegendItemIconType.SQUARE,
         'iconStroke': anychart.color.setThickness(color, 1),
         'iconFill': color,
-        'iconHatchFill': series.hatchFill()
+        'iconHatchFill': series['hatchFill']()
       });
     }
     return data;
   }
   return anychart.charts.Mekko.base(this, 'createLegendItemsProvider', sourceMode, itemsFormat);
 };
+
 
 //endregion
 //region --- Axes
