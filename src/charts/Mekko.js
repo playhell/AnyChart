@@ -159,9 +159,43 @@ anychart.charts.Mekko.prototype.allowLegendCategoriesMode = function() {
 
 /** @inheritDoc */
 anychart.charts.Mekko.prototype.createLegendItemsProvider = function(sourceMode, itemsFormat) {
-  // if (this.getSeriesCount() == 1){
-  //   sourceMode = anychart.enums.LegendItemsSourceMode.CATEGORIES;
-  // }
+  if (this.getType() == anychart.enums.ChartTypes.BARMEKKO && this.getSeriesCount() == 1 &&
+      this.xScale() instanceof anychart.scales.Ordinal) {
+    /**
+     * @type {!Array.<anychart.core.ui.Legend.LegendItemProvider>}
+     */
+    var data = [];
+    var i;
+    var names = this.xScale().names();
+    var values = this.xScale().values();
+    var series = this.getSeriesAt(0);
+    for (i = 0; i < values.length; i++) {
+      var itemText = null;
+      if (goog.isFunction(itemsFormat)) {
+        var format = {
+          'value': values[i],
+          'name': names[i]
+        };
+        itemText = itemsFormat.call(format, format);
+      }
+
+      if (!goog.isString(itemText))
+        itemText = String(names[i]);
+
+      var color = this.palette().itemAt(i);
+
+      data.push({
+        'text': itemText,
+        'sourceUid': goog.getUid(this),
+        'sourceKey': i,
+        'iconType': anychart.enums.LegendItemIconType.SQUARE,
+        'iconStroke': anychart.color.setThickness(color, 1),
+        'iconFill': color,
+        'iconHatchFill': series.hatchFill()
+      });
+    }
+    return data;
+  }
   return anychart.charts.Mekko.base(this, 'createLegendItemsProvider', sourceMode, itemsFormat);
 };
 
