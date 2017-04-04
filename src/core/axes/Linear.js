@@ -1295,6 +1295,18 @@ anychart.core.axes.Linear.prototype.getPixelBounds = function() {
 };
 
 
+anychart.core.axes.Linear.prototype.configureLabel = function(value, ratio, index, pixelShift, isMajor, ticksArr, opt_bounds) {
+  var labels = isMajor ? this.labels() : this.minorLabels();
+
+  var formatProvider = this.getLabelsFormatProvider(index, value);
+  var positionProvider = this.getLabelsPositionProvider(index, isMajor, ticksArr, opt_bounds);
+
+  // var labelBounds = labels.measure(formatProvider, positionProvider, undefined, index);
+
+  return labels.add(formatProvider, positionProvider, index);
+};
+
+
 /**
  * Calculate label bounds.
  * @param {number} index Label index.
@@ -1375,7 +1387,8 @@ anychart.core.axes.Linear.prototype.getLabelBounds_ = function(index, isMajor, t
   var formatProvider = this.getLabelsFormatProvider(index, value);
   var positionProvider = {'value': {'x': x, 'y': y}};
 
-  var labelBounds = labels.measure(formatProvider, positionProvider, undefined, index);
+  var label = labels.add(formatProvider, positionProvider, index);
+  var labelBounds = labels.measure(label, undefined, undefined, index);
 
   switch (this.orientation()) {
     case anychart.enums.Orientation.TOP:
@@ -1391,7 +1404,6 @@ anychart.core.axes.Linear.prototype.getLabelBounds_ = function(index, isMajor, t
       labelBounds.left += labelBounds.width / 2;
       break;
   }
-
 
   return boundsCache[index] = labelBounds.toCoordinateBox();
 };
@@ -1636,6 +1648,73 @@ anychart.core.axes.Linear.prototype.getLabelsFormatProvider = function(index, va
 
 
 /**
+ * Returns position provider.
+ * @param {number} index Label index.
+ * @param {boolean} isMajor Major labels or minor.
+ * @param {Array} ticksArray Array with ticks.
+ * @param {anychart.math.Rect=} opt_parentBounds Parent bounds.
+ * @return {Object} Label bounds.
+ */
+anychart.core.axes.Linear.prototype.getLabelsPositionProvider = function(index, isMajor, ticksArray, opt_parentBounds) {
+  var bounds = goog.isDef(opt_parentBounds) ? opt_parentBounds : this.getPixelBounds();
+  var lineBounds = goog.isDef(opt_parentBounds) ? opt_parentBounds : this.line.getBounds();
+  var ticks = isMajor ? this.ticks() : this.minorTicks();
+  var ticksLength = ticks.length();
+  var stroke = this.stroke();
+  var lineThickness = !stroke || anychart.utils.isNone(stroke) ? 0 : stroke['thickness'] ? parseFloat(this.stroke()['thickness']) : 1;
+
+  var isEnabled = ticks.enabled();
+  var position = ticks.position();
+  var x, y;
+  var scale = /** @type {anychart.scales.ScatterBase|anychart.scales.Ordinal} */(this.scale());
+
+  var value = ticksArray[index];
+  var ratio;
+  if (goog.isArray(value)) {
+    ratio = (scale.transform(value[0], 0) + scale.transform(value[1], 1)) / 2;
+  } else {
+    ratio = scale.transform(value, .5);
+  }
+
+  switch (this.orientation()) {
+    case anychart.enums.Orientation.TOP:
+      x = Math.round(bounds.left + ratio * bounds.width);
+      y = lineBounds.top - lineThickness / 2;
+      if (position == anychart.enums.SidePosition.OUTSIDE && isEnabled) {
+        y -= ticksLength;
+      }
+      break;
+    case anychart.enums.Orientation.RIGHT:
+      x = lineBounds.getRight() + lineThickness / 2;
+      y = Math.round(bounds.top + ratio * bounds.height);
+
+      if (position == anychart.enums.SidePosition.OUTSIDE && isEnabled) {
+        x += ticksLength;
+      }
+      break;
+    case anychart.enums.Orientation.BOTTOM:
+      x = Math.round(bounds.left + ratio * bounds.width);
+      y = lineBounds.getBottom() + lineThickness / 2;
+
+      if (position == anychart.enums.SidePosition.OUTSIDE && isEnabled) {
+        y += ticksLength;
+      }
+      break;
+    case anychart.enums.Orientation.LEFT:
+      x = lineBounds.left - lineThickness / 2;
+      y = Math.round(bounds.top + ratio * bounds.height);
+
+      if (position == anychart.enums.SidePosition.OUTSIDE && isEnabled) {
+        x -= ticksLength;
+      }
+      break;
+  }
+
+  return {'value': {'x': x, 'y': y}};
+};
+
+
+/**
  * Axis labels drawer.
  * @param {number|string} value Scale ratio.
  * @param {number} ratio Scale ratio.
@@ -1701,11 +1780,10 @@ anychart.core.axes.Linear.prototype.drawLabel_ = function(value, ratio, index, p
       y = Math.round(bounds.top + bounds.height - ratio * bounds.height) + pixelShift;
       break;
   }
-
-  var formatProvider = this.getLabelsFormatProvider(index, value);
   var positionProvider = {'value': {x: x, y: y}};
 
-  labels.add(formatProvider, positionProvider, index);
+  var label = labels.getLabel(index);
+  label.positionProvider(positionProvider);
 };
 
 
@@ -1817,12 +1895,12 @@ anychart.core.axes.Linear.prototype.draw = function() {
     var labels = this.labels();
     if (!labels.container()) labels.container(/** @type {acgraph.vector.ILayer} */(this.container()));
     labels.parentBounds(/** @type {anychart.math.Rect} */(this.parentBounds()));
-    labels.clear();
+    // labels.clear();
 
     var minorLabels = this.minorLabels();
     if (!minorLabels.container()) minorLabels.container(/** @type {acgraph.vector.ILayer} */(this.container()));
     minorLabels.parentBounds(/** @type {anychart.math.Rect} */(this.parentBounds()));
-    minorLabels.clear();
+    // minorLabels.clear();
 
     this.markConsistent(anychart.ConsistencyState.AXIS_LABELS);
   }
