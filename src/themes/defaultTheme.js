@@ -2364,11 +2364,45 @@ goog.provide('anychart.themes.defaultTheme');
     'bubble': {},
 
     'quadrant': {
+      'xScale': {
+        'type': 'linear',
+        'minimum': 0,
+        'maximum': 100
+      },
+      'yScale': {
+        'type': 'linear',
+        'minimum': 0,
+        'maximum': 100
+      },
+      'defaultXAxisSettings': {
+        'ticks': true,
+        'labels': true,
+        'title': false,
+        'align': 'left'
+      },
+      'defaultYAxisSettings': {
+        'ticks': true,
+        'labels': true,
+        'title': false,
+        'align': 'left'
+      },
       'defaultQuarterSettings': {
         'fill': {},
         'stroke': {},
         'title': {}
-      }
+      },
+      'xAxes': [
+        {},
+        {
+          'orientation': 'right'
+        }
+      ],
+      'yAxes': [
+        {},
+        {
+          'orientation': 'top'
+        }
+      ]
     },
 
     // merge with chart

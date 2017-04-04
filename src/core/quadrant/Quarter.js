@@ -5,18 +5,38 @@ goog.require('anychart.core.utils.Margin');
 goog.require('anychart.core.utils.Padding');
 
 
+
 /**
  * Quarter settings representation class.
  * @constructor
  * @extends {anychart.core.ui.Background}
  * @implements {anychart.core.settings.IObjectWithSettings}
+ * @param {anychart.enums.Quarter} quarter Quarter.
  */
-anychart.core.quadrant.Quarter = function() {
+anychart.core.quadrant.Quarter = function(quarter) {
   anychart.core.quadrant.Quarter.base(this, 'constructor');
+
+  /**
+   * Quarter.
+   * @type {anychart.enums.Quarter}
+   * @private
+   */
+  this.quarter_ = quarter;
 };
 goog.inherits(anychart.core.quadrant.Quarter, anychart.core.ui.Background);
 
 
+//region --- infrastructure
+/**
+ * Supported consistency states.
+ * @type {number}
+ */
+anychart.core.quadrant.Quarter.prototype.SUPPORTED_CONSISTENCY_STATES =
+    anychart.core.ui.Background.prototype.SUPPORTED_CONSISTENCY_STATES |
+    anychart.ConsistencyState.QUARTER_TITLE;
+
+
+//endregion
 //region --- own api
 /** @inheritDoc */
 anychart.core.quadrant.Quarter.prototype.title = function(opt_value) {
@@ -44,7 +64,7 @@ anychart.core.quadrant.Quarter.prototype.titleInvalidated_ = function(event) {
   var state = 0;
   var signal = 0;
   if (event.hasSignal(anychart.Signal.NEEDS_REDRAW)) {
-    state |= anychart.ConsistencyState.CHART_TITLE | anychart.ConsistencyState.A11Y;
+    state |= anychart.ConsistencyState.QUARTER_TITLE;
     signal |= anychart.Signal.NEEDS_REDRAW;
   }
   if (event.hasSignal(anychart.Signal.BOUNDS_CHANGED)) {
@@ -136,7 +156,16 @@ anychart.core.quadrant.Quarter.prototype.paddingInvalidated_ = function(event) {
 //region --- drawing
 /** @inheritDoc */
 anychart.core.quadrant.Quarter.prototype.draw = function() {
+  if (!this.checkDrawingNeeded())
+    return this;
+
+  var bounds = this.getPixelBounds();
+  console.log(this.quarter_, bounds);
+
   anychart.core.quadrant.Quarter.base(this, 'draw');
+  //if (this.hasInvalidationState(anychart.ConsistencyState.QUARTER_TITLE)) {
+  //  this.markConsistent(anychart.ConsistencyState.QUARTER_TITLE);
+  //}
 };
 
 

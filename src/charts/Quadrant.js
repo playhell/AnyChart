@@ -14,21 +14,95 @@ anychart.charts.Quadrant = function() {
 
   /**
    * Quarters.
-   * @type {Object.<string, anychart.charts.Quadrant.Quarter>}
+   * @type {Object.<string, anychart.core.quadrant.Quarter>}
    * @private
    */
   this.quarters_ = {};
 };
 goog.inherits(anychart.charts.Quadrant, anychart.charts.Scatter);
 
-//region --- working with data
+
+//region --- infrastructure
+/**
+ * Supported consistency states.
+ * @type {number}
+ */
+anychart.charts.Quadrant.prototype.SUPPORTED_CONSISTENCY_STATES =
+    anychart.charts.Scatter.prototype.SUPPORTED_CONSISTENCY_STATES |
+    anychart.ConsistencyState.QUADRANT_QUARTER |
+    anychart.ConsistencyState.QUADRANT_CROSSLINES;
+
+
+/** @inheritDoc */
+anychart.charts.Quadrant.prototype.getType = function() {
+  return anychart.enums.ChartTypes.QUADRANT;
+};
 
 
 //endregion
 //region --- drawing
+anychart.charts.Quadrant.prototype.calculateQuarterBounds = function() {
+  this.quarterBounds_ = {};
+  var w = this.dataBounds.width / 2;
+  var h = this.dataBounds.height / 2;
+
+  this.quarterBounds_[anychart.enums.Quarter.RIGHT_TOP] = anychart.math.rect(
+      this.dataBounds.left + w,
+      this.dataBounds.top, w, h);
+  this.quarterBounds_[anychart.enums.Quarter.LEFT_TOP] = anychart.math.rect(
+      this.dataBounds.left,
+      this.dataBounds.top, w, h);
+  this.quarterBounds_[anychart.enums.Quarter.LEFT_BOTTOM] = anychart.math.rect(
+      this.dataBounds.left,
+      this.dataBounds.top + h, w, h);
+  this.quarterBounds_[anychart.enums.Quarter.RIGHT_BOTTOM] = anychart.math.rect(
+      this.dataBounds.left + w,
+      this.dataBounds.top + h, w, h);
+};
+
+
 /** @inheritDoc */
 anychart.charts.Quadrant.prototype.drawContent = function(bounds) {
-  return anychart.charts.Quadrant.base(this, 'drawContent', bounds);
+  anychart.charts.Quadrant.base(this, 'drawContent', bounds);
+  if (this.isConsistent()) {
+    return;
+  }
+  this.crosslinesStroke_ = '#bbdefb';
+  if (!this.crossline_)
+    this.crossline_ = this.rootElement.path().zIndex(1);
+
+  if (this.hasInvalidationState(anychart.ConsistencyState.BOUNDS)) {
+    var lineBounds = this.dataBounds.clone();
+    var thickness = acgraph.vector.getThickness(this.crosslinesStroke_);
+    var middleX = anychart.utils.applyPixelShift(lineBounds.left + lineBounds.width / 2, thickness);
+    var middleY = anychart.utils.applyPixelShift(lineBounds.top + lineBounds.height / 2, thickness);
+    this.crossline_
+        .clear()
+        .moveTo(middleX, lineBounds.top)
+        .lineTo(middleX, lineBounds.top + lineBounds.height)
+        .moveTo(lineBounds.left, middleY)
+        .lineTo(lineBounds.left + lineBounds.width, middleY)
+        .close();
+    this.calculateQuarterBounds();
+  }
+
+  if (this.hasInvalidationState(anychart.ConsistencyState.QUADRANT_CROSSLINES)) {
+    this.crossline_.stroke(this.crosslinesStroke_);
+    this.markConsistent(anychart.ConsistencyState.QUADRANT_CROSSLINES);
+  }
+
+  if (this.hasInvalidationState(anychart.ConsistencyState.QUADRANT_QUARTER)) {
+    for (var quarter in this.quarters_) {
+      var quarterInstance = this.quarters_[quarter];
+      if (!quarterInstance.container())
+        quarterInstance.container(this.rootElement);
+      quarterInstance.parentBounds(this.quarterBounds_[quarter]);
+      quarterInstance.draw();
+    }
+    this.markConsistent(anychart.ConsistencyState.QUADRANT_QUARTER);
+  }
+
+  return this;
 };
 
 
@@ -37,13 +111,21 @@ anychart.charts.Quadrant.prototype.drawContent = function(bounds) {
 /**
  * Set settings for quarter.
  * @param {string} quarter
- * @param {string=} opt_value
- * @return {anychart.charts.Quadrant|anychart.charts.Quadrant.Quarter} Quadrant or quarter.
+ * @param {Object=} opt_value
+ * @return {anychart.charts.Quadrant|anychart.core.quadrant.Quarter} Quadrant or quarter.
  */
 anychart.charts.Quadrant.prototype.quarter = function(quarter, opt_value) {
   quarter = anychart.enums.normalizeQuarter(quarter);
 
   var quarterInstance = this.quarters_[quarter];
+  if (!quarterInstance) {
+    quarterInstance = new anychart.core.quadrant.Quarter(quarter);
+    quarterInstance.setup(this.defaultQuarterSettings());
+    this.quarters_[quarter] = quarterInstance;
+    quarterInstance.listenSignals(this.quarterInvalidated_, this);
+    this.invalidate(anychart.ConsistencyState.QUADRANT_QUARTER, anychart.Signal.NEEDS_REDRAW);
+  }
+
   if (goog.isDef(opt_value)) {
     quarterInstance.setup(opt_value);
     return this;
@@ -54,10 +136,35 @@ anychart.charts.Quadrant.prototype.quarter = function(quarter, opt_value) {
 
 
 /**
- * Stroke.
+ * Quarter invalidation.
+ * @param {anychart.SignalEvent} event
+ * @private
  */
-anychart.charts.Quadrant.prototype.crosslinesStroke = function() {
-  //
+anychart.charts.Quadrant.prototype.quarterInvalidated_ = function(event) {
+  this.invalidate(anychart.ConsistencyState.QUADRANT_QUARTER, anychart.Signal.NEEDS_REDRAW);
+};
+
+
+/**
+ * Getter/setter for crosslines stroke.
+ * @param {(acgraph.vector.Stroke|acgraph.vector.ColoredFill|string|null)=} opt_strokeOrFill Fill settings
+ *    or stroke settings.
+ * @param {number=} opt_thickness [1] Line thickness.
+ * @param {string=} opt_dashpattern Controls the pattern of dashes and gaps used to stroke paths.
+ * @param {acgraph.vector.StrokeLineJoin=} opt_lineJoin Line joint style.
+ * @param {acgraph.vector.StrokeLineCap=} opt_lineCap Line cap style.
+ * @return {anychart.charts.Quadrant|acgraph.vector.Stroke|Function} .
+ */
+anychart.charts.Quadrant.prototype.crosslinesStroke = function(opt_strokeOrFill, opt_thickness, opt_dashpattern, opt_lineJoin, opt_lineCap) {
+  if (goog.isDef(opt_strokeOrFill)) {
+    var stroke = acgraph.vector.normalizeStroke.apply(null, arguments);
+    if (stroke != this.crosslinesStroke_) {
+      this.crosslinesStroke_ = stroke;
+      this.invalidate(anychart.ConsistencyState.QUADRANT_CROSSLINES, anychart.Signal.NEEDS_REDRAW);
+    }
+    return this;
+  }
+  return this.crosslinesStroke_;
 };
 
 
@@ -95,14 +202,16 @@ anychart.charts.Quadrant.prototype.defaultQuarterSettings = function(opt_value) 
 
 /**
  * Setup quarters with defaults.
+ * @param {anychart.enums.Quarter=} opt_quarter Quarter.
  */
 anychart.charts.Quadrant.prototype.setupDefaultQuarter = function(opt_quarter) {
   if (!goog.isDef(opt_quarter)) {
-    for (var quarter in anychart.enums.Quarter) {
-      this.setupDefaultQuarter(quarter);
-    }
+    this.setupDefaultQuarter(anychart.enums.Quarter.RIGHT_TOP);
+    this.setupDefaultQuarter(anychart.enums.Quarter.LEFT_TOP);
+    this.setupDefaultQuarter(anychart.enums.Quarter.LEFT_BOTTOM);
+    this.setupDefaultQuarter(anychart.enums.Quarter.RIGHT_BOTTOM);
   } else {
-    this.quarter(opt_quarter, this.defaultQuarterSettings_);
+    this.quarter(opt_quarter, this.defaultQuarterSettings());
   }
 };
 
@@ -112,23 +221,16 @@ anychart.charts.Quadrant.prototype.setupByJSON = function(config, opt_default) {
   anychart.charts.Quadrant.base(this, 'setupByJSON', config, opt_default);
   if ('defaultQuarterSettings' in config)
     this.defaultQuarterSettings(config['defaultQuarterSettings']);
-  if ('quarters' in config) {
-    var quarters = config['quarters'];
-    for (var quarter in anychart.enums.Quarter) {
-      if (quarters[quarter]) {
-        this.quarter(quarter, quarters[quarter]);
-      } else {
-        this.setupDefaultQuarter(quarter);
-      }
-    }
-  }
+  if (opt_default)
+    this.setupDefaultQuarter();
 };
 
 
 /** @inheritDoc */
 anychart.charts.Quadrant.prototype.disposeInternal = function() {
-  goog.disposeAll(this.quarters_);
+  goog.disposeAll(this.quarters_, this.crossline_);
   this.quarters_ = null;
+  this.crossline_ = null;
   anychart.charts.Quadrant.base(this, 'disposeInternal');
 };
 //endregion

@@ -5769,15 +5769,19 @@ anychart.enums.normalizeQuarter = function(value) {
   switch (value) {
     case 'lt':
     case 'lefttop':
+    case 'left_top':
       return anychart.enums.Quarter.LEFT_TOP;
     case 'lb':
     case 'leftbottom':
+    case 'left_bottom':
       return anychart.enums.Quarter.LEFT_BOTTOM;
     case 'rb':
     case 'rightbottom':
+    case 'right_bottom':
       return anychart.enums.Quarter.RIGHT_BOTTOM;
     case 'rt':
     case 'righttop':
+    case 'right_top':
     default:
       return anychart.enums.Quarter.RIGHT_TOP;
   }
