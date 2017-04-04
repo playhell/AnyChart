@@ -1388,6 +1388,7 @@ anychart.core.axes.Linear.prototype.getLabelBounds_ = function(index, isMajor, t
   var positionProvider = {'value': {'x': x, 'y': y}};
 
   var label = labels.add(formatProvider, positionProvider, index);
+  // var labelBounds = labels.measure(formatProvider, positionProvider, undefined, index);
   var labelBounds = labels.measure(label, undefined, undefined, index);
 
   switch (this.orientation()) {
