@@ -886,7 +886,8 @@ anychart.core.ChartWithSeries.prototype.data = function(opt_value) {
     // handle HTML table data
     var seriesNames = null;
     if (opt_value) {
-      if (opt_value['caption']) this.title(opt_value['caption']);
+      var title = opt_value['title'] || opt_value['caption'];
+      if (title) this.title(title);
       if (opt_value['header'] && opt_value['header'].length) seriesNames = opt_value['header'];
       if (opt_value['rows']) this.rawData_ = opt_value['rows'];
       else this.rawData_ = opt_value;
@@ -1190,8 +1191,8 @@ anychart.core.ChartWithSeries.prototype.disposeInternal = function() {
   this.removeAllSeries();
   this.resumeSignalsDispatching(false);
 
-  goog.dispose(this.hatchFillPalette_);
-  this.hatchFillPalette_ = null;
+  goog.disposeAll(this.palette_, this.markerPalette_, this.hatchFillPalette_);
+  this.palette_ = this.markerPalette_ = this.hatchFillPalette_ = null;
 
   goog.disposeAll(this.labels_, this.hoverLabels_, this.selectLabels_);
 
