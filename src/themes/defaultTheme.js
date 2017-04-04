@@ -4399,7 +4399,6 @@ goog.provide('anychart.themes.defaultTheme');
       'scroller': {
         'defaultSeriesSettings': {
           'base': {
-            'color': '#64b5f6',
             'fill': stockScrollerUnselected,
             'selectFill': returnSourceColor,
             'stroke': stockScrollerUnselected,
