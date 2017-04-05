@@ -2375,21 +2375,24 @@ goog.provide('anychart.themes.defaultTheme');
         'maximum': 100
       },
       'defaultXAxisSettings': {
-        'ticks': true,
-        'labels': true,
+        'ticks': false,
+        'labels': false,
         'title': false,
         'align': 'left'
       },
       'defaultYAxisSettings': {
-        'ticks': true,
-        'labels': true,
+        'ticks': false,
+        'labels': false,
         'title': false,
         'align': 'left'
       },
       'defaultQuarterSettings': {
-        'fill': {},
-        'stroke': {},
-        'title': {}
+        'fill': 'none',
+        'stroke': 'none',
+        'title': {
+          'enabled': false,
+          'padding': 5
+        }
       },
       'xAxes': [
         {},
@@ -2402,7 +2405,8 @@ goog.provide('anychart.themes.defaultTheme');
         {
           'orientation': 'top'
         }
-      ]
+      ],
+      'crosslinesStroke': '#bbdefb'
     },
 
     // merge with chart

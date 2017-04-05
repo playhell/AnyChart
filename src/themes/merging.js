@@ -569,6 +569,7 @@ anychart.themes.merging.mergingMap_ = [
       'defaultLegend',
       'defaultLegend.paginator',
       'chart.defaultLabelSettings',
+      'quadrant.quarter.defaultLabelSettings',
       'cartesianBase.defaultTextMarkerSettings',
       'scatter.defaultTextMarkerSettings',
       'standalones.label',
@@ -590,6 +591,7 @@ anychart.themes.merging.mergingMap_ = [
       'defaultLegend.background',
       'defaultLegend.paginator.background',
       'chart.defaultLabelSettings.background',
+      'quadrant.quarter.defaultLabelSettings.background',
       'stock.defaultPlotSettings.xAxis.background',
       'stock.scroller.xAxis.background',
       'resource.grid.background',
@@ -1542,7 +1544,9 @@ anychart.themes.merging.multipleEntities_ = {
   'gauge.ranges': 'gauge.defaultRangeSettings',
   'gauge.axes': 'gauge.defaultAxisSettings',
   'gauge.scaleBars': 'gauge.defaultScaleBarSettings',
-  'map.callouts': 'map.defaultCalloutSettings'
+  'map.callouts': 'map.defaultCalloutSettings',
+  'quadrant.quarter.labels': 'quadrant.quarter.defaultLabelSettings',
+  'quadrant.quarter': 'quadrant.defaultQuarterSettings'
 };
 
 

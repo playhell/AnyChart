@@ -6861,7 +6861,7 @@ goog.exportSymbol('anychart.enums.VAlign.BOTTOM', anychart.enums.VAlign.BOTTOM);
 goog.exportSymbol('anychart.enums.TextWrap.NO_WRAP', anychart.enums.TextWrap.NO_WRAP);
 goog.exportSymbol('anychart.enums.TextWrap.BY_LETTER', anychart.enums.TextWrap.BY_LETTER);
 
-
-
-
-
+goog.exportSymbol('anychart.enums.Quarter.RIGHT_TOP', anychart.enums.Quarter.RIGHT_TOP);
+goog.exportSymbol('anychart.enums.Quarter.LEFT_TOP', anychart.enums.Quarter.LEFT_TOP);
+goog.exportSymbol('anychart.enums.Quarter.LEFT_BOTTOM', anychart.enums.Quarter.LEFT_BOTTOM);
+goog.exportSymbol('anychart.enums.Quarter.RIGHT_BOTTOM', anychart.enums.Quarter.RIGHT_BOTTOM);

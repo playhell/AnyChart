@@ -336,6 +336,9 @@ anychart.ConsistencyState = {
   //----------------------------- QUADRANT CHART (SCATTER=AXES_CHART) -----------------------------
   QUADRANT_QUARTER: 1 << 25,
   QUADRANT_CROSSLINES: 1 << 26,
+  //----------------------------------- QUARTER (BACKGROUND)  -------------------------------------
+  QUARTER_TITLE: 1 << 7,
+  QUARTER_LABELS: 1 << 8,
   /**
    * Combination of all states.
    */

@@ -263,8 +263,8 @@ anychart.core.Chart.prototype.createStage = function() {
 //
 //----------------------------------------------------------------------------------------------------------------------
 /**
- * Getter/setter for axis default settings.
- * @param {Object=} opt_value Object with x-axis settings.
+ * Getter/setter for chart label default settings.
+ * @param {Object=} opt_value Object with label settings.
  * @return {Object}
  */
 anychart.core.Chart.prototype.defaultLabelSettings = function(opt_value) {
@@ -493,7 +493,7 @@ anychart.core.Chart.prototype.label = function(opt_indexOrValue, opt_value) {
 
 
 /**
- * Internal title invalidation handler.
+ * Internal label invalidation handler.
  * @param {anychart.SignalEvent} event Event object.
  * @private
  */

@@ -411,6 +411,15 @@ anychart.core.ui.Background.prototype.drawCorner = function(path, x1, y1, x2, y2
 
 
 /**
+ * Getter for bounds to draw background.
+ * @return {!anychart.math.Rect}
+ */
+anychart.core.ui.Background.prototype.getBoundsForDrawing = function() {
+  return this.getPixelBounds();
+};
+
+
+/**
  * Render background.
  * @return {!anychart.core.ui.Background} {@link anychart.core.ui.Background} instance for method chaining.
  */
@@ -435,8 +444,8 @@ anychart.core.ui.Background.prototype.draw = function() {
   if (manualSuspend) stage.suspend();
 
   if (this.hasInvalidationState(anychart.ConsistencyState.BOUNDS)) {
-    if (!this.rootElement_) {
-      this.rootElement_ = acgraph.layer();
+    if (!this.rootElement) {
+      this.rootElement = acgraph.layer();
     }
 
     if (allStrokeIsCustom && this.strokePath_) {
@@ -445,7 +454,7 @@ anychart.core.ui.Background.prototype.draw = function() {
       if (!this.strokePath_) {
         this.strokePath_ = acgraph.path();
       }
-      this.strokePath_.parent(this.rootElement_);
+      this.strokePath_.parent(this.rootElement);
       this.strokePath_.clear();
     }
 
@@ -453,7 +462,7 @@ anychart.core.ui.Background.prototype.draw = function() {
       if (!this.fillPath_) {
         this.fillPath_ = acgraph.path();
       }
-      this.fillPath_.parent(this.rootElement_);
+      this.fillPath_.parent(this.rootElement);
       this.fillPath_.clear();
     } else if (this.fillPath_) {
       this.fillPath_.clear().parent(null);
@@ -476,7 +485,7 @@ anychart.core.ui.Background.prototype.draw = function() {
         var stroke_ = this.strokes_[i];
         if (goog.isDef(stroke_) && !anychart.utils.isNone(stroke_)) {
           var path = this.strokePathsPoll_[i] ? this.strokePathsPoll_[i] : this.strokePathsPoll_[i] = acgraph.path();
-          path.parent(this.rootElement_);
+          path.parent(this.rootElement);
           path.clear();
           this.strokePaths_[i] = path;
         } else if (goog.isDef(stroke) && !anychart.utils.isNone(stroke)) {
@@ -486,7 +495,7 @@ anychart.core.ui.Background.prototype.draw = function() {
       }
     }
 
-    var bounds = this.getPixelBounds();
+    var bounds = this.getBoundsForDrawing();
 
     var leftTopCorner = this.getCornerSize_(0);
     var rightTopCorner = this.getCornerSize_(1);
@@ -666,17 +675,17 @@ anychart.core.ui.Background.prototype.draw = function() {
     } else {
       this.strokePath_.disablePointerEvents(pointerEventsSettings);
     }
-    this.rootElement_.disablePointerEvents(pointerEventsSettings);
+    this.rootElement.disablePointerEvents(pointerEventsSettings);
     this.markConsistent(anychart.ConsistencyState.BACKGROUND_POINTER_EVENTS);
   }
 
   if (this.hasInvalidationState(anychart.ConsistencyState.Z_INDEX)) {
-    this.rootElement_.zIndex(/** @type {number} */(this.getOption('zIndex')));
+    this.rootElement.zIndex(/** @type {number} */(this.getOption('zIndex')));
     this.markConsistent(anychart.ConsistencyState.Z_INDEX);
   }
 
   if (this.hasInvalidationState(anychart.ConsistencyState.CONTAINER)) {
-    this.rootElement_.parent(/** @type {acgraph.vector.ILayer} */(this.container()));
+    this.rootElement.parent(/** @type {acgraph.vector.ILayer} */(this.container()));
     this.markConsistent(anychart.ConsistencyState.CONTAINER);
   }
 
@@ -688,8 +697,8 @@ anychart.core.ui.Background.prototype.draw = function() {
 
 /** @inheritDoc */
 anychart.core.ui.Background.prototype.remove = function() {
-  if (this.rootElement_)
-    this.rootElement_.parent(null);
+  if (this.rootElement)
+    this.rootElement.parent(null);
 };
 
 

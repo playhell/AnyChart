@@ -1,5 +1,6 @@
 goog.provide('anychart.core.quadrant.Quarter');
 goog.require('anychart.core.ui.Background');
+goog.require('anychart.core.ui.Label');
 goog.require('anychart.core.ui.Title');
 goog.require('anychart.core.utils.Margin');
 goog.require('anychart.core.utils.Padding');
@@ -10,7 +11,6 @@ goog.require('anychart.core.utils.Padding');
  * Quarter settings representation class.
  * @constructor
  * @extends {anychart.core.ui.Background}
- * @implements {anychart.core.settings.IObjectWithSettings}
  * @param {anychart.enums.Quarter} quarter Quarter.
  */
 anychart.core.quadrant.Quarter = function(quarter) {
@@ -22,6 +22,32 @@ anychart.core.quadrant.Quarter = function(quarter) {
    * @private
    */
   this.quarter_ = quarter;
+
+  /**
+   * Quarter title.
+   * @type {anychart.core.ui.Title}
+   * @private
+   */
+  this.title_ = null;
+
+  /**
+   * @type {anychart.core.utils.Margin}
+   * @private
+   */
+  this.margin_ = null;
+
+  /**
+   * @type {anychart.core.utils.Padding}
+   * @private
+   */
+  this.padding_ = null;
+
+  /**
+   * Quarter labels.
+   * @type {Array.<anychart.core.ui.Label>}
+   * @private
+   */
+  this.labels_ = [];
 };
 goog.inherits(anychart.core.quadrant.Quarter, anychart.core.ui.Background);
 
@@ -33,12 +59,26 @@ goog.inherits(anychart.core.quadrant.Quarter, anychart.core.ui.Background);
  */
 anychart.core.quadrant.Quarter.prototype.SUPPORTED_CONSISTENCY_STATES =
     anychart.core.ui.Background.prototype.SUPPORTED_CONSISTENCY_STATES |
-    anychart.ConsistencyState.QUARTER_TITLE;
+    anychart.ConsistencyState.QUARTER_TITLE |
+    anychart.ConsistencyState.QUARTER_LABELS;
 
 
 //endregion
 //region --- own api
-/** @inheritDoc */
+/**
+ * Returns quarter.
+ * @return {anychart.enums.Quarter} Quarter.
+ */
+anychart.core.quadrant.Quarter.prototype.getQuarter = function() {
+  return this.quarter_;
+};
+
+
+/**
+ * Getter/setter for title.
+ * @param {(null|boolean|Object|string)=} opt_value .
+ * @return {!(anychart.core.ui.Title|anychart.core.quadrant.Quarter)} .
+ */
 anychart.core.quadrant.Quarter.prototype.title = function(opt_value) {
   if (!this.title_) {
     this.title_ = new anychart.core.ui.Title();
@@ -89,7 +129,6 @@ anychart.core.quadrant.Quarter.prototype.margin = function(opt_spaceOrTopOrTopAn
   if (!this.margin_) {
     this.margin_ = new anychart.core.utils.Margin();
     this.margin_.listenSignals(this.marginInvalidated_, this);
-    this.registerDisposable(this.margin_);
   }
 
   if (goog.isDef(opt_spaceOrTopOrTopAndBottom)) {
@@ -107,7 +146,6 @@ anychart.core.quadrant.Quarter.prototype.margin = function(opt_spaceOrTopOrTopAn
  * @private
  */
 anychart.core.quadrant.Quarter.prototype.marginInvalidated_ = function(event) {
-  // whatever has changed in margins affects chart size, so we need to redraw everything
   if (event.hasSignal(anychart.Signal.NEEDS_REAPPLICATION))
     this.invalidate(anychart.ConsistencyState.BOUNDS,
         anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED);
@@ -127,7 +165,6 @@ anychart.core.quadrant.Quarter.prototype.padding = function(opt_spaceOrTopOrTopA
   if (!this.padding_) {
     this.padding_ = new anychart.core.utils.Padding();
     this.padding_.listenSignals(this.paddingInvalidated_, this);
-    this.registerDisposable(this.padding_);
   }
 
   if (goog.isDef(opt_spaceOrTopOrTopAndBottom)) {
@@ -145,27 +182,119 @@ anychart.core.quadrant.Quarter.prototype.padding = function(opt_spaceOrTopOrTopA
  * @private
  */
 anychart.core.quadrant.Quarter.prototype.paddingInvalidated_ = function(event) {
-  // whatever has changed in paddings affects chart size, so we need to redraw everything
   if (event.hasSignal(anychart.Signal.NEEDS_REAPPLICATION))
     this.invalidate(anychart.ConsistencyState.BOUNDS,
         anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED);
 };
 
 
+/**
+ * Getter/setter for quarter label default settings.
+ * @param {Object=} opt_value Object with label settings.
+ * @return {Object}
+ */
+anychart.core.quadrant.Quarter.prototype.defaultLabelSettings = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    if (!this.defaultLabelSettings_)
+      this.defaultLabelSettings_ = goog.object.clone(opt_value);
+    else
+      goog.object.extend(this.defaultLabelSettings_, opt_value);
+    return this;
+  }
+  return this.defaultLabelSettings_ || {};
+};
+
+
+/**
+ * Getter/setter for label.
+ * @param {(null|boolean|Object|string|number)=} opt_indexOrValue Chart label instance to add.
+ * @param {(null|boolean|Object|string)=} opt_value Chart label instance.
+ * @return {!(anychart.core.ui.Label|anychart.core.quadrant.Quarter)} Chart label instance or itself for chaining call.
+ */
+anychart.core.quadrant.Quarter.prototype.label = function(opt_indexOrValue, opt_value) {
+  var index, value;
+  if (goog.isNumber(opt_indexOrValue) || (goog.isString(opt_indexOrValue) && !isNaN(+opt_indexOrValue))) {
+    index = +opt_indexOrValue;
+    value = opt_value;
+  } else {
+    index = 0;
+    value = opt_indexOrValue;
+  }
+  var label = this.labels_[index];
+  if (!label) {
+    label = new anychart.core.ui.Label();
+    label.setParentEventTarget(this);
+    label.setup(this.defaultLabelSettings());
+    this.labels_[index] = label;
+    label.listenSignals(this.labelInvalidated_, this);
+    this.invalidate(anychart.ConsistencyState.QUARTER_LABELS, anychart.Signal.NEEDS_REDRAW);
+  }
+
+  if (goog.isDef(value)) {
+    label.setup(value);
+    return this;
+  } else {
+    return label;
+  }
+};
+
+
+/**
+ * Internal label invalidation handler.
+ * @param {anychart.SignalEvent} event Event object.
+ * @private
+ */
+anychart.core.quadrant.Quarter.prototype.labelInvalidated_ = function(event) {
+  this.invalidate(anychart.ConsistencyState.QUARTER_LABELS, anychart.Signal.NEEDS_REDRAW);
+};
+
+
 //endregion
 //region --- drawing
+/** @inheritDoc */
+anychart.core.quadrant.Quarter.prototype.getBoundsForDrawing = function() {
+  return this.margin().tightenBounds(this.getPixelBounds());
+};
+
+
 /** @inheritDoc */
 anychart.core.quadrant.Quarter.prototype.draw = function() {
   if (!this.checkDrawingNeeded())
     return this;
 
-  var bounds = this.getPixelBounds();
-  console.log(this.quarter_, bounds);
+  if (this.hasInvalidationState(anychart.ConsistencyState.BOUNDS)) {
+    this.invalidate(anychart.ConsistencyState.QUARTER_TITLE | anychart.ConsistencyState.QUARTER_LABELS);
+  }
 
+  // draw background
   anychart.core.quadrant.Quarter.base(this, 'draw');
-  //if (this.hasInvalidationState(anychart.ConsistencyState.QUARTER_TITLE)) {
-  //  this.markConsistent(anychart.ConsistencyState.QUARTER_TITLE);
-  //}
+
+  var title = this.title();
+  if (this.hasInvalidationState(anychart.ConsistencyState.QUARTER_TITLE)) {
+    title.suspendSignalsDispatching();
+    if (!title.container()) title.container(this.rootElement);
+    title.parentBounds(this.getPixelBounds());
+    title.resumeSignalsDispatching(false);
+    title.draw();
+    this.markConsistent(anychart.ConsistencyState.QUARTER_TITLE);
+  }
+
+  if (this.hasInvalidationState(anychart.ConsistencyState.QUARTER_LABELS)) {
+    var bounds = this.getBoundsForDrawing();
+    for (var i = 0, count = this.labels_.length; i < count; i++) {
+      var label = this.labels_[i];
+      if (label) {
+        label.suspendSignalsDispatching();
+        if (!label.container() && label.enabled()) label.container(this.rootElement);
+        label.parentBounds(this.padding().tightenBounds(bounds));
+        label.resumeSignalsDispatching(false);
+        label.draw();
+      }
+    }
+    this.markConsistent(anychart.ConsistencyState.QUARTER_LABELS);
+  }
+
+  return this;
 };
 
 
@@ -174,9 +303,17 @@ anychart.core.quadrant.Quarter.prototype.draw = function() {
 /** @inheritDoc */
 anychart.core.quadrant.Quarter.prototype.serialize = function() {
   var json = anychart.core.quadrant.Quarter.base(this, 'serialize');
+  json['quarter'] = this.quarter_;
   json['title'] = this.title().serialize();
   json['margin'] = this.margin().serialize();
   json['padding'] = this.padding().serialize();
+  var labels = [];
+  for (var i = 0; i < this.labels_.length; i++) {
+    if (this.labels_[i])
+      labels.push(this.labels_[i].serialize());
+  }
+  if (labels.length > 0)
+    json['labels'] = labels;
   return json;
 };
 
@@ -184,6 +321,9 @@ anychart.core.quadrant.Quarter.prototype.serialize = function() {
 /** @inheritDoc */
 anychart.core.quadrant.Quarter.prototype.setupByJSON = function(config, opt_default) {
   anychart.core.quadrant.Quarter.base(this, 'setupByJSON', config);
+
+  if ('defaultLabelSettings' in config)
+    this.defaultLabelSettings(config['defaultLabelSettings']);
 
   if ('title' in config)
     this.title(config['title']);
@@ -193,17 +333,33 @@ anychart.core.quadrant.Quarter.prototype.setupByJSON = function(config, opt_defa
 
   if ('margin' in config)
     this.margin(config['margin']);
+
+  var labels = config['labels'];
+  if (goog.isArray(labels)) {
+    for (var i = 0; i < labels.length; i++)
+      this.label(i, labels[i]);
+  }
 };
 
 
 /** @inheritDoc */
 anychart.core.quadrant.Quarter.prototype.disposeInternal = function() {
-  goog.disposeAll(this.title_, this.margin_, this.padding_);
+  goog.disposeAll(this.title_, this.margin_, this.padding_, this.labels_);
   this.title_ = null;
   this.margin_ = null;
   this.padding_ = null;
+  this.labels_ = null;
   anychart.core.quadrant.Quarter.base(this, 'disposeInternal');
 };
 
 
+//endregion
+//region --- exports
+(function() {
+  var proto = anychart.core.quadrant.Quarter.prototype;
+  proto['title'] = proto.title;
+  proto['margin'] = proto.margin;
+  proto['padding'] = proto.padding;
+  proto['label'] = proto.label;
+})();
 //endregion
