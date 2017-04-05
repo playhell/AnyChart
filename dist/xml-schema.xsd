@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xsd:schema
         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-        targetNamespace="http://anychart.com/schemas/7.13.0/xml-schema.xsd"
-        xmlns="http://anychart.com/schemas/7.13.0/xml-schema.xsd"
+        targetNamespace="http://anychart.com/schemas/7.13.1/xml-schema.xsd"
+        xmlns="http://anychart.com/schemas/7.13.1/xml-schema.xsd"
         elementFormDefault="qualified">
 
     <xsd:element name="anychart" type="Anychart"/>
@@ -1308,6 +1308,7 @@
             <xsd:element minOccurs="0" maxOccurs="1" name="value_prefix" type="simple.Text"/>
             <xsd:element minOccurs="0" maxOccurs="1" name="value_postfix" type="simple.Text"/>
             <xsd:element minOccurs="0" maxOccurs="1" name="content" type="core.Label"/>
+            <xsd:element minOccurs="0" maxOccurs="1" name="text_formatter" type="simple.Text"/>
         </xsd:all>
         <xsd:attribute name="display_mode" type="enums.TooltipDisplayMode" default="single"/>
         <xsd:attribute name="position" type="enums.AnchorAndPosition" default="leftTop"/>
@@ -1334,6 +1335,7 @@
         <xsd:attribute name="width" type="simple.NumberOrPercentOrNull" default="null"/>
         <xsd:attribute name="height" type="simple.NumberOrPercentOrNull" default="null"/>
         <xsd:attribute name="z_index" type="simple.NumberOrNull" default="null"/>
+        <xsd:attribute name="text_formatter" type="xsd:string"/>
         <xsd:attributeGroup ref="attrs.TextSettings"/>
     </xsd:complexType>
 
