@@ -1,3 +1,4 @@
+//region --- Provide and Require
 goog.provide('anychart.core.axes.Linear');
 goog.require('acgraph');
 goog.require('anychart.color');
@@ -14,6 +15,7 @@ goog.require('anychart.math.Rect');
 goog.require('anychart.scales.Base');
 goog.require('anychart.scales.ScatterBase');
 goog.require('anychart.utils');
+//endregion
 
 
 
@@ -58,6 +60,7 @@ anychart.core.axes.Linear = function() {
 goog.inherits(anychart.core.axes.Linear, anychart.core.VisualBase);
 
 
+//region --- States and Signals
 /**
  * Supported consistency states.
  * @type {number}
@@ -78,6 +81,8 @@ anychart.core.axes.Linear.prototype.SUPPORTED_CONSISTENCY_STATES =
 anychart.core.axes.Linear.prototype.SUPPORTED_SIGNALS = anychart.core.VisualBase.prototype.SUPPORTED_SIGNALS;
 
 
+//endregion
+//region --- Properties
 /**
  * @type {acgraph.vector.Path}
  * @private
@@ -248,6 +253,8 @@ anychart.core.axes.Linear.prototype.labelsBounds_ = null;
 anychart.core.axes.Linear.prototype.minorLabelsBounds_ = null;
 
 
+//endregion
+//region --- Settings
 /**
  * Getter/setter for title.
  * @param {(null|boolean|Object|string)=} opt_value Axis title.
@@ -619,6 +626,9 @@ anychart.core.axes.Linear.prototype.invalidateParentBounds = function() {
   this.dropBoundsCache();
   this.invalidate(this.ALL_VISUAL_STATES, anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED);
 };
+
+
+//endregion
 
 
 /**
@@ -1295,18 +1305,6 @@ anychart.core.axes.Linear.prototype.getPixelBounds = function() {
 };
 
 
-anychart.core.axes.Linear.prototype.configureLabel = function(value, ratio, index, pixelShift, isMajor, ticksArr, opt_bounds) {
-  var labels = isMajor ? this.labels() : this.minorLabels();
-
-  var formatProvider = this.getLabelsFormatProvider(index, value);
-  var positionProvider = this.getLabelsPositionProvider(index, isMajor, ticksArr, opt_bounds);
-
-  // var labelBounds = labels.measure(formatProvider, positionProvider, undefined, index);
-
-  return labels.add(formatProvider, positionProvider, index);
-};
-
-
 /**
  * Calculate label bounds.
  * @param {number} index Label index.
@@ -1388,8 +1386,8 @@ anychart.core.axes.Linear.prototype.getLabelBounds_ = function(index, isMajor, t
   var positionProvider = {'value': {'x': x, 'y': y}};
 
   var label = labels.add(formatProvider, positionProvider, index);
-  // var labelBounds = labels.measure(formatProvider, positionProvider, undefined, index);
-  var labelBounds = labels.measure(label, undefined, undefined, index);
+  var labelBounds = labels.measure(formatProvider, positionProvider, undefined, index);
+  // var labelBounds = labels.measure(label, undefined, undefined, index);
 
   switch (this.orientation()) {
     case anychart.enums.Orientation.TOP:
