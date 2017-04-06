@@ -4,8 +4,8 @@ goog.require('anychart.color');
 goog.require('anychart.core.VisualBase');
 goog.require('anychart.core.axes.CircularTicks');
 goog.require('anychart.core.ui.CircularLabelsFactory');
-goog.require('anychart.core.utils.AxisLabelsContextProvider');
 goog.require('anychart.enums');
+goog.require('anychart.format.Context');
 goog.require('anychart.math.Rect');
 goog.require('anychart.scales.Base');
 goog.require('anychart.utils');
@@ -784,9 +784,9 @@ anychart.core.axes.Circular.prototype.getLabelBoundsWithoutTransform_ = function
   var positionProvider = {'value': {'angle': 0, 'radius': 0}};
 
   if (label)
-    boundsWTCache[index] = labels.measure(label);
+    boundsWTCache[index] = labels.measureWithoutAutoRotate(label);
   else
-    boundsWTCache[index] = labels.measure(formatProvider, positionProvider);
+    boundsWTCache[index] = labels.measureWithoutAutoRotate(formatProvider, positionProvider);
 
   return boundsWTCache[index];
 };
@@ -873,7 +873,26 @@ anychart.core.axes.Circular.prototype.getLabelBounds_ = function(index, isMajor)
  * @private
  */
 anychart.core.axes.Circular.prototype.getLabelsFormatProvider_ = function(index, value) {
-  return new anychart.core.utils.AxisLabelsContextProvider(this, index, value);
+  var scale = this.scale();
+
+  var values = {
+    'axis': {value: this, type: anychart.enums.TokenType.UNKNOWN},
+    'index': {value: index, type: anychart.enums.TokenType.NUMBER},
+    'value': {value: parseFloat(value), type: anychart.enums.TokenType.NUMBER},
+    'tickValue': {value: parseFloat(value), type: anychart.enums.TokenType.NUMBER},
+    'min': {value: goog.isDef(scale.max) ? scale.max : null, type: anychart.enums.TokenType.NUMBER},
+    'max': {value: goog.isDef(scale.min) ? scale.min : null, type: anychart.enums.TokenType.NUMBER},
+    'scale': {value: scale, type: anychart.enums.TokenType.UNKNOWN}
+  };
+
+  var aliases = {};
+  aliases[anychart.enums.StringToken.AXIS_SCALE_MAX] = 'max';
+  aliases[anychart.enums.StringToken.AXIS_SCALE_MIN] = 'max';
+
+  var context = new anychart.format.Context(values);
+  context.tokenAliases(aliases);
+
+  return context.propagate();
 };
 
 

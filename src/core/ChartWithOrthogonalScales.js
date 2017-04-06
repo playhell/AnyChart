@@ -308,7 +308,7 @@ anychart.core.ChartWithOrthogonalScales.prototype.yScaleInvalidated = function(e
 
 
 /**
- * Invalidates all series that use this scale.
+ * Invalidates all series that use this scale. Null for all series.
  * @param {*} scale
  * @protected
  */
@@ -316,7 +316,7 @@ anychart.core.ChartWithOrthogonalScales.prototype.invalidateSeriesOfScale = func
   var foundOne = 0;
   for (var i = 0; i < this.seriesList.length; i++) {
     var series = this.seriesList[i];
-    if (series && series.enabled() && (series.getXScale() == scale || series.yScale() == scale)) {
+    if (series && series.enabled() && (!scale || series.getXScale() == scale || series.yScale() == scale)) {
       foundOne |= series.invalidate(anychart.ConsistencyState.SERIES_POINTS);
     }
   }
@@ -984,7 +984,11 @@ anychart.core.ChartWithOrthogonalScales.prototype.calculateXYScales = function()
       if (!series || !series.enabled()) continue;
       xScale = /** @type {anychart.scales.Base} */(series.xScale());
       yScale = /** @type {anychart.scales.Base} */(series.yScale());
-      drawingPlan = series.getScatterDrawingPlan(false, xScale instanceof anychart.scales.DateTime);
+      if (xScale instanceof anychart.scales.Ordinal) {
+        drawingPlan = series.getOrdinalDrawingPlan({}, [], false, undefined, true);
+      } else {
+        drawingPlan = series.getScatterDrawingPlan(false, xScale instanceof anychart.scales.DateTime);
+      }
       series = /** @type {anychart.core.series.Cartesian} */(drawingPlan.series);
       var seriesExcludes = series.getExcludedIndexesInternal();
       if (seriesExcludes.length) {
@@ -1056,7 +1060,8 @@ anychart.core.ChartWithOrthogonalScales.prototype.calculateStatistics = function
   if (this.hasInvalidationState(anychart.ConsistencyState.SCALE_CHART_STATISTICS)) {
     anychart.performance.start('Statistics calculation');
 
-    this.statistics = {};
+    this.resetStatistics();
+
     //category statistics calculation.
     var totalPointsCount = 0;
     var totalYSum = 0;
@@ -1324,34 +1329,34 @@ anychart.core.ChartWithOrthogonalScales.prototype.calculateStatistics = function
       anychart.performance.end('Statistics categorize cycle');
     }
 
-    this.statistics[anychart.enums.Statistics.DATA_PLOT_Y_SUM] = totalYSum;
-    this.statistics[anychart.enums.Statistics.DATA_PLOT_Y_RANGE_SUM] = totalYSum;
-    this.statistics[anychart.enums.Statistics.DATA_PLOT_Y_MAX] = totalYMax;
-    this.statistics[anychart.enums.Statistics.DATA_PLOT_Y_RANGE_MAX] = totalYMax;
-    this.statistics[anychart.enums.Statistics.DATA_PLOT_Y_MIN] = totalYMin;
-    this.statistics[anychart.enums.Statistics.DATA_PLOT_Y_RANGE_MIN] = totalYMin;
-    this.statistics[anychart.enums.Statistics.DATA_PLOT_Y_AVERAGE] = totalPointsCount ? totalYSum / totalPointsCount : 0;
-    this.statistics[anychart.enums.Statistics.DATA_PLOT_SERIES_COUNT] = this.drawingPlans_.length;
-    this.statistics[anychart.enums.Statistics.DATA_PLOT_POINT_COUNT] = totalPointsCount;
-    this.statistics[anychart.enums.Statistics.DATA_PLOT_MAX_Y_VALUE_POINT_SERIES_NAME] = maxYSeriesName;
-    this.statistics[anychart.enums.Statistics.DATA_PLOT_MIN_Y_VALUE_POINT_SERIES_NAME] = minYSeriesName;
-    this.statistics[anychart.enums.Statistics.DATA_PLOT_MAX_Y_SUM_SERIES_NAME] = maxYSumSeriesName;
-    this.statistics[anychart.enums.Statistics.DATA_PLOT_MIN_Y_SUM_SERIES_NAME] = minYSumSeriesName;
+    this.statistics(anychart.enums.Statistics.DATA_PLOT_Y_SUM, totalYSum);
+    this.statistics(anychart.enums.Statistics.DATA_PLOT_Y_RANGE_SUM, totalYSum);
+    this.statistics(anychart.enums.Statistics.DATA_PLOT_Y_MAX, totalYMax);
+    this.statistics(anychart.enums.Statistics.DATA_PLOT_Y_RANGE_MAX, totalYMax);
+    this.statistics(anychart.enums.Statistics.DATA_PLOT_Y_MIN, totalYMin);
+    this.statistics(anychart.enums.Statistics.DATA_PLOT_Y_RANGE_MIN, totalYMin);
+    this.statistics(anychart.enums.Statistics.DATA_PLOT_Y_AVERAGE, totalPointsCount ? totalYSum / totalPointsCount : 0);
+    this.statistics(anychart.enums.Statistics.DATA_PLOT_SERIES_COUNT, this.drawingPlans_.length);
+    this.statistics(anychart.enums.Statistics.DATA_PLOT_POINT_COUNT, totalPointsCount);
+    this.statistics(anychart.enums.Statistics.DATA_PLOT_MAX_Y_VALUE_POINT_SERIES_NAME, maxYSeriesName);
+    this.statistics(anychart.enums.Statistics.DATA_PLOT_MIN_Y_VALUE_POINT_SERIES_NAME, minYSeriesName);
+    this.statistics(anychart.enums.Statistics.DATA_PLOT_MAX_Y_SUM_SERIES_NAME, maxYSumSeriesName);
+    this.statistics(anychart.enums.Statistics.DATA_PLOT_MIN_Y_SUM_SERIES_NAME, minYSumSeriesName);
     if (hasBubbleSeries) {
-      this.statistics[anychart.enums.Statistics.DATA_PLOT_BUBBLE_SIZE_SUM] = totalSizeSum;
-      this.statistics[anychart.enums.Statistics.DATA_PLOT_BUBBLE_MIN_SIZE] = totalSizeMin;
-      this.statistics[anychart.enums.Statistics.DATA_PLOT_BUBBLE_MAX_SIZE] = totalSizeMax;
-      this.statistics[anychart.enums.Statistics.DATA_PLOT_BUBBLE_SIZE_AVERAGE] = totalPointsCount ? totalSizeSum / totalPointsCount : 0;
+      this.statistics(anychart.enums.Statistics.DATA_PLOT_BUBBLE_SIZE_SUM, totalSizeSum);
+      this.statistics(anychart.enums.Statistics.DATA_PLOT_BUBBLE_MIN_SIZE, totalSizeMin);
+      this.statistics(anychart.enums.Statistics.DATA_PLOT_BUBBLE_MAX_SIZE, totalSizeMax);
+      this.statistics(anychart.enums.Statistics.DATA_PLOT_BUBBLE_SIZE_AVERAGE, totalPointsCount ? totalSizeSum / totalPointsCount : 0);
     }
     if (!this.categorizeData) {
-      this.statistics[anychart.enums.Statistics.DATA_PLOT_X_SUM] = totalXSum;
-      this.statistics[anychart.enums.Statistics.DATA_PLOT_X_MAX] = totalXMax;
-      this.statistics[anychart.enums.Statistics.DATA_PLOT_X_MIN] = totalXMin;
-      this.statistics[anychart.enums.Statistics.DATA_PLOT_X_AVERAGE] = totalPointsCount ? totalXSum / totalPointsCount : 0;
-      this.statistics[anychart.enums.Statistics.DATA_PLOT_MAX_X_VALUE_POINT_SERIES_NAME] = maxXSeriesName;
-      this.statistics[anychart.enums.Statistics.DATA_PLOT_MIN_X_VALUE_POINT_SERIES_NAME] = minXSeriesName;
-      this.statistics[anychart.enums.Statistics.DATA_PLOT_MAX_X_SUM_SERIES_NAME] = maxXSumSeriesName;
-      this.statistics[anychart.enums.Statistics.DATA_PLOT_MIN_X_SUM_SERIES_NAME] = minXSumSeriesName;
+      this.statistics(anychart.enums.Statistics.DATA_PLOT_X_SUM, totalXSum);
+      this.statistics(anychart.enums.Statistics.DATA_PLOT_X_MAX, totalXMax);
+      this.statistics(anychart.enums.Statistics.DATA_PLOT_X_MIN, totalXMin);
+      this.statistics(anychart.enums.Statistics.DATA_PLOT_X_AVERAGE, totalPointsCount ? totalXSum / totalPointsCount : 0);
+      this.statistics(anychart.enums.Statistics.DATA_PLOT_MAX_X_VALUE_POINT_SERIES_NAME, maxXSeriesName);
+      this.statistics(anychart.enums.Statistics.DATA_PLOT_MIN_X_VALUE_POINT_SERIES_NAME, minXSeriesName);
+      this.statistics(anychart.enums.Statistics.DATA_PLOT_MAX_X_SUM_SERIES_NAME, maxXSumSeriesName);
+      this.statistics(anychart.enums.Statistics.DATA_PLOT_MIN_X_SUM_SERIES_NAME, minXSumSeriesName);
     }
 
     this.markConsistent(anychart.ConsistencyState.SCALE_CHART_STATISTICS);
@@ -1790,7 +1795,7 @@ anychart.core.ChartWithOrthogonalScales.prototype.getSeriesStatus = function(eve
               for (var k = 0; k < names.length; k++) {
                 var pixY = /** @type {number} */(iterator.meta(names[k]));
 
-                var length = Math.sqrt(Math.pow(pixX - x, 2) + Math.pow(pixY - y, 2));
+                var length = anychart.math.vectorLength(pixX, pixY, x, y);
                 pickValue = pickValue || length <= spotRadius;
                 if (length < minLength) {
                   minLength = length;
@@ -1836,7 +1841,7 @@ anychart.core.ChartWithOrthogonalScales.prototype.getSeriesStatus = function(eve
               names = series.getYValueNames();
               for (k = 0; k < names.length; k++) {
                 pixY = /** @type {number} */(iterator.meta(names[k]));
-                length = Math.sqrt(Math.pow(pixX - x, 2) + Math.pow(pixY - y, 2));
+                length = anychart.math.vectorLength(pixX, pixY, x, y);
                 if (length < minLength) {
                   minLength = length;
                   minLengthIndex = index[j];
@@ -1876,9 +1881,10 @@ anychart.core.ChartWithOrthogonalScales.prototype.onInteractivitySignal = functi
  * Setup with scale instances.
  * @param {!Object} config
  * @param {Object.<anychart.scales.Base>} scalesInstances
+ * @param {boolean=} opt_default
  * @protected
  */
-anychart.core.ChartWithOrthogonalScales.prototype.setupByJSONWithScales = function(config, scalesInstances) {
+anychart.core.ChartWithOrthogonalScales.prototype.setupByJSONWithScales = function(config, scalesInstances, opt_default) {
   this.defaultSeriesType(config['defaultSeriesType']);
   this.minBubbleSize(config['minBubbleSize']);
   this.maxBubbleSize(config['maxBubbleSize']);
@@ -1974,7 +1980,7 @@ anychart.core.ChartWithOrthogonalScales.prototype.setupByJSON = function(config,
   if (scale)
     this.yScale(scale);
 
-  this.setupByJSONWithScales(config, scalesInstances);
+  this.setupByJSONWithScales(config, scalesInstances, opt_default);
 };
 
 
