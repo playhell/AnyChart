@@ -1561,13 +1561,14 @@ anychart.core.axes.Linear.prototype.getLabelBounds_ = function(index, isMajor, t
   var formatProvider = this.getLabelsFormatProvider(index, value);
   var positionProvider = {'value': {'x': x, 'y': y}};
 
-  var label = this.createLabel_(index, isMajor, labels, formatProvider);
-  var bbox = label['getBBox']();
-  var labelBounds = anychart.math.rect(bbox.x, bbox.y, bbox.width, bbox.height);
+  // var label = this.createLabel_(index, isMajor, labels, formatProvider);
+  // var bbox = label['getBBox']();
+  // var labelBounds = anychart.math.rect(bbox.x, bbox.y, bbox.width, bbox.height);
 
-  // var label = labels.add(formatProvider, positionProvider, index);
+  var label = labels.add(formatProvider, positionProvider, index);
   // var labelBounds = labels.measure(formatProvider, positionProvider, undefined, index);
-  // var labelBounds = labels.measure(label, undefined, undefined, index);
+  var labelBounds = labels.measure(label, undefined, undefined, index);
+
 
   switch (this.orientation()) {
     case anychart.enums.Orientation.TOP:
@@ -1848,14 +1849,14 @@ anychart.core.axes.Linear.prototype.drawLabel_ = function(value, ratio, index, p
       y = Math.round(bounds.top + bounds.height - ratio * bounds.height) + pixelShift;
       break;
   }
-  // var positionProvider = {'value': {x: x, y: y}};
+  var positionProvider = {'value': {x: x, y: y}};
 
-  var label = this.labelsEl_[index];
-  label.setAttribute('x', x);
-  label.setAttribute('y', y);
+  var label = labels.getLabel(index);
+  label.positionProvider(positionProvider);
 
-  // var label = labels.getLabel(index);
-  // label.positionProvider(positionProvider);
+  // var label = this.labelsEl_[index];
+  // label.setAttribute('x', x);
+  // label.setAttribute('y', y);
 };
 
 
@@ -2050,7 +2051,7 @@ anychart.core.axes.Linear.prototype.draw = function() {
           j++;
         }
       }
-      // if (needDrawMinorLabels) this.minorLabels().draw();
+      if (needDrawMinorLabels) this.minorLabels().draw();
 
     } else {
       var labelsStates = this.calcLabels_();
@@ -2099,13 +2100,13 @@ anychart.core.axes.Linear.prototype.draw = function() {
       }
     }
 
-    // this.labels().draw();
-    for (var k = 0, len = this.labelsEl_.length; k < len; k++) {
-      var layer = new acgraph.vector.UnmanagedLayer();
-      layer.zIndex(100);
-      layer.content(this.labelsEl_[k]);
-      layer.parent(this.container());
-    }
+    this.labels().draw();
+    // for (var k = 0, len = this.labelsEl_.length; k < len; k++) {
+    //   var layer = new acgraph.vector.UnmanagedLayer();
+    //   layer.zIndex(100);
+    //   layer.content(this.labelsEl_[k]);
+    //   layer.parent(this.container());
+    // }
   }
 
   this.title().resumeSignalsDispatching(false);
