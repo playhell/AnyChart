@@ -936,6 +936,13 @@ anychart.core.ui.LabelsFactory.prototype.getDimension = function(formatProviderO
   var formatProvider;
   var positionProvider;
 
+  //define parent bounds
+  var parentBounds = /** @type {anychart.math.Rect} */(this.parentBounds());
+  if (parentBounds) {
+    parentWidth = parentBounds.width;
+    parentHeight = parentBounds.height;
+  }
+
   var measureLabel, textElement;
   var padding, widthSettings, heightSettings, offsetY, offsetX, anchor, format, isHtml;
   if (formatProviderOrLabel instanceof anychart.core.ui.LabelsFactory.Label && !opt_settings) {
@@ -954,6 +961,8 @@ anychart.core.ui.LabelsFactory.prototype.getDimension = function(formatProviderO
     padding = settings['padding'];
     if (!(padding instanceof anychart.core.utils.Padding))
       padding = new anychart.core.utils.Padding(padding);
+
+    measureLabel.applyTextSettings(textElement, true, settings);
   } else {
     if (!this.measureCustomLabel_) {
       this.measureCustomLabel_ = this.createLabel();
@@ -986,18 +995,16 @@ anychart.core.ui.LabelsFactory.prototype.getDimension = function(formatProviderO
     offsetX = /** @type {number|string} */(measureLabel.getOption('offsetX') || this.getOption('offsetX')) || 0;
     anchor = /** @type {string} */(measureLabel.getOption('anchor') || this.getOption('anchor'));
     format = /** @type {Function|string} */(measureLabel.getOption('format') || this.getOption('format'));
+
+    measureLabel.applyTextSettings(textElement, true, this.themeSettings);
+    measureLabel.applyTextSettings.call(this, textElement, false);
+    measureLabel.applyTextSettings(textElement, false);
   }
 
   //we should ask text element about bounds only after text format and text settings are applied
 
-  //define parent bounds
-  var parentBounds = /** @type {anychart.math.Rect} */(this.parentBounds());
-  if (parentBounds) {
-    parentWidth = parentBounds.width;
-    parentHeight = parentBounds.height;
-  }
-
   text = this.callFormat(format, formatProvider, opt_cacheIndex);
+
   textElement.width(null);
   textElement.height(null);
   if (isHtml) {
@@ -1005,11 +1012,6 @@ anychart.core.ui.LabelsFactory.prototype.getDimension = function(formatProviderO
   } else {
     textElement.text(goog.isDefAndNotNull(text) ? String(text) : null);
   }
-
-  measureLabel.applyTextSettings(textElement, true, this.themeSettings);
-  measureLabel.applyTextSettings.call(this, textElement, false);
-  measureLabel.applyTextSettings(textElement, false);
-
 
   //define is width and height set from settings
   isWidthSet = !goog.isNull(widthSettings);
