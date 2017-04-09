@@ -22,7 +22,8 @@
         {"$ref": "#/definitions/anychart.charts.Sparkline"},
         {"$ref": "#/definitions/anychart.charts.HeatMap"},
         {"$ref": "#/definitions/anychart.charts.TreeMap"},
-        {"$ref": "#/definitions/anychart.charts.Pert"}
+        {"$ref": "#/definitions/anychart.charts.Pert"},
+        {"$ref": "#/definitions/anychart.charts.Quadrant"}
       ],
       "properties": {
         "container": {
@@ -1265,6 +1266,25 @@
             "number",
             "string"
           ]
+        }
+      },
+      "required": ["type"]
+    },
+    "anychart.charts.Quadrant": {
+      "type": "object",
+      "allOf": [
+        {"$ref": "#/definitions/anychart.charts.Scatter"}
+      ],
+      "properties": {
+        "type": {"enum": ["quadrant"]},
+        "crosslinesStroke": {"$ref": "#/definitions/stroke"},
+        "quarters": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {"$ref": "#/definitions/anychart.core.quadrant.Quarter"}
+            ]
+          }
         }
       },
       "required": ["type"]
@@ -2970,6 +2990,34 @@
         "selectSize": {
           "type": "number"
         }
+      }
+    },
+
+    "anychart.core.quadrant.Quarter": {
+      "type": "object",
+      "allOf": [
+        {"$ref": "#/definitions/anychart.core.ui.Background"}
+      ],
+      "properties": {
+        "quarter": {"type": "string"},
+        "margin": {"$ref": "#/definitions/anychart.core.utils.Space"},
+        "padding": {"$ref": "#/definitions/anychart.core.utils.Space"},
+        "title": {
+          "oneOf": [
+            {"type": "string"},
+            {"$ref": "#/definitions/disable"},
+            {"$ref": "#/definitions/anychart.core.ui.Title"}
+          ]
+        },
+        "labels": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {"$ref": "#/definitions/disable"},
+              {"$ref": "#/definitions/anychart.core.ui.Label"}
+            ]
+          }
+        },
       }
     },
 

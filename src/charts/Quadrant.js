@@ -250,5 +250,7 @@ anychart.charts.Quadrant.prototype.disposeInternal = function() {
 //region --- exports
 (function() {
   var proto = anychart.charts.Quadrant.prototype;
+  proto['quarter'] = proto.quarter;
+  proto['crosslinesStroke'] = proto.crosslinesStroke;
 })();
 //endregion

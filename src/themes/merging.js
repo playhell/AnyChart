@@ -669,7 +669,8 @@ anychart.themes.merging.mergingMap_ = [
       'defaultLegend.title',
       'defaultDataGrid.defaultColumnSettings.title',
       'standalones.title',
-      'map.axesSettings.title'
+      'map.axesSettings.title',
+      'quadrant.defaultQuarterSettings.title'
     ]
   },
   {
