@@ -49,7 +49,7 @@ anychart.core.stock.indicators.ADL.prototype.createNameForSeries = function(seri
  * @return {anychart.core.stock.indicators.ADL|anychart.core.series.Stock}
  */
 anychart.core.stock.indicators.ADL.prototype.series = function(opt_type) {
-  return /** @type {anychart.core.stock.indicators.EMA|anychart.core.series.Stock} */(
+  return /** @type {anychart.core.stock.indicators.ADL|anychart.core.series.Stock} */(
       this.seriesInternal('main', opt_type));
 };
 
