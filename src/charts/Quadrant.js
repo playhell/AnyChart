@@ -90,6 +90,7 @@ anychart.charts.Quadrant.prototype.drawContent = function(bounds) {
         .lineTo(lineBounds.left + lineBounds.width, middleY)
         .close();
     this.calculateQuarterBounds();
+    this.invalidate(anychart.ConsistencyState.QUADRANT_QUARTER);
   }
 
   if (this.hasInvalidationState(anychart.ConsistencyState.QUADRANT_CROSSLINES)) {
