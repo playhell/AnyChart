@@ -2913,7 +2913,11 @@ anychart.enums.normalizeRadarSeriesType = function(value, opt_default) {
 anychart.enums.PolarSeriesType = {
   AREA: 'area',
   LINE: 'line',
-  MARKER: 'marker'
+  MARKER: 'marker',
+  POLYGON: 'polygon',
+  POLYLINE: 'polyline',
+  COLUMN: 'column',
+  RANGE_COLUMN: 'rangeColumn'
 };
 
 
@@ -2930,8 +2934,16 @@ anychart.enums.normalizePolarSeriesType = function(value, opt_default) {
       return anychart.enums.PolarSeriesType.AREA;
     case 'line':
       return anychart.enums.PolarSeriesType.LINE;
+    case 'polygon':
+      return anychart.enums.PolarSeriesType.POLYGON;
+    case 'polyline':
+      return anychart.enums.PolarSeriesType.POLYLINE;
     case 'marker':
       return anychart.enums.PolarSeriesType.MARKER;
+    case 'column':
+      return anychart.enums.PolarSeriesType.COLUMN;
+    case 'rangecolumn':
+      return anychart.enums.PolarSeriesType.RANGE_COLUMN;
   }
   return opt_default || anychart.enums.PolarSeriesType.LINE;
 };
@@ -5525,7 +5537,9 @@ anychart.enums.SeriesDrawerTypes = {
   CHOROPLETH: 24,
   POLAR_LINE: 25,
   POLAR_AREA: 26,
-  MEKKO: 27
+  POLAR_COLUMN: 27,
+  POLAR_RANGE_COLUMN: 28,
+  MEKKO: 29
 };
 
 
@@ -6741,6 +6755,10 @@ goog.exportSymbol('anychart.enums.RadarSeriesType.MARKER', anychart.enums.RadarS
 goog.exportSymbol('anychart.enums.PolarSeriesType.AREA', anychart.enums.PolarSeriesType.AREA);
 goog.exportSymbol('anychart.enums.PolarSeriesType.LINE', anychart.enums.PolarSeriesType.LINE);
 goog.exportSymbol('anychart.enums.PolarSeriesType.MARKER', anychart.enums.PolarSeriesType.MARKER);
+goog.exportSymbol('anychart.enums.PolarSeriesType.POLYGON', anychart.enums.PolarSeriesType.POLYGON);
+goog.exportSymbol('anychart.enums.PolarSeriesType.POLYLINE', anychart.enums.PolarSeriesType.POLYLINE);
+goog.exportSymbol('anychart.enums.PolarSeriesType.COLUMN', anychart.enums.PolarSeriesType.COLUMN);
+goog.exportSymbol('anychart.enums.PolarSeriesType.RANGE_COLUMN', anychart.enums.PolarSeriesType.RANGE_COLUMN);
 
 goog.exportSymbol('anychart.enums.MilestoneShape.CIRCLE', anychart.enums.MilestoneShape.CIRCLE);
 goog.exportSymbol('anychart.enums.MilestoneShape.RHOMBUS', anychart.enums.MilestoneShape.RHOMBUS);
