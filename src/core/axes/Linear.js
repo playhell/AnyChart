@@ -1576,7 +1576,9 @@ anychart.core.axes.Linear.prototype.getLabelBounds_ = function(index, isMajor, t
   // var labelBounds = anychart.math.rect(bbox.x, bbox.y, bbox.width, bbox.height);
 
   var label = labels.add(formatProvider, positionProvider, index);
-  label.stateOrder([labels]);
+  var settings = {};
+  goog.object.extend(settings, labels.themeSettings, labels.ownSettings);
+  label.stateOrder([settings]);
   // var labelBounds = labels.measure(formatProvider, positionProvider, undefined, index);
   var labelBounds = labels.measure(label, undefined, undefined, index);
 

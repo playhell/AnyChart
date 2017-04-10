@@ -962,7 +962,8 @@ anychart.core.ui.LabelsFactory.prototype.getDimension = function(formatProviderO
     if (!(padding instanceof anychart.core.utils.Padding))
       padding = new anychart.core.utils.Padding(padding);
 
-    measureLabel.applyTextSettings(textElement, true, settings);
+    textElement.setStyle(settings);
+    // measureLabel.applyTextSettings(textElement, true, settings);
   } else {
     if (!this.measureCustomLabel_) {
       this.measureCustomLabel_ = this.createLabel();
@@ -2229,6 +2230,9 @@ anychart.core.ui.LabelsFactory.Label.prototype.normalizeAdjustFontSize = functio
  * @return {!Object}
  */
 anychart.core.ui.LabelsFactory.Label.prototype.getMergedSettings = function() {
+  if (this.drawingPlan_.length == 1)
+    return this.mergedSettings = this.drawingPlan_[0];
+
   if (this.mergedSettings)
     return goog.object.clone(this.mergedSettings);
 
@@ -2490,6 +2494,8 @@ anychart.core.ui.LabelsFactory.Label.prototype.applyTextSettings = function(text
       textElement.text(text);
     }
   }
+
+  debugger;
 
   textElement.fontSize(/** @type {number|string} */ (target.call(this, 'fontSize')));
   textElement.fontFamily(/** @type {string} */ (target.call(this, 'fontFamily')));
