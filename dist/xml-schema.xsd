@@ -161,6 +161,7 @@
         <xsd:attribute name="select_hatch_fill" type="simple.HatchFill" default="false"/>
         <!-- chart.Polar and charts.Radar common attrs -->
         <xsd:attribute name="start_angle" type="xsd:double" default="0"/>
+        <xsd:attribute name="sort_points_by_x" type="xsd:boolean" default="false"/>
         <!-- also for pie -->
         <xsd:attribute name="x_axis" type="simple.BoolOrNull" default="true"/>
         <xsd:attribute name="y_axis" type="simple.BoolOrNull" default="true"/>
@@ -1308,6 +1309,7 @@
             <xsd:element minOccurs="0" maxOccurs="1" name="value_prefix" type="simple.Text"/>
             <xsd:element minOccurs="0" maxOccurs="1" name="value_postfix" type="simple.Text"/>
             <xsd:element minOccurs="0" maxOccurs="1" name="content" type="core.Label"/>
+            <xsd:element minOccurs="0" maxOccurs="1" name="text_formatter" type="simple.Text"/>
         </xsd:all>
         <xsd:attribute name="display_mode" type="enums.TooltipDisplayMode" default="single"/>
         <xsd:attribute name="position" type="enums.AnchorAndPosition" default="leftTop"/>
@@ -1334,6 +1336,7 @@
         <xsd:attribute name="width" type="simple.NumberOrPercentOrNull" default="null"/>
         <xsd:attribute name="height" type="simple.NumberOrPercentOrNull" default="null"/>
         <xsd:attribute name="z_index" type="simple.NumberOrNull" default="null"/>
+        <xsd:attribute name="text_formatter" type="xsd:string"/>
         <xsd:attributeGroup ref="attrs.TextSettings"/>
     </xsd:complexType>
 
@@ -3109,6 +3112,8 @@
             <xsd:enumeration value="verticalStick"/>
             <xsd:enumeration value="choropleth"/>
             <xsd:enumeration value="connector"/>
+            <xsd:enumeration value="polygon"/>
+            <xsd:enumeration value="polyline"/>
         </xsd:restriction>
     </xsd:simpleType>
 

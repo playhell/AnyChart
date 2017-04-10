@@ -98,7 +98,7 @@ goog.provide('anychart.themes.defaultTheme');
    * @return {*}
    */
   var returnName = function() {
-    return this['name'] || this['getDataValue']('id');
+    return this['name'] || this['getData']('id');
   };
 
   var returnMilestoneName = function() {
@@ -115,7 +115,7 @@ goog.provide('anychart.themes.defaultTheme');
    * @return {*}
    */
   var returnNameWithValue = function() {
-    var name = this['name'] || this['getDataValue']('id');
+    var name = this['name'] || this['getData']('id');
     return name + '\n' + locNum(this['value']);
   };
 
@@ -2394,6 +2394,7 @@ goog.provide('anychart.themes.defaultTheme');
         'scale': 1
       },
       'startAngle': 0,
+      'innerRadius': 0,
       'grids': [{}, {'layout': 'circuit'}],
       'minorGrids': [],
       'scales': [
@@ -2420,15 +2421,20 @@ goog.provide('anychart.themes.defaultTheme');
         },
         'area': {},
         'line': {},
-        'marker': {}
+        'marker': {},
+        'column': {},
+        'rangeColumn': {}
       },
       'xAxis': {
         'scale': 0,
         'zIndex': 25,
+        'fill': 'none',
         'labels': {
+          'anchor': 'auto',
           'zIndex': 25
         },
         'minorLabels': {
+          'anchor': 'auto',
           'zIndex': 25
         },
         'ticks': {
@@ -2442,6 +2448,8 @@ goog.provide('anychart.themes.defaultTheme');
         'scale': 1
       },
       'startAngle': 0,
+      'innerRadius': 0,
+      'sortPointsByX': false,
       'grids': [{}, {'layout': 'circuit'}],
       'minorGrids': [],
       'scales': [
@@ -2454,6 +2462,8 @@ goog.provide('anychart.themes.defaultTheme');
       ],
       'xScale': 0,
       'yScale': 1,
+      'barsPadding': 0,
+      'barGroupsPadding': 0,
       'a11y': {
         'titleFormat': scatterA11yTitleFormatter
       }
@@ -2726,12 +2736,12 @@ goog.provide('anychart.themes.defaultTheme');
              * @return {*}
              */
             'format': function() {
-              if (this['getDataValue']('name')) {
-                return this['getDataValue']('name');
+              if (this['getData']('name')) {
+                return this['getData']('name');
               } else if (this['name']) {
                 return this['name'];
-              } else if (this['getDataValue']('id')) {
-                return this['getDataValue']('id');
+              } else if (this['getData']('id')) {
+                return this['getData']('id');
               } else {
                 return 'lat: ' + this['lat'] + '\nlong: ' + this['long'];
               }
@@ -2757,7 +2767,7 @@ goog.provide('anychart.themes.defaultTheme');
              * @return {*}
              */
             'titleFormat': function() {
-              return this['name'] || this['getDataValue']('name') || 'Tooltip title';
+              return this['name'] || this['getData']('name') || 'Tooltip title';
             },
             /**
              * @this {*}
