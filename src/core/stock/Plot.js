@@ -640,6 +640,20 @@ anychart.core.stock.Plot.prototype.getAllSeries = function() {
 
 
 /**
+ * Creates ADL indicator on the chart.
+ * @param {!anychart.data.TableMapping} mapping
+ * @param {number=} opt_period
+ * @param {anychart.enums.StockSeriesType=} opt_seriesType
+ * @return {anychart.core.stock.indicators.ADL}
+ */
+anychart.core.stock.Plot.prototype.adl = function(mapping, opt_period, opt_seriesType) {
+  var result = new anychart.core.stock.indicators.ADL(this, mapping, opt_period, opt_seriesType);
+  this.indicators_.push(result);
+  return result;
+};
+
+
+/**
  * Creates AMA indicator on the chart.
  * @param {!anychart.data.TableMapping} mapping
  * @param {number=} opt_period
@@ -2609,6 +2623,7 @@ anychart.core.stock.Plot.Dragger.prototype.limitY = function(y) {
   proto['removeSeries'] = proto.removeSeries;
   proto['removeSeriesAt'] = proto.removeSeriesAt;
   proto['removeAllSeries'] = proto.removeAllSeries;
+  proto['adl'] = proto.adl;
   proto['ama'] = proto.ama;
   proto['aroon'] = proto.aroon;
   proto['atr'] = proto.atr;
