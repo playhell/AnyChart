@@ -63,6 +63,20 @@ anychart.core.quadrant.Quarter.prototype.SUPPORTED_CONSISTENCY_STATES =
     anychart.ConsistencyState.QUARTER_LABELS;
 
 
+/**
+ * Title zIndex.
+ * @type {number}
+ */
+anychart.core.quadrant.Quarter.prototype.TITLE_ZINDEX = 10;
+
+
+/**
+ * Custom labels zIndex.
+ * @type {number}
+ */
+anychart.core.quadrant.Quarter.prototype.LABEL_ZINDEX = 20;
+
+
 //endregion
 //region --- own api
 /**
@@ -259,6 +273,7 @@ anychart.core.quadrant.Quarter.prototype.getBoundsForDrawing = function() {
 
 /** @inheritDoc */
 anychart.core.quadrant.Quarter.prototype.draw = function() {
+  debugger;
   if (!this.checkDrawingNeeded())
     return this;
 
@@ -273,6 +288,7 @@ anychart.core.quadrant.Quarter.prototype.draw = function() {
   if (this.hasInvalidationState(anychart.ConsistencyState.QUARTER_TITLE)) {
     title.suspendSignalsDispatching();
     if (!title.container()) title.container(this.rootElement);
+    title.zIndex(this.TITLE_ZINDEX);
     title.parentBounds(this.getPixelBounds());
     title.resumeSignalsDispatching(false);
     title.draw();
@@ -287,6 +303,7 @@ anychart.core.quadrant.Quarter.prototype.draw = function() {
         label.suspendSignalsDispatching();
         if (!label.container() && label.enabled()) label.container(this.rootElement);
         label.parentBounds(this.padding().tightenBounds(bounds));
+        label.zIndex(this.LABEL_ZINDEX);
         label.resumeSignalsDispatching(false);
         label.draw();
       }

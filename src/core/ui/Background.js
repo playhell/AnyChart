@@ -296,7 +296,7 @@ anychart.core.ui.Background.prototype.corners = function(opt_value) {
     var val = this.cornersFormatter_.apply(this, arguments);
     if (!goog.array.equals(val, this.ownSettings['corners'])) {
       this.ownSettings['corners'] = val;
-      this.invalidate(anychart.ConsistencyState.APPEARANCE, anychart.Signal.NEEDS_REDRAW);
+      this.invalidate(anychart.ConsistencyState.APPEARANCE | anychart.ConsistencyState.BOUNDS, anychart.Signal.NEEDS_REDRAW);
     }
     return this;
   } else {
