@@ -878,6 +878,10 @@ anychart.pareto = anychart.pareto || anychart.createNFIMError('Pareto chart');
 anychart.resource = anychart.resource || anychart.createNFIMError('Resource chart');
 
 
+/** @inheritDoc */
+anychart.quadrant = anychart.quadrant || anychart.createNFIMError('Quadrant chart');
+
+
 //region ------ Standalones
 /** @ignoreDoc */
 anychart.standalones.background = anychart.standalones.background || anychart.createNFIMError('anychart.standalones.Background');

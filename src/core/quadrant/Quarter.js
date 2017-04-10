@@ -273,7 +273,6 @@ anychart.core.quadrant.Quarter.prototype.getBoundsForDrawing = function() {
 
 /** @inheritDoc */
 anychart.core.quadrant.Quarter.prototype.draw = function() {
-  debugger;
   if (!this.checkDrawingNeeded())
     return this;
 
