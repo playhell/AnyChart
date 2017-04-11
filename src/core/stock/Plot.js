@@ -746,6 +746,20 @@ anychart.core.stock.Plot.prototype.bbandsWidth = function(mapping, opt_period, o
 
 
 /**
+ * Creates CCI indicator on the chart.
+ * @param {!anychart.data.TableMapping} mapping
+ * @param {number=} opt_period
+ * @param {anychart.enums.StockSeriesType=} opt_seriesType
+ * @return {anychart.core.stock.indicators.CCI}
+ */
+anychart.core.stock.Plot.prototype.cci = function(mapping, opt_period, opt_seriesType) {
+  var result = new anychart.core.stock.indicators.CCI(this, mapping, opt_period, opt_seriesType);
+  this.indicators_.push(result);
+  return result;
+};
+
+
+/**
  * Creates EMA indicator on the chart.
  * @param {!anychart.data.TableMapping} mapping
  * @param {number=} opt_period
