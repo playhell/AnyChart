@@ -1343,7 +1343,7 @@ anychart.core.ui.LabelsFactory.Label = function() {
 
   /**
    * Default drawing plan.
-   * @type {Array.<string>}
+   * @type {Array.<string|Object|null>}
    * @private
    */
   this.defaultDrawingPlan_ = [
@@ -1362,7 +1362,7 @@ anychart.core.ui.LabelsFactory.Label = function() {
 
   /**
    * Drawing plan.
-   * @type {Array.<string>}
+   * @type {Array.<string|Object|null>}
    * @private
    */
   this.drawingPlan_ = goog.array.slice(this.defaultDrawingPlan_, 0);
@@ -2230,8 +2230,10 @@ anychart.core.ui.LabelsFactory.Label.prototype.normalizeAdjustFontSize = functio
  * @return {!Object}
  */
 anychart.core.ui.LabelsFactory.Label.prototype.getMergedSettings = function() {
-  if (this.drawingPlan_.length == 1)
-    return this.mergedSettings = this.drawingPlan_[0];
+  if (this.drawingPlan_.length == 1) {
+    var state = this.drawingPlan_[0];
+    this.mergedSettings = goog.isString(state) ? this.states_[state] : state;
+  }
 
   if (this.mergedSettings)
     return goog.object.clone(this.mergedSettings);
