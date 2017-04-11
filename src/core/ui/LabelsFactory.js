@@ -2230,8 +2230,9 @@ anychart.core.ui.LabelsFactory.Label.prototype.normalizeAdjustFontSize = functio
  * @return {!Object}
  */
 anychart.core.ui.LabelsFactory.Label.prototype.getMergedSettings = function() {
-  if (this.drawingPlan_.length == 1) {
-    var state = this.drawingPlan_[0];
+  var drawingPlan = this.getDrawingPlan();
+  if (drawingPlan.length == 1) {
+    var state = drawingPlan[0];
     this.mergedSettings = goog.isString(state) ? this.states_[state] : state;
   }
 
@@ -2497,8 +2498,6 @@ anychart.core.ui.LabelsFactory.Label.prototype.applyTextSettings = function(text
     }
   }
 
-  debugger;
-
   textElement.fontSize(/** @type {number|string} */ (target.call(this, 'fontSize')));
   textElement.fontFamily(/** @type {string} */ (target.call(this, 'fontFamily')));
   textElement.color(/** @type {string} */ (target.call(this, 'fontColor')));
@@ -2565,9 +2564,8 @@ anychart.core.ui.LabelsFactory.Label.prototype.draw = function() {
   }
 
   if (this.checkInvalidationState(anychart.ConsistencyState.APPEARANCE | anychart.ConsistencyState.BOUNDS)) {
-    // this.dropMergedSettings();
-    this.getMergedSettings();
-    mergedSettings = this.mergedSettings;
+    this.dropMergedSettings();
+    mergedSettings = this.getMergedSettings();
 
     var formatProvider = this.formatProvider();
     if (goog.isDef(formatProvider) && formatProvider['series'] && (!this.formatCallsCache_ || !goog.isDef(this.formatCallsCache_[this.getIndex()]))) {
@@ -2784,6 +2782,8 @@ anychart.core.ui.LabelsFactory.Label.prototype.draw = function() {
   }
 
   if (this.checkInvalidationState(anychart.ConsistencyState.LABELS_FACTORY_POSITION)) {
+    mergedSettings = this.getMergedSettings();
+
     this.drawLabel(this.bounds_, this.finalParentBounds);
 
     if (isBackgroundEnabled) {
