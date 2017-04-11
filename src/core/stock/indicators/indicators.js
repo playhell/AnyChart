@@ -11,6 +11,7 @@ goog.require('anychart.core.stock.indicators.BBands');
 goog.require('anychart.core.stock.indicators.BBandsB');
 goog.require('anychart.core.stock.indicators.BBandsWidth');
 goog.require('anychart.core.stock.indicators.CCI');
+goog.require('anychart.core.stock.indicators.CMF');
 goog.require('anychart.core.stock.indicators.EMA');
 goog.require('anychart.core.stock.indicators.KDJ');
 goog.require('anychart.core.stock.indicators.MACD');
