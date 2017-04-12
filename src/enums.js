@@ -1354,7 +1354,8 @@ anychart.enums.LabelsOverlapMode = {
   /**
    * Allows labels to overlap.
    */
-  ALLOW_OVERLAP: 'allowOverlap'
+  ALLOW_OVERLAP: 'allowOverlap',
+  AUTO_WIDTH: 'autoWidth'
 };
 
 
@@ -1362,9 +1363,10 @@ anychart.enums.LabelsOverlapMode = {
  * Normalizes labels overlap mode to enum values.
  * @param {*} value Mode to normalize.
  * @param {anychart.enums.LabelsOverlapMode=} opt_default Default value. Defaults to ALLOW_OVERLAP.
+ * @param {boolean=} opt_allowAutoWidth
  * @return {anychart.enums.LabelsOverlapMode}
  */
-anychart.enums.normalizeLabelsOverlapMode = function(value, opt_default) {
+anychart.enums.normalizeLabelsOverlapMode = function(value, opt_default, opt_allowAutoWidth) {
   value = (String(value)).toLowerCase();
   switch (value) {
     case 'no':
@@ -1382,6 +1384,9 @@ anychart.enums.normalizeLabelsOverlapMode = function(value, opt_default) {
     case 'true':
     case '1':
       return anychart.enums.LabelsOverlapMode.ALLOW_OVERLAP;
+    case 'autowidth':
+      if (opt_allowAutoWidth)
+        return anychart.enums.LabelsOverlapMode.AUTO_WIDTH;
   }
   return opt_default || anychart.enums.LabelsOverlapMode.ALLOW_OVERLAP;
 };
