@@ -24,7 +24,7 @@ anychart.math.cmf.Context;
 anychart.math.cmf.initContext = function(opt_period) {
   var period = anychart.utils.normalizeToNaturalNumber(opt_period, 20, false);
   return {
-    queue: anychart.math.cycledQueue(period),
+    mfvQueue: anychart.math.cycledQueue(period),
     volumeQueue: anychart.math.cycledQueue(period),
     period: period,
     prevMFVSum: NaN,
@@ -33,7 +33,7 @@ anychart.math.cmf.initContext = function(opt_period) {
      * @this {anychart.math.cmf.Context}
      */
     'dispose': function() {
-      this.queue.clear();
+      this.mfvQueue.clear();
       this.volumeQueue.clear();
     }
   };
