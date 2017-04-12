@@ -5,10 +5,11 @@ goog.require('anychart.utils');
 
 /**
  * @typedef {{
- *   queue: !anychart.math.CycledQueue,
+ *   mfvQueue: !anychart.math.CycledQueue,
  *   volumeQueue: !anychart.math.CycledQueue,
  *   period: number,
- *   prevResult: number,
+ *   prevMFVSum: number,
+ *   prevVolumeSum: number,
  *   dispose: Function
  * }}
  */
@@ -26,12 +27,14 @@ anychart.math.cmf.initContext = function(opt_period) {
     queue: anychart.math.cycledQueue(period),
     volumeQueue: anychart.math.cycledQueue(period),
     period: period,
-    prevResult: NaN,
+    prevMFVSum: NaN,
+    prevVolumeSum: NaN,
     /**
      * @this {anychart.math.cmf.Context}
      */
     'dispose': function() {
       this.queue.clear();
+      this.volumeQueue.clear();
     }
   };
 };
@@ -43,8 +46,10 @@ anychart.math.cmf.initContext = function(opt_period) {
  * @this {anychart.math.cmf.Context}
  */
 anychart.math.cmf.startFunction = function(context) {
-  context.queue.clear();
-  context.prevResult = NaN;
+  context.mfvQueue.clear();
+  context.volumeQueue.clear();
+  context.prevMFVSum = NaN;
+  context.prevVolumeSum = NaN;
 };
 
 
@@ -58,7 +63,31 @@ anychart.math.cmf.startFunction = function(context) {
  * @return {number}
  */
 anychart.math.cmf.calculate = function(context, high, low, close, volume) {
-  return NaN;
+  if (isNaN(high) || isNaN(low) || isNaN(close) || isNaN(volume)) {
+    return NaN;
+  }
+  // money flow volume = money flow * volume
+  var mfv = (high == low) ? 0 : (((close - low) - (high - close)) * volume / (high - low));
+  var dequeuedMFV = context.mfvQueue.enqueue(mfv);
+  var dequeuedVolume = context.volumeQueue.enqueue(volume);
+  if (context.mfvQueue.getLength() < context.period) {
+    return NaN;
+  } else {
+    if (isNaN(context.prevMFVSum)) {
+      // init calculations
+      context.prevMFVSum = 0;
+      context.prevVolumeSum = 0;
+      for (var i = 0; i < context.period; i++) {
+        context.prevMFVSum += context.mfvQueue.get(i);
+        context.prevVolumeSum += context.volumeQueue.get(i);
+      }
+    } else {
+      // process calculations
+      context.prevMFVSum += (context.mfvQueue.get(-1) - dequeuedMFV);
+      context.prevVolumeSum += (context.volumeQueue.get(-1) - dequeuedVolume);
+    }
+    return context.prevMFVSum / context.prevVolumeSum;
+  }
 };
 
 
