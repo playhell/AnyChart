@@ -711,7 +711,7 @@ anychart.core.resource.Grid.prototype.setupByJSON = function(config, opt_default
   anychart.core.settings.deserialize(this, anychart.core.resource.Grid.DESCRIPTORS, config);
 
   if (goog.isDef(this.background_))
-    this.background_.setupInternal(true, config['background']);
+    this.background_.setupInternal(!!opt_default, config['background']);
   this.overlay_.setupInternal(!!opt_default, config['overlay']);
 };
 

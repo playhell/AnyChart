@@ -1697,7 +1697,7 @@ anychart.charts.Map.prototype.axes = function(opt_value) {
   }
 
   if (goog.isDef(opt_value)) {
-    this.axesSettings_.setupInternal(true, opt_value);
+    this.axesSettings_.setupInternal(false, opt_value);
     return this;
   }
   return this.axesSettings_;
@@ -1731,7 +1731,7 @@ anychart.charts.Map.prototype.grids = function(opt_value) {
   }
 
   if (goog.isDef(opt_value)) {
-    this.gridSettings_.setupInternal(true, opt_value);
+    this.gridSettings_.setupInternal(false, opt_value);
     return this;
   }
   return this.gridSettings_;

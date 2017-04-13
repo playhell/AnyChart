@@ -591,10 +591,10 @@ anychart.core.resource.Conflicts.prototype.serialize = function() {
 
 
 /** @inheritDoc */
-anychart.core.resource.Conflicts.prototype.setupByJSON = function(config) {
+anychart.core.resource.Conflicts.prototype.setupByJSON = function(config, opt_default) {
   anychart.core.resource.Conflicts.base(this, 'setupByJSON', config);
   anychart.core.settings.deserialize(this, anychart.core.resource.Conflicts.DESCRIPTORS, config);
-  this.labels().setupInternal(true, config['labels']);
+  this.labels().setupInternal(!!opt_default, config['labels']);
 };
 
 
