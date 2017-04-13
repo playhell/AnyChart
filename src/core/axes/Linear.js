@@ -752,6 +752,8 @@ anychart.core.axes.Linear.prototype.staggerMaxLines = function(opt_value) {
  */
 anychart.core.axes.Linear.prototype.dropBoundsCache = function() {
   if (this.labelsBoundingRects_) this.labelsBoundingRects_.length = 0;
+  this.labels().clear();
+  this.minorLabels().clear();
   this.labelsBounds_.length = 0;
   this.minorLabelsBounds_.length = 0;
 };
@@ -1859,7 +1861,6 @@ anychart.core.axes.Linear.prototype.drawLabel_ = function(value, ratio, index, p
     ticks = /** @type {!anychart.core.axes.Ticks} */(this.minorTicks());
     labels = this.minorLabels();
   }
-  var label = labels.getLabel(index);
 
   if (!enabled) {
     labels.clear(index);
@@ -1913,6 +1914,7 @@ anychart.core.axes.Linear.prototype.drawLabel_ = function(value, ratio, index, p
       break;
   }
   var positionProvider = {'value': {x: x, y: y}};
+  var label = labels.getLabel(index);
   label.positionProvider(positionProvider);
 };
 
