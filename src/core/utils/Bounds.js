@@ -289,7 +289,9 @@ anychart.core.utils.Bounds.prototype.limitWidth = function(width, opt_parentHeig
  * @return {!anychart.core.utils.Bounds} Returns itself for method chaining.
  */
 anychart.core.utils.Bounds.prototype.set = function(opt_xOrRect, opt_y, opt_width, opt_height) {
-  this.setupInternal(false, opt_xOrRect, opt_y, opt_width, opt_height);
+  this.suspendSignalsDispatching();
+  this.setupInternal(true, opt_xOrRect, opt_y, opt_width, opt_height);
+  this.resumeSignalsDispatching(true);
   return this;
 };
 

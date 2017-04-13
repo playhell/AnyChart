@@ -448,11 +448,14 @@ anychart.core.utils.Space.prototype.serialize = function() {
 /** @inheritDoc */
 anychart.core.utils.Space.prototype.setupSpecial = function(isDefault, var_args) {
   if (goog.isDef(arguments[1])) {
-    var args = anychart.core.utils.Space.normalizeSpace(arguments[1], arguments[2], arguments[3], arguments[4]);
+    var args = [];
+    for (var i = 1; i < arguments.length; i++)
+      args.push(arguments[i]);
+    var settings = anychart.core.utils.Space.normalizeSpace.apply(null, args);
     if (isDefault)
-      this.setThemeSettings(args);
+      this.setThemeSettings(settings);
     else
-      this.set(args);
+      this.set(settings);
     return true;
   }
   return false;
