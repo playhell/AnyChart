@@ -1847,12 +1847,10 @@ anychart.core.axes.Linear.prototype.getLabelsPositionProvider = function(index, 
  * @param {number} pixelShift Pixel shift for sharp display.
  * @param {boolean} isMajor Is major label.
  * @param {Array} ticksArr
+ * @param {boolean} enabled
  * @private
  */
-anychart.core.axes.Linear.prototype.drawLabel_ = function(value, ratio, index, pixelShift, isMajor, ticksArr) {
-  var bounds = this.getPixelBounds();
-  var lineBounds = this.line.getBounds();
-
+anychart.core.axes.Linear.prototype.drawLabel_ = function(value, ratio, index, pixelShift, isMajor, ticksArr, enabled) {
   var labels, ticks;
   if (isMajor) {
     ticks = /** @type {!anychart.core.axes.Ticks} */(this.ticks());
@@ -1861,6 +1859,15 @@ anychart.core.axes.Linear.prototype.drawLabel_ = function(value, ratio, index, p
     ticks = /** @type {!anychart.core.axes.Ticks} */(this.minorTicks());
     labels = this.minorLabels();
   }
+  var label = labels.getLabel(index);
+
+  if (!enabled) {
+    labels.clear(index);
+    return;
+  }
+
+  var bounds = this.getPixelBounds();
+  var lineBounds = this.line.getBounds();
 
   var stroke = this.stroke();
   var lineThickness = !stroke || anychart.utils.isNone(stroke) ? 0 : stroke['thickness'] ? parseFloat(stroke['thickness']) : 1;
@@ -1906,13 +1913,7 @@ anychart.core.axes.Linear.prototype.drawLabel_ = function(value, ratio, index, p
       break;
   }
   var positionProvider = {'value': {x: x, y: y}};
-
-  var label = labels.getLabel(index);
   label.positionProvider(positionProvider);
-
-  // var label = this.labelsEl_[index];
-  // label.setAttribute('x', x);
-  // label.setAttribute('y', y);
 };
 
 
@@ -2084,8 +2085,14 @@ anychart.core.axes.Linear.prototype.draw = function() {
                 lineThickness,
                 majorPixelShift);
 
-          if (drawLabel)
-            this.drawLabel_(tickVal, scale.transform(tickVal, .5), i, majorPixelShift, true, scaleTicksArr);
+          this.drawLabel_(
+              tickVal,
+              scale.transform(tickVal, .5),
+              i,
+              majorPixelShift,
+              true,
+              scaleTicksArr,
+              drawLabel);
           prevMajorRatio = ratio;
           i++;
         } else {
@@ -2102,8 +2109,15 @@ anychart.core.axes.Linear.prototype.draw = function() {
                 lineThickness,
                 minorPixelShift);
 
-          if (drawLabel && prevMajorRatio != minorRatio)
-            this.drawLabel_(minorTickVal, scale.transform(minorTickVal, .5), j, minorPixelShift, false, scaleMinorTicksArr);
+
+          this.drawLabel_(
+              minorTickVal,
+              scale.transform(minorTickVal, .5),
+              j,
+              minorPixelShift,
+              false,
+              scaleMinorTicksArr,
+              drawLabel && prevMajorRatio != minorRatio);
           j++;
         }
       }
@@ -2151,8 +2165,14 @@ anychart.core.axes.Linear.prototype.draw = function() {
         }
 
         drawLabel = goog.isArray(needDrawLabels) ? needDrawLabels[i] : needDrawLabels;
-        if (drawLabel && labelPosition >= 0 && labelPosition <= 1)
-          this.drawLabel_(leftTick, labelPosition, i, pixelShift, true, scaleTicksArr);
+        this.drawLabel_(
+            leftTick,
+            labelPosition,
+            i,
+            pixelShift,
+            true,
+            scaleTicksArr,
+            drawLabel && labelPosition >= 0 && labelPosition <= 1);
       }
     }
 

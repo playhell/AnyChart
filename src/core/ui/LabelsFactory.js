@@ -2436,12 +2436,10 @@ anychart.core.ui.LabelsFactory.Label.prototype.drawLabel = function(bounds, pare
   else
     anychart.utils.applyOffsetByAnchor(position, anchor, offsetXNormalized, offsetYNormalized);
 
-  this.textX += position.x;
-  this.textY += position.y;
   bounds.left = position.x;
   bounds.top = position.y;
 
-  this.textElement.x(/** @type {number} */(this.textX)).y(/** @type {number} */(this.textY));
+  this.textElement.x(/** @type {number} */(this.textX + position.x)).y(/** @type {number} */(this.textY + position.y));
 };
 
 
