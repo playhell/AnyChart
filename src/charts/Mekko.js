@@ -109,10 +109,27 @@ anychart.charts.Mekko.prototype.SUPPORTED_CONSISTENCY_STATES =
 //
 //----------------------------------------------------------------------------------------------------------------------
 /**
- * Getter for leftCategoriesScale.
- * @return {!anychart.scales.Ordinal}
+ * Getter/setter for leftCategoriesScale.
+ * @param {anychart.scales.Ordinal=} opt_value Ordinal scale to set.
+ * @return {!(anychart.scales.Ordinal|anychart.charts.Mekko)}
  */
-anychart.charts.Mekko.prototype.leftCategoriesScale = function() {
+anychart.charts.Mekko.prototype.leftCategoriesScale = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    if (opt_value instanceof anychart.scales.Ordinal && this.leftCategoriesScale_ != opt_value) {
+      if (this.leftCategoriesScale_)
+        this.leftCategoriesScale_.unlistenSignals(this.categoriesScaleInvalidated, this);
+      this.leftCategoriesScale_ = opt_value;
+      if (this.leftCategoriesScale_)
+        this.leftCategoriesScale_.listenSignals(this.categoriesScaleInvalidated, this);
+
+      var state = anychart.ConsistencyState.SCALE_CHART_SCALES |
+          anychart.ConsistencyState.SCALE_CHART_Y_SCALES |
+          anychart.ConsistencyState.SCALE_CHART_SCALE_MAPS;
+      this.invalidate(state, anychart.Signal.NEEDS_REDRAW | anychart.ConsistencyState.MEKKO_CATEGORY_SCALE);
+    }
+    return this;
+  }
+
   if (!this.leftCategoriesScale_) {
     this.leftCategoriesScale_ = /** @type {anychart.scales.Ordinal} */(this.createScaleByType('ordinal', true, false));
     this.leftCategoriesScale_.listenSignals(this.categoriesScaleInvalidated, this);
@@ -122,10 +139,27 @@ anychart.charts.Mekko.prototype.leftCategoriesScale = function() {
 
 
 /**
- * Getter for rightCategoriesScale.
- * @return {!anychart.scales.Ordinal}
+ * Getter/setter for rightCategoriesScale.
+ * @param {anychart.scales.Ordinal=} opt_value Ordinal scale to set.
+ * @return {!(anychart.scales.Ordinal|anychart.charts.Mekko)}
  */
-anychart.charts.Mekko.prototype.rightCategoriesScale = function() {
+anychart.charts.Mekko.prototype.rightCategoriesScale = function(opt_value) {
+  if (goog.isDef(opt_value)) {
+    if (opt_value instanceof anychart.scales.Ordinal && this.rightCategoriesScale_ != opt_value) {
+      if (this.rightCategoriesScale_)
+        this.rightCategoriesScale_.unlistenSignals(this.categoriesScaleInvalidated, this);
+      this.rightCategoriesScale_ = opt_value;
+      if (this.rightCategoriesScale_)
+        this.rightCategoriesScale_.listenSignals(this.categoriesScaleInvalidated, this);
+
+      var state = anychart.ConsistencyState.SCALE_CHART_SCALES |
+          anychart.ConsistencyState.SCALE_CHART_Y_SCALES |
+          anychart.ConsistencyState.SCALE_CHART_SCALE_MAPS;
+      this.invalidate(state, anychart.Signal.NEEDS_REDRAW | anychart.ConsistencyState.MEKKO_CATEGORY_SCALE);
+    }
+    return this;
+  }
+
   if (!this.rightCategoriesScale_) {
     this.rightCategoriesScale_ = /** @type {anychart.scales.Ordinal} */(this.createScaleByType('ordinal', true, false));
     this.rightCategoriesScale_.listenSignals(this.categoriesScaleInvalidated, this);
@@ -212,9 +246,11 @@ anychart.charts.Mekko.prototype.setYAxisScale = function(axis) {
   if (this.useCategoryScale_) {
     var straight = !this.xScale().inverted();
     if (axis.orientation() == anychart.enums.Orientation.LEFT || axis.orientation() == anychart.enums.Orientation.TOP)
-      axis.scale(straight ? this.leftCategoriesScale() : this.rightCategoriesScale());
+      axis.scale(straight ?
+          /** @type {anychart.scales.Base} */(this.leftCategoriesScale()) : /** @type {anychart.scales.Base} */(this.rightCategoriesScale()));
     else if (axis.orientation() == anychart.enums.Orientation.RIGHT || axis.orientation() == anychart.enums.Orientation.BOTTOM)
-      axis.scale(straight ? this.rightCategoriesScale() : this.leftCategoriesScale());
+      axis.scale(straight ?
+          /** @type {anychart.scales.Base} */(this.rightCategoriesScale()) : /** @type {anychart.scales.Base} */(this.leftCategoriesScale()));
 
   } else {
     axis.scale(/** @type {anychart.scales.Base} */(this.yScale()));
