@@ -86,9 +86,9 @@ anychart.core.drawers.Mekko.prototype.drawPoint_ = function(point, shapes) {
   var y = /** @type {number} */(point.meta('value'));
 
   var pointsPadding = this.series.chart.pointsPadding && this.series.chart.pointsPadding() || 0;
-  this.pointWidth -= pointsPadding * 2;
-  var leftX = (x - this.pointWidth / 2);
-  var rightX = leftX + this.pointWidth;
+  var width = this.pointWidth - pointsPadding * 2;
+  var leftX = (x - width / 2);
+  var rightX = leftX + width;
 
   var thickness = acgraph.vector.getThickness(/** @type {acgraph.vector.Stroke} */(shapes['path'].stroke()));
   var halfThickness = thickness / 2;
