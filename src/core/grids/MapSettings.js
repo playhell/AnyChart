@@ -169,56 +169,64 @@ anychart.core.grids.MapSettings.prototype.getHighPriorityResolutionChain = funct
 anychart.core.grids.MapSettings.prototype.SIMPLE_PROPS_DESCRIPTORS = (function() {
   /** @type {!Object.<string, anychart.core.settings.PropertyDescriptor>} */
   var map = {};
-  map['stroke'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'stroke',
       anychart.core.settings.strokeNormalizer,
       anychart.ConsistencyState.ONLY_DISPATCHING,
       anychart.Signal.NEEDS_REDRAW);
 
-  map['minorStroke'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'minorStroke',
       anychart.core.settings.strokeNormalizer,
       anychart.ConsistencyState.ONLY_DISPATCHING,
       anychart.Signal.NEEDS_REDRAW);
 
-  map['oddFill'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'oddFill',
       anychart.core.settings.fillNormalizer,
       anychart.ConsistencyState.ONLY_DISPATCHING,
       anychart.Signal.NEEDS_REDRAW);
 
-  map['evenFill'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'evenFill',
       anychart.core.settings.fillNormalizer,
       anychart.ConsistencyState.ONLY_DISPATCHING,
       anychart.Signal.NEEDS_REDRAW);
 
-  map['drawFirstLine'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'drawFirstLine',
       anychart.core.settings.booleanNormalizer,
       anychart.ConsistencyState.ONLY_DISPATCHING,
       anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED);
 
-  map['drawLastLine'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'drawLastLine',
       anychart.core.settings.booleanNormalizer,
       anychart.ConsistencyState.ONLY_DISPATCHING,
       anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED);
 
-  map['enabled'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'enabled',
       anychart.core.settings.booleanNormalizer,
       anychart.ConsistencyState.ONLY_DISPATCHING,
       anychart.Signal.ENABLED_STATE_CHANGED);
 
-  map['zIndex'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'zIndex',
       anychart.utils.toNumber,

@@ -86,28 +86,32 @@ anychart.core.utils.Space.prototype.SUPPORTED_SIGNALS = anychart.Signal.NEEDS_RE
 anychart.core.utils.Space.SIMPLE_PROPS_DESCRIPTORS = (function() {
   /** @type {!Object.<string, anychart.core.settings.PropertyDescriptor>} */
   var map = {};
-  map['left'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'left',
       anychart.core.settings.numberOrZeroNormalizer,
       anychart.ConsistencyState.ONLY_DISPATCHING,
       anychart.Signal.NEEDS_REAPPLICATION);
 
-  map['top'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'top',
       anychart.core.settings.numberOrZeroNormalizer,
       anychart.ConsistencyState.ONLY_DISPATCHING,
       anychart.Signal.NEEDS_REAPPLICATION);
 
-  map['bottom'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'bottom',
       anychart.core.settings.numberOrZeroNormalizer,
       anychart.ConsistencyState.ONLY_DISPATCHING,
       anychart.Signal.NEEDS_REAPPLICATION);
 
-  map['right'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'right',
       anychart.core.settings.numberOrZeroNormalizer,

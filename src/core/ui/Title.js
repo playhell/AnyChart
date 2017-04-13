@@ -244,42 +244,48 @@ anychart.core.ui.Title.prototype.SIMPLE_PROPS_DESCRIPTORS = (function() {
   /** @type {!Object.<string, anychart.core.settings.PropertyDescriptor>} */
   var map = {};
 
-  map['width'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'width',
       anychart.core.settings.numberOrPercentNormalizer,
       anychart.ConsistencyState.BOUNDS,
       anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED);
 
-  map['height'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'height',
       anychart.core.settings.numberOrPercentNormalizer,
       anychart.ConsistencyState.BOUNDS,
       anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED);
 
-  map['align'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'align',
       anychart.enums.normalizeAlign,
       anychart.ConsistencyState.BOUNDS,
       anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED);
 
-  map['orientation'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'orientation',
       anychart.enums.normalizeOrientation,
       anychart.ConsistencyState.BOUNDS,
       anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED);
 
-  map['rotation'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'rotation',
       anychart.core.settings.numberNormalizer,
       anychart.ConsistencyState.BOUNDS,
       anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED);
 
-  map['text'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'text',
       anychart.core.settings.stringNormalizer,

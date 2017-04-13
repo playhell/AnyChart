@@ -171,35 +171,40 @@ anychart.core.axes.MapSettings.prototype.getHighPriorityResolutionChain = functi
 anychart.core.axes.MapSettings.prototype.SIMPLE_PROPS_DESCRIPTORS = (function() {
   /** @type {!Object.<string, anychart.core.settings.PropertyDescriptor>} */
   var map = {};
-  map['stroke'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'stroke',
       anychart.core.settings.strokeNormalizer,
       anychart.ConsistencyState.ONLY_DISPATCHING,
       anychart.Signal.NEEDS_REDRAW);
 
-  map['overlapMode'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'overlapMode',
       anychart.enums.normalizeLabelsOverlapMode,
       anychart.ConsistencyState.ONLY_DISPATCHING,
       anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED);
 
-  map['drawFirstLabel'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'drawFirstLabel',
       anychart.core.settings.booleanNormalizer,
       anychart.ConsistencyState.ONLY_DISPATCHING,
       anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED);
 
-  map['drawLastLabel'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'drawLastLabel',
       anychart.core.settings.booleanNormalizer,
       anychart.ConsistencyState.ONLY_DISPATCHING,
       anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED);
 
-  map['enabled'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'enabled',
       anychart.core.settings.booleanNormalizer,

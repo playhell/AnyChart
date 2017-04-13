@@ -89,56 +89,64 @@ anychart.core.ui.Background.prototype.SUPPORTED_CONSISTENCY_STATES =
 anychart.core.ui.Background.prototype.SIMPLE_PROPS_DESCRIPTORS = (function() {
   /** @type {!Object.<string, anychart.core.settings.PropertyDescriptor>} */
   var map = {};
-  map['fill'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'fill',
       anychart.core.settings.fillNormalizer,
       anychart.ConsistencyState.APPEARANCE,
       anychart.Signal.NEEDS_REDRAW);
 
-  map['stroke'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'stroke',
       anychart.core.settings.strokeNormalizer,
       anychart.ConsistencyState.APPEARANCE | anychart.ConsistencyState.BOUNDS,
       anychart.Signal.NEEDS_REDRAW);
 
-  map['topStroke'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'topStroke',
       anychart.core.settings.strokeNormalizer,
       anychart.ConsistencyState.APPEARANCE | anychart.ConsistencyState.BOUNDS,
       anychart.Signal.NEEDS_REDRAW);
 
-  map['rightStroke'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'rightStroke',
       anychart.core.settings.strokeNormalizer,
       anychart.ConsistencyState.APPEARANCE | anychart.ConsistencyState.BOUNDS,
       anychart.Signal.NEEDS_REDRAW);
 
-  map['bottomStroke'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'bottomStroke',
       anychart.core.settings.strokeNormalizer,
       anychart.ConsistencyState.APPEARANCE | anychart.ConsistencyState.BOUNDS,
       anychart.Signal.NEEDS_REDRAW);
 
-  map['leftStroke'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'leftStroke',
       anychart.core.settings.strokeNormalizer,
       anychart.ConsistencyState.APPEARANCE | anychart.ConsistencyState.BOUNDS,
       anychart.Signal.NEEDS_REDRAW);
 
-  map['disablePointerEvents'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'disablePointerEvents',
       anychart.core.settings.booleanNormalizer,
       anychart.ConsistencyState.BACKGROUND_POINTER_EVENTS,
       anychart.Signal.NEEDS_REDRAW);
 
-  map['cornerType'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'cornerType',
       anychart.enums.normalizeBackgroundCornerType,

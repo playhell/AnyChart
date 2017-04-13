@@ -3729,7 +3729,8 @@ anychart.core.series.Base.prototype.createPositionProvider = function(position, 
 anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
   /** @type {!Object.<string, anychart.core.settings.PropertyDescriptor>} */
   var map = {};
-  map['fill'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'fill',
       anychart.core.settings.fillOrFunctionNormalizer,
@@ -3737,7 +3738,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       anychart.Signal.NEEDS_REDRAW | anychart.Signal.NEED_UPDATE_LEGEND,
       anychart.core.series.Capabilities.ANY);
 
-  map['hoverFill'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'hoverFill',
       anychart.core.settings.fillOrFunctionNormalizer,
@@ -3745,7 +3747,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       0,
       anychart.core.series.Capabilities.ALLOW_INTERACTIVITY);
 
-  map['selectFill'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'selectFill',
       anychart.core.settings.fillOrFunctionNormalizer,
@@ -3753,7 +3756,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       0,
       anychart.core.series.Capabilities.ANY);
 
-  map['negativeFill'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'negativeFill',
       anychart.core.settings.fillOrFunctionNormalizer,
@@ -3761,7 +3765,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       anychart.Signal.NEEDS_REDRAW | anychart.Signal.NEED_UPDATE_LEGEND,
       anychart.core.series.Capabilities.ANY);
 
-  map['hoverNegativeFill'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'hoverNegativeFill',
       anychart.core.settings.fillOrFunctionNormalizer,
@@ -3769,7 +3774,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       0,
       anychart.core.series.Capabilities.ANY);
 
-  map['selectNegativeFill'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'selectNegativeFill',
       anychart.core.settings.fillOrFunctionNormalizer,
@@ -3777,7 +3783,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       0,
       anychart.core.series.Capabilities.ANY);
 
-  map['risingFill'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'risingFill',
       anychart.core.settings.fillOrFunctionNormalizer,
@@ -3785,7 +3792,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       anychart.Signal.NEEDS_REDRAW | anychart.Signal.NEED_UPDATE_LEGEND,
       anychart.core.series.Capabilities.ANY);
 
-  map['hoverRisingFill'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'hoverRisingFill',
       anychart.core.settings.fillOrFunctionNormalizer,
@@ -3793,7 +3801,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       0,
       anychart.core.series.Capabilities.ANY);
 
-  map['selectRisingFill'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'selectRisingFill',
       anychart.core.settings.fillOrFunctionNormalizer,
@@ -3801,7 +3810,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       0,
       anychart.core.series.Capabilities.ANY);
 
-  map['fallingFill'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'fallingFill',
       anychart.core.settings.fillOrFunctionNormalizer,
@@ -3809,14 +3819,16 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       anychart.Signal.NEEDS_REDRAW | anychart.Signal.NEED_UPDATE_LEGEND,
       anychart.core.series.Capabilities.ANY);
 
-  map['hoverFallingFill'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'hoverFallingFill',
       anychart.core.settings.fillOrFunctionNormalizer,
       0,
       0,
       anychart.core.series.Capabilities.ANY);
-  map['selectFallingFill'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'selectFallingFill',
       anychart.core.settings.fillOrFunctionNormalizer,
@@ -3824,7 +3836,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       0,
       anychart.core.series.Capabilities.ANY);
 
-  map['stroke'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'stroke',
       anychart.core.settings.strokeOrFunctionNormalizer,
@@ -3832,7 +3845,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       anychart.Signal.NEEDS_REDRAW | anychart.Signal.NEED_UPDATE_LEGEND,
       anychart.core.series.Capabilities.ANY);
 
-  map['hoverStroke'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'hoverStroke',
       anychart.core.settings.strokeOrFunctionNormalizer,
@@ -3840,7 +3854,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       0,
       anychart.core.series.Capabilities.ANY);
 
-  map['selectStroke'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'selectStroke',
       anychart.core.settings.strokeOrFunctionNormalizer,
@@ -3848,7 +3863,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       0,
       anychart.core.series.Capabilities.ANY);
 
-  map['lowStroke'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'lowStroke',
       anychart.core.settings.strokeOrFunctionNormalizer,
@@ -3856,7 +3872,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       anychart.Signal.NEEDS_REDRAW | anychart.Signal.NEED_UPDATE_LEGEND,
       anychart.core.series.Capabilities.ANY);
 
-  map['hoverLowStroke'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'hoverLowStroke',
       anychart.core.settings.strokeOrFunctionNormalizer,
@@ -3864,7 +3881,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       0,
       anychart.core.series.Capabilities.ANY);
 
-  map['selectLowStroke'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'selectLowStroke',
       anychart.core.settings.strokeOrFunctionNormalizer,
@@ -3872,7 +3890,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       0,
       anychart.core.series.Capabilities.ANY);
 
-  map['highStroke'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'highStroke',
       anychart.core.settings.strokeOrFunctionNormalizer,
@@ -3880,7 +3899,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       anychart.Signal.NEEDS_REDRAW | anychart.Signal.NEED_UPDATE_LEGEND,
       anychart.core.series.Capabilities.ANY);
 
-  map['hoverHighStroke'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'hoverHighStroke',
       anychart.core.settings.strokeOrFunctionNormalizer,
@@ -3888,7 +3908,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       0,
       anychart.core.series.Capabilities.ANY);
 
-  map['selectHighStroke'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'selectHighStroke',
       anychart.core.settings.strokeOrFunctionNormalizer,
@@ -3896,7 +3917,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       0,
       anychart.core.series.Capabilities.ANY);
 
-  map['negativeStroke'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'negativeStroke',
       anychart.core.settings.strokeOrFunctionNormalizer,
@@ -3904,7 +3926,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       anychart.Signal.NEEDS_REDRAW | anychart.Signal.NEED_UPDATE_LEGEND,
       anychart.core.series.Capabilities.ANY);
 
-  map['hoverNegativeStroke'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'hoverNegativeStroke',
       anychart.core.settings.strokeOrFunctionNormalizer,
@@ -3912,7 +3935,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       0,
       anychart.core.series.Capabilities.ANY);
 
-  map['selectNegativeStroke'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'selectNegativeStroke',
       anychart.core.settings.strokeOrFunctionNormalizer,
@@ -3920,7 +3944,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       0,
       anychart.core.series.Capabilities.ANY);
 
-  map['risingStroke'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'risingStroke',
       anychart.core.settings.strokeOrFunctionNormalizer,
@@ -3928,7 +3953,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       anychart.Signal.NEEDS_REDRAW | anychart.Signal.NEED_UPDATE_LEGEND,
       anychart.core.series.Capabilities.ANY);
 
-  map['hoverRisingStroke'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'hoverRisingStroke',
       anychart.core.settings.strokeOrFunctionNormalizer,
@@ -3936,7 +3962,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       0,
       anychart.core.series.Capabilities.ANY);
 
-  map['selectRisingStroke'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'selectRisingStroke',
       anychart.core.settings.strokeOrFunctionNormalizer,
@@ -3944,7 +3971,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       0,
       anychart.core.series.Capabilities.ANY);
 
-  map['fallingStroke'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'fallingStroke',
       anychart.core.settings.strokeOrFunctionNormalizer,
@@ -3952,7 +3980,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       anychart.Signal.NEEDS_REDRAW | anychart.Signal.NEED_UPDATE_LEGEND,
       anychart.core.series.Capabilities.ANY);
 
-  map['hoverFallingStroke'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'hoverFallingStroke',
       anychart.core.settings.strokeOrFunctionNormalizer,
@@ -3960,7 +3989,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       0,
       anychart.core.series.Capabilities.ANY);
 
-  map['selectFallingStroke'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'selectFallingStroke',
       anychart.core.settings.strokeOrFunctionNormalizer,
@@ -3968,7 +3998,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       0,
       anychart.core.series.Capabilities.ANY);
 
-  map['medianStroke'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'medianStroke',
       anychart.core.settings.strokeOrFunctionNormalizer,
@@ -3976,7 +4007,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       anychart.Signal.NEEDS_REDRAW | anychart.Signal.NEED_UPDATE_LEGEND,
       anychart.core.series.Capabilities.ANY);
 
-  map['hoverMedianStroke'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'hoverMedianStroke',
       anychart.core.settings.strokeOrFunctionNormalizer,
@@ -3984,7 +4016,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       0,
       anychart.core.series.Capabilities.ANY);
 
-  map['selectMedianStroke'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'selectMedianStroke',
       anychart.core.settings.strokeOrFunctionNormalizer,
@@ -3992,7 +4025,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       0,
       anychart.core.series.Capabilities.ANY);
 
-  map['stemStroke'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'stemStroke',
       anychart.core.settings.strokeOrFunctionNormalizer,
@@ -4000,7 +4034,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       anychart.Signal.NEEDS_REDRAW | anychart.Signal.NEED_UPDATE_LEGEND,
       anychart.core.series.Capabilities.ANY);
 
-  map['hoverStemStroke'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'hoverStemStroke',
       anychart.core.settings.strokeOrFunctionNormalizer,
@@ -4008,7 +4043,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       0,
       anychart.core.series.Capabilities.ANY);
 
-  map['selectStemStroke'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'selectStemStroke',
       anychart.core.settings.strokeOrFunctionNormalizer,
@@ -4016,7 +4052,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       0,
       anychart.core.series.Capabilities.ANY);
 
-  map['whiskerStroke'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'whiskerStroke',
       anychart.core.settings.strokeOrFunctionNormalizer,
@@ -4024,7 +4061,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       anychart.Signal.NEEDS_REDRAW | anychart.Signal.NEED_UPDATE_LEGEND,
       anychart.core.series.Capabilities.ANY);
 
-  map['hoverWhiskerStroke'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'hoverWhiskerStroke',
       anychart.core.settings.strokeOrFunctionNormalizer,
@@ -4032,7 +4070,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       0,
       anychart.core.series.Capabilities.ANY);
 
-  map['selectWhiskerStroke'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'selectWhiskerStroke',
       anychart.core.settings.strokeOrFunctionNormalizer,
@@ -4040,7 +4079,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       0,
       anychart.core.series.Capabilities.ANY);
 
-  map['hatchFill'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'hatchFill',
       anychart.core.settings.hatchFillOrFunctionNormalizer,
@@ -4048,7 +4088,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       anychart.Signal.NEEDS_REDRAW | anychart.Signal.NEED_UPDATE_LEGEND,
       anychart.core.series.Capabilities.ANY);
 
-  map['hoverHatchFill'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'hoverHatchFill',
       anychart.core.settings.hatchFillOrFunctionNormalizer,
@@ -4056,7 +4097,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       0,
       anychart.core.series.Capabilities.ANY);
 
-  map['selectHatchFill'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'selectHatchFill',
       anychart.core.settings.hatchFillOrFunctionNormalizer,
@@ -4064,7 +4106,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       0,
       anychart.core.series.Capabilities.ANY);
 
-  map['negativeHatchFill'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'negativeHatchFill',
       anychart.core.settings.hatchFillOrFunctionNormalizer,
@@ -4072,7 +4115,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       anychart.Signal.NEEDS_REDRAW | anychart.Signal.NEED_UPDATE_LEGEND,
       anychart.core.series.Capabilities.ANY);
 
-  map['hoverNegativeHatchFill'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'hoverNegativeHatchFill',
       anychart.core.settings.hatchFillOrFunctionNormalizer,
@@ -4080,7 +4124,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       0,
       anychart.core.series.Capabilities.ANY);
 
-  map['selectNegativeHatchFill'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'selectNegativeHatchFill',
       anychart.core.settings.hatchFillOrFunctionNormalizer,
@@ -4088,7 +4133,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       0,
       anychart.core.series.Capabilities.ANY);
 
-  map['risingHatchFill'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'risingHatchFill',
       anychart.core.settings.hatchFillOrFunctionNormalizer,
@@ -4096,7 +4142,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       anychart.Signal.NEEDS_REDRAW | anychart.Signal.NEED_UPDATE_LEGEND,
       anychart.core.series.Capabilities.ANY);
 
-  map['hoverRisingHatchFill'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'hoverRisingHatchFill',
       anychart.core.settings.hatchFillOrFunctionNormalizer,
@@ -4104,7 +4151,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       0,
       anychart.core.series.Capabilities.ANY);
 
-  map['selectRisingHatchFill'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'selectRisingHatchFill',
       anychart.core.settings.hatchFillOrFunctionNormalizer,
@@ -4112,7 +4160,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       0,
       anychart.core.series.Capabilities.ANY);
 
-  map['fallingHatchFill'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'fallingHatchFill',
       anychart.core.settings.hatchFillOrFunctionNormalizer,
@@ -4120,7 +4169,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       anychart.Signal.NEEDS_REDRAW | anychart.Signal.NEED_UPDATE_LEGEND,
       anychart.core.series.Capabilities.ANY);
 
-  map['hoverFallingHatchFill'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'hoverFallingHatchFill',
       anychart.core.settings.hatchFillOrFunctionNormalizer,
@@ -4128,7 +4178,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       0,
       anychart.core.series.Capabilities.ANY);
 
-  map['selectFallingHatchFill'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'selectFallingHatchFill',
       anychart.core.settings.hatchFillOrFunctionNormalizer,
@@ -4136,7 +4187,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       0,
       anychart.core.series.Capabilities.ANY);
 
-  map['color'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'color',
       anychart.core.settings.colorNormalizer,
@@ -4144,7 +4196,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       anychart.Signal.NEEDS_REDRAW | anychart.Signal.NEED_UPDATE_LEGEND,
       anychart.core.series.Capabilities.ANY);
 
-  map['xPointPosition'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'xPointPosition',
       anychart.core.settings.numberNormalizer,
@@ -4152,7 +4205,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       anychart.Signal.NEEDS_REDRAW,
       anychart.core.series.Capabilities.ANY);
 
-  map['pointWidth'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'pointWidth',
       anychart.core.settings.numberOrPercentNormalizer,
@@ -4160,7 +4214,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       anychart.Signal.NEEDS_REDRAW,
       anychart.core.drawers.Capabilities.IS_WIDTH_BASED);
 
-  map['connectMissingPoints'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'connectMissingPoints',
       anychart.core.settings.booleanNormalizer,
@@ -4168,7 +4223,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       anychart.Signal.NEEDS_REDRAW,
       anychart.core.drawers.Capabilities.SUPPORTS_CONNECTING_MISSING);
 
-  map['displayNegative'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'displayNegative',
       anychart.core.settings.booleanNormalizer,
@@ -4176,7 +4232,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       anychart.Signal.NEEDS_REDRAW | anychart.Signal.NEEDS_RECALCULATION,
       anychart.core.drawers.Capabilities.NEEDS_SIZE_SCALE);
 
-  map['whiskerWidth'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'whiskerWidth',
       anychart.core.settings.numberOrPercentNormalizer,
@@ -4184,7 +4241,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       anychart.Signal.NEEDS_REDRAW,
       anychart.core.drawers.Capabilities.SUPPORTS_OUTLIERS);
 
-  map['hoverWhiskerWidth'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'hoverWhiskerWidth',
       anychart.core.settings.numberOrPercentNormalizer,
@@ -4192,7 +4250,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       0,
       anychart.core.drawers.Capabilities.SUPPORTS_OUTLIERS);
 
-  map['selectWhiskerWidth'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'selectWhiskerWidth',
       anychart.core.settings.numberOrPercentNormalizer,
@@ -4200,7 +4259,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       0,
       anychart.core.drawers.Capabilities.SUPPORTS_OUTLIERS);
 
-  map['type'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'type',
       anychart.core.settings.markerTypeNormalizer,
@@ -4208,7 +4268,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       anychart.Signal.NEEDS_REDRAW | anychart.Signal.NEED_UPDATE_LEGEND,
       anychart.core.drawers.Capabilities.IS_MARKER_BASED);
 
-  map['hoverType'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'hoverType',
       anychart.core.settings.markerTypeNormalizer,
@@ -4216,7 +4277,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       0,
       anychart.core.drawers.Capabilities.IS_MARKER_BASED);
 
-  map['selectType'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'selectType',
       anychart.core.settings.markerTypeNormalizer,
@@ -4224,7 +4286,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       0,
       anychart.core.drawers.Capabilities.IS_MARKER_BASED);
 
-  map['size'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'size',
       anychart.core.settings.numberNormalizer,
@@ -4232,7 +4295,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       anychart.Signal.NEEDS_REDRAW,
       anychart.core.drawers.Capabilities.IS_MARKER_BASED);
 
-  map['hoverSize'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'hoverSize',
       anychart.core.settings.numberNormalizer,
@@ -4240,7 +4304,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       0,
       anychart.core.drawers.Capabilities.IS_MARKER_BASED);
 
-  map['selectSize'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'selectSize',
       anychart.core.settings.numberNormalizer,
@@ -4248,7 +4313,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       0,
       anychart.core.drawers.Capabilities.IS_MARKER_BASED);
 
-  map['stepDirection'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'stepDirection',
       anychart.enums.normalizeStepDirection,
@@ -4256,7 +4322,8 @@ anychart.core.series.Base.PROPERTY_DESCRIPTORS = (function() {
       anychart.Signal.NEEDS_REDRAW,
       anychart.core.drawers.Capabilities.SUPPORTS_STEP_DIRECTION);
 
-  map['isVertical'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'isVertical',
       anychart.core.settings.boolOrNullNormalizer,

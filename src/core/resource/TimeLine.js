@@ -209,30 +209,32 @@ anychart.core.resource.TimeLine.prototype.SUPPORTED_SIGNALS =
  * Text descriptors.
  * @type {!Object.<string, anychart.core.settings.PropertyDescriptor>}
  */
-anychart.core.resource.TimeLine.TEXT_DESCRIPTORS =
-    anychart.core.settings.createTextPropertiesDescriptors(
-        anychart.ConsistencyState.APPEARANCE | anychart.ConsistencyState.BOUNDS,
-        anychart.ConsistencyState.APPEARANCE | anychart.ConsistencyState.BOUNDS,
-        anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED,
-        anychart.Signal.NEEDS_REDRAW
-    );
-anychart.core.resource.TimeLine.TEXT_DESCRIPTORS['format'] =
-    anychart.core.settings.createDescriptor(
-        anychart.enums.PropertyHandlerType.SINGLE_ARG,
-        'format',
-        anychart.core.settings.stringOrFunctionNormalizer,
-        anychart.ConsistencyState.APPEARANCE | anychart.ConsistencyState.BOUNDS,
-        anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED);
-//@deprecated Since 7.13.1. Use 'format' instead.
-anychart.core.resource.TimeLine.TEXT_DESCRIPTORS['textFormatter'] =
-    anychart.core.settings.createDescriptor(
-        anychart.enums.PropertyHandlerType.SINGLE_ARG_DEPRECATED,
-        'format',
-        anychart.core.settings.stringOrFunctionNormalizer,
-        anychart.ConsistencyState.APPEARANCE | anychart.ConsistencyState.BOUNDS,
-        anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED,
-        void 0,
-        'textFormatter');
+anychart.core.resource.TimeLine.TEXT_DESCRIPTORS = (function() {
+  var map = anychart.core.settings.createTextPropertiesDescriptors(
+      anychart.ConsistencyState.APPEARANCE | anychart.ConsistencyState.BOUNDS,
+      anychart.ConsistencyState.APPEARANCE | anychart.ConsistencyState.BOUNDS,
+      anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED,
+      anychart.Signal.NEEDS_REDRAW
+  );
+  anychart.core.settings.createDescriptor(
+      map,
+      anychart.enums.PropertyHandlerType.SINGLE_ARG,
+      'format',
+      anychart.core.settings.stringOrFunctionNormalizer,
+      anychart.ConsistencyState.APPEARANCE | anychart.ConsistencyState.BOUNDS,
+      anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED);
+  //@deprecated Since 7.13.1. Use 'format' instead.
+  anychart.core.settings.createDescriptor(
+      map,
+      anychart.enums.PropertyHandlerType.SINGLE_ARG_DEPRECATED,
+      'format',
+      anychart.core.settings.stringOrFunctionNormalizer,
+      anychart.ConsistencyState.APPEARANCE | anychart.ConsistencyState.BOUNDS,
+      anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED,
+      void 0,
+      'textFormatter');
+  return map;
+})();
 anychart.core.settings.populate(anychart.core.resource.TimeLine, anychart.core.resource.TimeLine.TEXT_DESCRIPTORS);
 
 
@@ -244,49 +246,56 @@ anychart.core.resource.TimeLine.DESCRIPTORS = (function() {
   /** @type {!Object.<string, anychart.core.settings.PropertyDescriptor>} */
   var map = {};
 
-  map['stroke'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'stroke',
       anychart.core.settings.strokeNormalizer,
       anychart.ConsistencyState.APPEARANCE,
       anychart.Signal.NEEDS_REDRAW);
 
-  map['fill'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'fill',
       anychart.core.settings.fillNormalizer,
       anychart.ConsistencyState.APPEARANCE,
       anychart.Signal.NEEDS_REDRAW);
 
-  map['levelHeight'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'levelHeight',
       anychart.core.settings.numberOrPercentNormalizer,
       anychart.ConsistencyState.APPEARANCE,
       anychart.Signal.NEEDS_REDRAW);
 
-  map['drawTopLine'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'drawTopLine',
       anychart.core.settings.booleanNormalizer,
       anychart.ConsistencyState.RESOURCE_LIST_ITEMS,
       anychart.Signal.NEEDS_REDRAW);
 
-  map['drawRightLine'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'drawRightLine',
       anychart.core.settings.booleanNormalizer,
       anychart.ConsistencyState.RESOURCE_LIST_ITEMS,
       anychart.Signal.NEEDS_REDRAW);
 
-  map['drawBottomLine'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'drawBottomLine',
       anychart.core.settings.booleanNormalizer,
       anychart.ConsistencyState.RESOURCE_LIST_ITEMS,
       anychart.Signal.NEEDS_REDRAW);
 
-  map['drawLeftLine'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'drawLeftLine',
       anychart.core.settings.booleanNormalizer,

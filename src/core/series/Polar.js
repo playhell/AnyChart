@@ -33,7 +33,8 @@ goog.inherits(anychart.core.series.Polar, anychart.core.series.Radar);
 anychart.core.series.Polar.PROPERTY_DESCRIPTORS = (function() {
   /** @type {!Object.<string, anychart.core.settings.PropertyDescriptor>} */
   var map = {};
-  map['closed'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'closed',
       anychart.core.settings.booleanNormalizer,

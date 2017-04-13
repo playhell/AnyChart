@@ -1676,7 +1676,8 @@ anychart.core.series.Map.prototype.getPoint = function(index) {
 anychart.core.series.Map.PROPERTY_DESCRIPTORS = (function() {
   /** @type {!Object.<string, anychart.core.settings.PropertyDescriptor>} */
   var map = {};
-  map['startSize'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'startSize',
       anychart.core.settings.numberNormalizer,
@@ -1684,7 +1685,8 @@ anychart.core.series.Map.PROPERTY_DESCRIPTORS = (function() {
       anychart.Signal.NEEDS_REDRAW,
       anychart.core.drawers.Capabilities.ANY);
 
-  map['endSize'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'endSize',
       anychart.core.settings.numberNormalizer,
@@ -1692,7 +1694,8 @@ anychart.core.series.Map.PROPERTY_DESCRIPTORS = (function() {
       anychart.Signal.NEEDS_REDRAW,
       anychart.core.drawers.Capabilities.ANY);
 
-  map['curvature'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'curvature',
       anychart.core.settings.numberNormalizer,

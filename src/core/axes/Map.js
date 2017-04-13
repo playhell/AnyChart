@@ -295,14 +295,16 @@ anychart.core.axes.Map.prototype.parentInvalidated_ = function(e) {
 anychart.core.axes.Map.prototype.SIMPLE_PROPS_DESCRIPTORS = (function() {
   /** @type {!Object.<string, anychart.core.settings.PropertyDescriptor>} */
   var map = {};
-  map['stroke'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'stroke',
       anychart.core.settings.strokeNormalizer,
       anychart.ConsistencyState.APPEARANCE,
       anychart.Signal.NEEDS_REDRAW);
 
-  map['overlapMode'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'overlapMode',
       anychart.enums.normalizeLabelsOverlapMode,
@@ -314,7 +316,8 @@ anychart.core.axes.Map.prototype.SIMPLE_PROPS_DESCRIPTORS = (function() {
       anychart.ConsistencyState.AXIS_OVERLAP,
       anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED);
 
-  map['drawFirstLabel'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'drawFirstLabel',
       anychart.core.settings.booleanNormalizer,
@@ -326,7 +329,8 @@ anychart.core.axes.Map.prototype.SIMPLE_PROPS_DESCRIPTORS = (function() {
       anychart.ConsistencyState.AXIS_OVERLAP,
       anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED);
 
-  map['drawLastLabel'] = anychart.core.settings.createDescriptor(
+  anychart.core.settings.createDescriptor(
+      map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'drawLastLabel',
       anychart.core.settings.booleanNormalizer,
