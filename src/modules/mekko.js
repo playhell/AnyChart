@@ -41,7 +41,6 @@ anychart.mosaic = function(var_args) {
   var chart = new anychart.charts.Mekko(true);
 
   chart.setType(anychart.enums.ChartTypes.MOSAIC);
-
   chart.setupByVal(anychart.getFullTheme('mosaic'), true);
 
   for (var i = 0, count = arguments.length; i < count; i++) {
@@ -59,10 +58,9 @@ anychart.mosaic = function(var_args) {
  * @return {anychart.charts.Mekko} Chart instance.
  */
 anychart.barmekko = function(var_args) {
-  var chart = new anychart.charts.Mekko(false);
+  var chart = new anychart.charts.Mekko(false, true);
 
   chart.setType(anychart.enums.ChartTypes.BARMEKKO);
-
   chart.setupByVal(anychart.getFullTheme('barmekko'), true);
 
   for (var i = 0, count = arguments.length; i < count; i++) {

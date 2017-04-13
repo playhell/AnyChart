@@ -16,10 +16,11 @@ goog.require('anychart.enums');
  *      <li>{@link anychart.barmekko}</li>
  *  </ul>
  * @param {boolean=} opt_useCategoryScale
+ * @param {boolean=} opt_barmekkoMode
  * @extends {anychart.core.ChartWithAxes}
  * @constructor
  */
-anychart.charts.Mekko = function(opt_useCategoryScale) {
+anychart.charts.Mekko = function(opt_useCategoryScale, opt_barmekkoMode) {
   anychart.charts.Mekko.base(this, 'constructor', true);
 
   /**
@@ -42,6 +43,13 @@ anychart.charts.Mekko = function(opt_useCategoryScale) {
    * @private
    */
   this.useCategoryScale_ = !!opt_useCategoryScale;
+
+  /**
+   * If chart created as barmekko chart.
+   * @type {boolean}
+   * @private
+   */
+  this.barmekkoMode_ = !!opt_barmekkoMode;
 
   /**
    * @type {number}
@@ -67,12 +75,12 @@ goog.inherits(anychart.charts.Mekko, anychart.core.ChartWithAxes);
 anychart.charts.Mekko.prototype.seriesConfig = (function() {
   var res = {};
   var capabilities = (
-      anychart.core.series.Capabilities.ALLOW_INTERACTIVITY |
-      anychart.core.series.Capabilities.ALLOW_POINT_SETTINGS |
-      // anychart.core.series.Capabilities.ALLOW_ERROR |
-      anychart.core.series.Capabilities.SUPPORTS_MARKERS |
-      anychart.core.series.Capabilities.SUPPORTS_LABELS |
-      0);
+  anychart.core.series.Capabilities.ALLOW_INTERACTIVITY |
+  anychart.core.series.Capabilities.ALLOW_POINT_SETTINGS |
+  // anychart.core.series.Capabilities.ALLOW_ERROR |
+  anychart.core.series.Capabilities.SUPPORTS_MARKERS |
+  anychart.core.series.Capabilities.SUPPORTS_LABELS |
+  0);
 
   res[anychart.enums.MekkoSeriesType.MEKKO] = {
     drawerType: anychart.enums.SeriesDrawerTypes.MEKKO,
@@ -125,6 +133,10 @@ anychart.charts.Mekko.prototype.leftCategoriesScale = function(opt_value) {
       var state = anychart.ConsistencyState.SCALE_CHART_SCALES |
           anychart.ConsistencyState.SCALE_CHART_Y_SCALES |
           anychart.ConsistencyState.SCALE_CHART_SCALE_MAPS;
+      if ((this.allowLegendCategoriesMode() && this.legend().itemsSourceMode() == anychart.enums.LegendItemsSourceMode.CATEGORIES)
+          || this.barmekkoMode_) {
+        state |= anychart.ConsistencyState.CHART_LEGEND;
+      }
       this.invalidate(state, anychart.Signal.NEEDS_REDRAW | anychart.ConsistencyState.MEKKO_CATEGORY_SCALE);
     }
     return this;
@@ -179,6 +191,10 @@ anychart.charts.Mekko.prototype.categoriesScaleInvalidated = function(event) {
     var state = anychart.ConsistencyState.SCALE_CHART_SCALES |
         anychart.ConsistencyState.SCALE_CHART_Y_SCALES |
         anychart.ConsistencyState.SCALE_CHART_SCALE_MAPS;
+    if ((this.allowLegendCategoriesMode() && this.legend().itemsSourceMode() == anychart.enums.LegendItemsSourceMode.CATEGORIES)
+        || this.barmekkoMode_) {
+      state |= anychart.ConsistencyState.CHART_LEGEND;
+    }
     this.invalidate(state, anychart.ConsistencyState.MEKKO_CATEGORY_SCALE);
   }
   this.resumeSignalsDispatching(true);
@@ -193,8 +209,10 @@ anychart.charts.Mekko.prototype.allowLegendCategoriesMode = function() {
 
 /** @inheritDoc */
 anychart.charts.Mekko.prototype.createLegendItemsProvider = function(sourceMode, itemsFormat) {
-  if (this.getType() == anychart.enums.ChartTypes.BARMEKKO && this.getSeriesCount() == 1 &&
+  if (this.barmekkoMode_ && this.getSeriesCount() == 1 &&
       this.xScale() instanceof anychart.scales.Ordinal) {
+    // we need to calculate statistics
+    this.calculate();
     /**
      * @type {!Array.<anychart.core.ui.Legend.LegendItemProvider>}
      */
@@ -288,7 +306,7 @@ anychart.charts.Mekko.prototype.calculate = function() {
       seriesData = this.drawingPlans[i].data;
       for (j = 0; j < seriesData.length; j++) {
         var value;
-        if (this.getType() == anychart.enums.ChartTypes.BARMEKKO)
+        if (this.barmekkoMode_)
           value = Math.abs(seriesData[j].data['value']);
         else
           value = seriesData[j].data['value'] > 0 ? seriesData[j].data['value'] : 0;
@@ -356,7 +374,7 @@ anychart.charts.Mekko.prototype.pointsPadding = function(opt_value) {
 
 /** @inheritDoc */
 anychart.charts.Mekko.prototype.createSeriesInstance = function(type, config) {
-  return this.getType() == anychart.enums.ChartTypes.BARMEKKO ?
+  return this.barmekkoMode_ ?
       new anychart.core.series.Cartesian(this, this, type, config, false) :
       new anychart.core.series.Mekko(this, this, type, config, false);
 };
