@@ -82,15 +82,16 @@ anychart.ConsistencyState = {
   SCALE_CHART_SCALE_MAPS: 1 << 17,
   SCALE_CHART_Y_SCALES: 1 << 18,
   SCALE_CHART_STATISTICS: 1 << 19,
+  SCALE_CHART_SCALES_STATISTICS: 1 << 20,
   //---------------------------------- CHART WITH AXES STATES (SCALE_CHART) -------------------------------
-  AXES_CHART_AXES: 1 << 20,
-  AXES_CHART_AXES_MARKERS: 1 << 21,
-  AXES_CHART_GRIDS: 1 << 22,
-  AXES_CHART_CROSSHAIR: 1 << 23,
-  AXES_CHART_ANNOTATIONS: 1 << 24,
+  AXES_CHART_AXES: 1 << 21,
+  AXES_CHART_AXES_MARKERS: 1 << 22,
+  AXES_CHART_GRIDS: 1 << 23,
+  AXES_CHART_CROSSHAIR: 1 << 24,
+  AXES_CHART_ANNOTATIONS: 1 << 25,
   //---------------------------------- CARTESIAN STATES (AXES_CHART) ---------------------------------
-  CARTESIAN_ZOOM: 1 << 25,
-  CARTESIAN_X_SCROLLER: 1 << 26,
+  CARTESIAN_ZOOM: 1 << 26,
+  CARTESIAN_X_SCROLLER: 1 << 27,
   //---------------------------------- PYRAMID/FUNNEL STATES (CHART) ---------------------------------
   PYRAMID_FUNNEL_LABELS: 1 << 12,
   PYRAMID_FUNNEL_MARKERS: 1 << 13,
