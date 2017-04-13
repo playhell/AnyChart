@@ -263,13 +263,8 @@ anychart.charts.Mekko.prototype.createLegendItemsProvider = function(sourceMode,
 anychart.charts.Mekko.prototype.setYAxisScale = function(axis) {
   if (this.useCategoryScale_) {
     var straight = !this.xScale().inverted();
-    if (axis.orientation() == anychart.enums.Orientation.LEFT || axis.orientation() == anychart.enums.Orientation.TOP)
-      axis.scale(straight ?
-          /** @type {anychart.scales.Base} */(this.leftCategoriesScale()) : /** @type {anychart.scales.Base} */(this.rightCategoriesScale()));
-    else if (axis.orientation() == anychart.enums.Orientation.RIGHT || axis.orientation() == anychart.enums.Orientation.BOTTOM)
-      axis.scale(straight ?
-          /** @type {anychart.scales.Base} */(this.rightCategoriesScale()) : /** @type {anychart.scales.Base} */(this.leftCategoriesScale()));
-
+    var straightLeft = axis.orientation() == anychart.enums.Orientation.LEFT || axis.orientation() == anychart.enums.Orientation.BOTTOM;
+    axis.scale(/** @type {anychart.scales.Base} */(straightLeft == straight ? this.leftCategoriesScale() : this.rightCategoriesScale()));
   } else {
     axis.scale(/** @type {anychart.scales.Base} */(this.yScale()));
   }
