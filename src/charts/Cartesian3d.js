@@ -303,7 +303,7 @@ anychart.core.ChartWithSeries.generateSeriesConstructors(anychart.charts.Cartesi
  */
 anychart.cartesian3d = function(opt_isVertical) {
   var chart = new anychart.charts.Cartesian3d();
-  chart.setupByVal(anychart.getFullTheme('cartesian3d'), true);
+  chart.setupInternal(true, anychart.getFullTheme('cartesian3d'));
   if (goog.isDef(opt_isVertical))
     chart.barChartMode = !!opt_isVertical;
 

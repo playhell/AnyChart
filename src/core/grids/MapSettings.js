@@ -307,12 +307,13 @@ anychart.core.grids.MapSettings.prototype.setThemeSettings = function(config) {
 
 
 /** @inheritDoc */
-anychart.core.grids.MapSettings.prototype.specialSetupByVal = function(value, opt_default) {
-  if (goog.isBoolean(value) || goog.isNull(value)) {
-    if (opt_default)
-      this.themeSettings['enabled'] = !!value;
+anychart.core.grids.MapSettings.prototype.setupSpecial = function(isDefault, var_args) {
+  var arg0 = arguments[1];
+  if (goog.isBoolean(arg0) || goog.isNull(arg0)) {
+    if (isDefault)
+      this.themeSettings['enabled'] = !!arg0;
     else
-      this.enabled(!!value);
+      this.enabled(!!arg0);
     return true;
   }
   return false;
@@ -330,8 +331,8 @@ anychart.core.grids.MapSettings.prototype.setupByJSON = function(config, opt_def
     this.setOption('enabled', 'enabled' in config ? config['enabled'] : true);
   }
 
-  this.horizontal().setupByVal(config['horizontal'], opt_default);
-  this.vertical().setupByVal(config['vertical'], opt_default);
+  this.horizontal().setupInternal(!!opt_default, config['horizontal']);
+  this.vertical().setupInternal(!!opt_default, config['vertical']);
 
   this.map_.resumeSignalsDispatching(true);
 };

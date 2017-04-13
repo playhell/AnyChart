@@ -1066,7 +1066,7 @@ anychart.core.resource.ResourceList.prototype.setupByJSON = function(config, opt
   this.types().setupByJSON(config['types'], opt_default);
   this.descriptions().setupByJSON(config['descriptions'], opt_default);
   this.tags().setupByJSON(config['tags'], opt_default);
-  this.overlay().setupByVal(config['overlay'], opt_default);
+  this.overlay().setupInternal(!!opt_default, config['overlay']);
 };
 
 

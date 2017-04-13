@@ -29,7 +29,7 @@ anychart.pareto = function(opt_data) {
   chart.defaultSeriesType(anychart.enums.CartesianSeriesType.COLUMN);
   chart.setType(anychart.enums.ChartTypes.PARETO);
 
-  chart.setupByVal(anychart.getFullTheme('pareto'), true);
+  chart.setupInternal(true, anychart.getFullTheme('pareto'));
   chart.data(opt_data);
 
   anychart.performance.end('anychart.pareto()');

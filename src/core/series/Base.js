@@ -534,9 +534,9 @@ anychart.core.series.Base.prototype.recreateShapeManager = function() {
  */
 anychart.core.series.Base.prototype.applyDefaultsToElements = function(defaults, opt_resetLegendItem, opt_default, opt_reapplyClip) {
   if (this.supportsLabels()) {
-    this.labels().setupByVal(defaults['labels'], opt_default);
-    this.hoverLabels().setupByVal(defaults['hoverLabels'], opt_default);
-    this.selectLabels().setupByVal(defaults['selectLabels'], opt_default);
+    this.labels().setupInternal(!!opt_default, defaults['labels']);
+    this.hoverLabels().setupInternal(!!opt_default, defaults['hoverLabels']);
+    this.selectLabels().setupInternal(!!opt_default, defaults['selectLabels']);
   }
 
   if (this.supportsMarkers()) {
@@ -559,7 +559,7 @@ anychart.core.series.Base.prototype.applyDefaultsToElements = function(defaults,
   this.legendItem().setup(defaults['legendItem']);
 
   if ('tooltip' in defaults) {
-    this.tooltip().setupByVal(defaults['tooltip'], opt_default);
+    this.tooltip().setupInternal(!!opt_default, defaults['tooltip']);
   }
 
   if (!goog.isDef(opt_reapplyClip))
@@ -4397,9 +4397,9 @@ anychart.core.series.Base.prototype.setupByJSON = function(config, opt_default) 
   this.a11y(config['a11y']);
 
   if (this.supportsLabels()) {
-    this.labels().setupByVal(config['labels'], opt_default);
-    this.hoverLabels().setupByVal(config['hoverLabels'], opt_default);
-    this.selectLabels().setupByVal(config['selectLabels'], opt_default);
+    this.labels().setupInternal(!!opt_default, config['labels']);
+    this.hoverLabels().setupInternal(!!opt_default, config['hoverLabels']);
+    this.selectLabels().setupInternal(!!opt_default, config['selectLabels']);
   }
 
   anychart.core.settings.deserialize(this, anychart.core.series.Base.PROPERTY_DESCRIPTORS, config);

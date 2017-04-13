@@ -310,7 +310,7 @@ anychart.core.resource.TimeLineLevelHolidaysSettings.prototype.setupByJSON = fun
     anychart.core.settings.deserialize(this, anychart.core.resource.TimeLineLevelHolidaysSettings.DESCRIPTORS, config);
   }
 
-  this.padding().setupByVal(config['padding'], opt_default);
+  this.padding().setupInternal(!!opt_default, config['padding']);
 };
 
 

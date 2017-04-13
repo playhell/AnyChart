@@ -864,7 +864,7 @@ anychart.core.gantt.TimelineHeader.Level.prototype.setupByJSON = function(config
 
   this.tileFill(config['tileFill']);
   this.tilesSeparationStroke(config['tilesSeparationStroke']);
-  this.labels().setupByVal(config['labels']);
+  this.labels().setupInternal(true, config['labels']);
 
 };
 //endregion

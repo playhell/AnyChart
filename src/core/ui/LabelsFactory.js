@@ -1232,10 +1232,10 @@ anychart.core.ui.LabelsFactory.prototype.setupByJSON = function(config, opt_defa
   }
 
   if ('background' in config)
-    this.background().setupByVal(config['background'], opt_default);
+    this.background().setupInternal(!!opt_default, config['background']);
 
   if ('padding' in config)
-    this.padding().setupByVal(config['padding'], opt_default);
+    this.padding().setupInternal(!!opt_default, config['padding']);
 };
 //endregion
 

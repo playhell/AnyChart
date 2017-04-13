@@ -175,14 +175,9 @@ anychart.core.utils.A11y.prototype.serialize = function() {
 };
 
 
-/**
- * Special objects to setup current instance.
- * @param {...(Object|Array|number|string|undefined|boolean|null)} var_args
- * @return {boolean} If passed values were recognized as special setup values.
- * @protected
- */
-anychart.core.utils.A11y.prototype.setupSpecial = function(var_args) {
-  var arg0 = arguments[0];
+/** @inheritDoc */
+anychart.core.utils.A11y.prototype.setupSpecial = function(isDefault, var_args) {
+  var arg0 = arguments[1];
   if (goog.isBoolean(arg0) || goog.isNull(arg0)) {
     this.enabled(!!arg0);
     return true;

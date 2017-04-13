@@ -386,9 +386,10 @@ anychart.core.series.RenderingSettings.prototype.setupByJSON = function(config) 
 
 
 /** @inheritDoc */
-anychart.core.series.RenderingSettings.prototype.specialSetupByVal = function(value, opt_default) {
-  if (goog.isFunction(value)) {
-    this['point'](value);
+anychart.core.series.RenderingSettings.prototype.setupSpecial = function(isDefault, var_args) {
+  var arg0 = arguments[1];
+  if (goog.isFunction(arg0)) {
+    this['point'](arg0);
     return true;
   }
   return false;

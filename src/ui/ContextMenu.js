@@ -593,12 +593,13 @@ anychart.ui.ContextMenu.prototype.setup = function(var_args) {
 
 /**
  * Special objects to setup current instance.
+ * @param {boolean} isDefault
  * @param {...(Object|Array|number|string|undefined|boolean|null)} var_args
  * @return {boolean} If passed values were recognized as special setup values.
  * @protected
  */
-anychart.ui.ContextMenu.prototype.setupSpecial = function(var_args) {
-  var arg0 = arguments[0];
+anychart.ui.ContextMenu.prototype.setupSpecial = function(isDefault, var_args) {
+  var arg0 = arguments[1];
   if (goog.isBoolean(arg0) || goog.isNull(arg0)) {
     this.enabled(!!arg0);
     return true;

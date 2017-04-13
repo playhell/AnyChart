@@ -1173,16 +1173,16 @@ anychart.core.resource.TimeLine.prototype.remove = function() {
 //
 //------------------------------------------------------------------------------
 /** @inheritDoc */
-anychart.core.resource.TimeLine.prototype.specialSetupByVal = function(value, opt_default) {
-  if (goog.isBoolean(value) || goog.isNull(value)) {
-    if (opt_default) {
-      this.defaultSettings['enabled'] = !!value;
-    } else {
-      this.enabled(!!value);
-    }
+anychart.core.resource.TimeLine.prototype.setupSpecial = function(isDefault, var_args) {
+  var arg0 = arguments[1];
+  if (goog.isBoolean(arg0) || goog.isNull(arg0)) {
+    if (isDefault)
+      this.defaultSettings['enabled'] = !!arg0;
+    else
+      this.enabled(!!arg0);
     return true;
   }
-  return anychart.core.Base.prototype.specialSetupByVal.apply(this, arguments);
+  return false;
 };
 
 
@@ -1220,11 +1220,11 @@ anychart.core.resource.TimeLine.prototype.setupByJSON = function(config, opt_def
     anychart.core.settings.deserialize(this, anychart.core.resource.TimeLine.TEXT_DESCRIPTORS, config);
   }
 
-  if ('background' in config) this.background_.setupByVal(config['background'], opt_default);
-  if ('padding' in config) this.padding_.setupByVal(config['padding'], opt_default);
+  if ('background' in config) this.background_.setupInternal(!!opt_default, config['background']);
+  if ('padding' in config) this.padding_.setupInternal(!!opt_default, config['padding']);
   //todo (blackart)
   if ('holidays' in config) this.holidays_.setupByJSON(config['holidays'], opt_default);
-  if ('overlay' in config) this.overlay_.setupByVal(config['overlay'], opt_default);
+  if ('overlay' in config) this.overlay_.setupInternal(!!opt_default, config['overlay']);
 };
 
 

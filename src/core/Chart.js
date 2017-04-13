@@ -1681,7 +1681,7 @@ anychart.core.Chart.prototype.setupByJSON = function(config, opt_default) {
   this.animation(config['animation']);
 
   if ('tooltip' in config)
-    this.tooltip().setupByVal(config['tooltip'], opt_default);
+    this.tooltip().setupInternal(!!opt_default, config['tooltip']);
 
   this.a11y(config['a11y']);
 

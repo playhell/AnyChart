@@ -794,23 +794,24 @@ anychart.core.ui.Background.prototype.serialize = function() {
 
 
 /** @inheritDoc */
-anychart.core.ui.Background.prototype.specialSetupByVal = function(value, opt_default) {
-  if (goog.isString(value)) {
-    if (opt_default) {
-      this.themeSettings['fill'] = value;
+anychart.core.ui.Background.prototype.setupSpecial = function(isDefault, var_args) {
+  var arg0 = arguments[1];
+  if (goog.isString(arg0)) {
+    if (isDefault) {
+      this.themeSettings['fill'] = arg0;
       this.themeSettings['stroke'] = null;
       this.themeSettings['enabled'] = true;
     } else {
-      this['fill'](value);
+      this['fill'](arg0);
       this['stroke'](null);
       this.enabled(true);
     }
     return true;
-  } else if (goog.isBoolean(value) || goog.isNull(value)) {
-    if (opt_default)
-      this.themeSettings['enabled'] = !!value;
+  } else if (goog.isBoolean(arg0) || goog.isNull(arg0)) {
+    if (isDefault)
+      this.themeSettings['enabled'] = !!arg0;
     else
-      this.enabled(!!value);
+      this.enabled(!!arg0);
     return true;
   }
   return false;

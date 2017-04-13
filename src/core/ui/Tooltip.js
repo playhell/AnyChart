@@ -2292,10 +2292,10 @@ anychart.core.ui.Tooltip.prototype.setupByJSON = function(config, opt_default) {
     anychart.core.settings.deserialize(this, this.TOOLTIP_SIMPLE_DESCRIPTORS, config);
   }
 
-  this.title().setupByVal(config['title'], opt_default);
-  this.separator().setupByVal(config['separator'], opt_default);
-  this.background().setupByVal(config['background'], opt_default);
-  this.padding().setupByVal(config['padding'], opt_default);
+  this.title().setupInternal(!!opt_default, config['title']);
+  this.separator().setupInternal(!!opt_default, config['separator']);
+  this.background().setupInternal(!!opt_default, config['background']);
+  this.padding().setupInternal(!!opt_default, config['padding']);
   this.hideDelay(config['hideDelay']);
 
   /*

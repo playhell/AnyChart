@@ -1183,21 +1183,22 @@ anychart.core.ui.Title.prototype.serialize = function() {
 
 
 /** @inheritDoc */
-anychart.core.ui.Title.prototype.specialSetupByVal = function(value, opt_default) {
-  if (goog.isString(value)) {
-    if (opt_default) {
-      this.themeSettings['text'] = value;
+anychart.core.ui.Title.prototype.setupSpecial = function(isDefault, var_args) {
+  var arg0 = arguments[1];
+  if (goog.isString(arg0)) {
+    if (isDefault) {
+      this.themeSettings['text'] = arg0;
       this.themeSettings['enabled'] = true;
     } else {
-      this['text'](value);
+      this['text'](arg0);
       this.enabled(true);
     }
     return true;
-  } else if (goog.isBoolean(value) || goog.isNull(value)) {
-    if (opt_default)
-      this.themeSettings['enabled'] = !!value;
+  } else if (goog.isBoolean(arg0) || goog.isNull(arg0)) {
+    if (isDefault)
+      this.themeSettings['enabled'] = !!arg0;
     else
-      this.enabled(!!value);
+      this.enabled(!!arg0);
     return true;
   }
   return false;

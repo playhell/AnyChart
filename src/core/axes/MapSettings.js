@@ -515,12 +515,13 @@ anychart.core.axes.MapSettings.prototype.setThemeSettings = function(config) {
 
 
 /** @inheritDoc */
-anychart.core.axes.MapSettings.prototype.specialSetupByVal = function(value, opt_default) {
-  if (goog.isBoolean(value) || goog.isNull(value)) {
-    if (opt_default)
-      this.themeSettings['enabled'] = !!value;
+anychart.core.axes.MapSettings.prototype.setupSpecial = function(isDefault, var_args) {
+  var arg0 = arguments[1];
+  if (goog.isBoolean(arg0) || goog.isNull(arg0)) {
+    if (isDefault)
+      this.themeSettings['enabled'] = !!arg0;
     else
-      this.enabled(!!value);
+      this.enabled(!!arg0);
     return true;
   }
   return false;
@@ -538,17 +539,17 @@ anychart.core.axes.MapSettings.prototype.setupByJSON = function(config, opt_defa
     this['enabled']('enabled' in config ? config['enabled'] : true);
   }
 
-  this.title().setupByVal(config['title'], opt_default);
-  this.ticks().setupByVal(config['ticks'], opt_default);
-  this.minorTicks().setupByVal(config['minorTicks'], opt_default);
+  this.title().setupInternal(!!opt_default, config['title']);
+  this.ticks().setupInternal(!!opt_default, config['ticks']);
+  this.minorTicks().setupInternal(!!opt_default, config['minorTicks']);
 
-  this.labels().setupByVal(config['labels'], opt_default);
-  this.minorLabels().setupByVal(config['minorLabels'], opt_default);
+  this.labels().setupInternal(!!opt_default, config['labels']);
+  this.minorLabels().setupInternal(!!opt_default, config['minorLabels']);
 
-  this.left().setupByVal(config['left'], opt_default);
-  this.top().setupByVal(config['top'], opt_default);
-  this.right().setupByVal(config['right'], opt_default);
-  this.bottom().setupByVal(config['bottom'], opt_default);
+  this.left().setupInternal(!!opt_default, config['left']);
+  this.top().setupInternal(!!opt_default, config['top']);
+  this.right().setupInternal(!!opt_default, config['right']);
+  this.bottom().setupInternal(!!opt_default, config['bottom']);
 
   this.map_.resumeSignalsDispatching(true);
 };

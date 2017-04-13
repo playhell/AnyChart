@@ -302,16 +302,16 @@ anychart.core.ui.Overlay.prototype.remove = function() {
 //
 //------------------------------------------------------------------------------
 /** @inheritDoc */
-anychart.core.ui.Overlay.prototype.specialSetupByVal = function(value, opt_default) {
-  if (goog.isBoolean(value) || goog.isNull(value)) {
-    if (opt_default) {
-      this.defaultSettings['enabled'] = !!value;
-    } else {
-      this.enabled(!!value);
-    }
+anychart.core.ui.Overlay.prototype.setupSpecial = function(isDefault, var_args) {
+  var arg0 = arguments[1];
+  if (goog.isBoolean(arg0) || goog.isNull(arg0)) {
+    if (isDefault)
+      this.defaultSettings['enabled'] = !!arg0;
+    else
+      this.enabled(!!arg0);
     return true;
   }
-  return anychart.core.Base.prototype.specialSetupByVal.apply(this, arguments);
+  return false;
 };
 
 

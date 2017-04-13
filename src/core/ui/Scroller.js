@@ -1885,11 +1885,12 @@ anychart.core.ui.Scroller.Thumbs.prototype.setupByJSON = function(config) {
 
 
 /**
+ * @param {boolean} isDefault
  * @param {...*} var_args
  * @return {boolean}
  */
-anychart.core.ui.Scroller.Thumbs.prototype.setupSpecial = function(var_args) {
-  var arg0 = arguments[0];
+anychart.core.ui.Scroller.Thumbs.prototype.setupSpecial = function(isDefault, var_args) {
+  var arg0 = arguments[1];
   if (goog.isBoolean(arg0) || goog.isNull(arg0)) {
     this.enabled(!!arg0);
     return true;

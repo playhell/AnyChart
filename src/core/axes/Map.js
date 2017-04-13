@@ -1755,15 +1755,16 @@ anychart.core.axes.Map.prototype.setThemeSettings = function(config) {
 
 
 /** @inheritDoc */
-anychart.core.axes.Map.prototype.specialSetupByVal = function(value, opt_default) {
-  if (goog.isBoolean(value) || goog.isNull(value)) {
-    if (opt_default)
-      this.themeSettings['enabled'] = !!value;
+anychart.core.axes.Map.prototype.setupSpecial = function(isDefault, var_args) {
+  var arg0 = arguments[1];
+  if (goog.isBoolean(arg0) || goog.isNull(arg0)) {
+    if (isDefault)
+      this.themeSettings['enabled'] = !!arg0;
     else
-      this.enabled(!!value);
+      this.enabled(!!arg0);
     return true;
   }
-  return anychart.core.Base.prototype.specialSetupByVal.apply(this, arguments);
+  return false;
 };
 
 
@@ -1776,13 +1777,13 @@ anychart.core.axes.Map.prototype.setupByJSON = function(config, opt_default) {
     anychart.core.axes.Map.base(this, 'setupByJSON', config);
   }
 
-  this.title().setupByVal(config['title'], opt_default);
+  this.title().setupInternal(!!opt_default, config['title']);
 
-  this.labels().setupByVal(config['labels'], opt_default);
-  this.minorLabels().setupByVal(config['minorLabels'], opt_default);
+  this.labels().setupInternal(!!opt_default, config['labels']);
+  this.minorLabels().setupInternal(!!opt_default, config['minorLabels']);
 
-  this.ticks().setupByVal(config['ticks'], opt_default);
-  this.minorTicks().setupByVal(config['minorTicks'], opt_default);
+  this.ticks().setupInternal(!!opt_default, config['ticks']);
+  this.minorTicks().setupInternal(!!opt_default, config['minorTicks']);
 };
 
 

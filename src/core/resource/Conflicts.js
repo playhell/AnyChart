@@ -594,7 +594,7 @@ anychart.core.resource.Conflicts.prototype.serialize = function() {
 anychart.core.resource.Conflicts.prototype.setupByJSON = function(config) {
   anychart.core.resource.Conflicts.base(this, 'setupByJSON', config);
   anychart.core.settings.deserialize(this, anychart.core.resource.Conflicts.DESCRIPTORS, config);
-  this.labels().setupByVal(config['labels']);
+  this.labels().setupInternal(true, config['labels']);
 };
 
 

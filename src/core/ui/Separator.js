@@ -678,7 +678,7 @@ anychart.core.ui.Separator.prototype.serialize = function() {
 /** @inheritDoc */
 anychart.core.ui.Separator.prototype.setupByJSON = function(config, opt_default) {
   anychart.core.settings.deserialize(this, this.SIMPLE_SEPARATOR_DESCRIPTORS, config);
-  this.margin().setupByVal(config['margin'], opt_default);
+  this.margin().setupInternal(!!opt_default, config['margin']);
   this.zIndex(config['zIndex']);
   this.enabled(config['enabled']);
 };
