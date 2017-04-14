@@ -2387,6 +2387,7 @@ goog.provide('anychart.themes.defaultTheme');
         'align': 'left'
       },
       'defaultQuarterSettings': {
+        'enabled': true,
         'fill': 'none',
         'stroke': 'none',
         'title': {
