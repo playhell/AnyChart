@@ -87,8 +87,7 @@ anychart.charts.Quadrant.prototype.drawContent = function(bounds) {
         .moveTo(middleX, lineBounds.top)
         .lineTo(middleX, lineBounds.top + lineBounds.height)
         .moveTo(lineBounds.left, middleY)
-        .lineTo(lineBounds.left + lineBounds.width, middleY)
-        .close();
+        .lineTo(lineBounds.left + lineBounds.width, middleY);
     this.calculateQuarterBounds();
     this.invalidate(anychart.ConsistencyState.QUADRANT_QUARTER);
   }

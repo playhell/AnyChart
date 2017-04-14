@@ -2392,6 +2392,24 @@ goog.provide('anychart.themes.defaultTheme');
         'title': {
           'enabled': false,
           'padding': 5
+        },
+        'defaultLabelSettings': {
+          'enabled': true,
+          'text': 'Quarter label',
+          'width': null,
+          'height': null,
+          'anchor': 'leftTop',
+          'position': 'leftTop',
+          'offsetX': 0,
+          'offsetY': 0,
+          'minFontSize': 8,
+          'maxFontSize': 72,
+          'adjustFontSize': {
+            'width': false,
+            'height': false
+          },
+          'rotation': 0,
+          'zIndex': 50
         }
       },
       'xAxes': [
