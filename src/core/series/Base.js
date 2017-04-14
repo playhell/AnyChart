@@ -1057,9 +1057,8 @@ anychart.core.series.Base.prototype.getWhiskerWidth = function(point, pointState
  * Returns category width in pixels according to current X scale settings.
  * @param {number=} opt_categoryIndex Category index (for series based on ordinal scale with weights).
  * @return {number} Category width in pixels.
- * @public
  */
-anychart.core.series.Base.prototype.getCategoryWidth = function(opt_categoryIndex) {return 0;};
+anychart.core.series.Base.prototype.getCategoryWidth = goog.abstractMethod;
 
 
 /**

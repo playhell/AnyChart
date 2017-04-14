@@ -676,7 +676,7 @@ anychart.core.series.Cartesian.prototype.getDrawingData = function(data, dataPus
     var yValueNames = this.getYValueNames();
     for (i = 0, len = yValueNames.length; i < len; i++) {
       name = yValueNames[i];
-      val = iterator.get(name);
+      val = this.normalizeYValue(iterator.get(name));
       missing = missing || yScale.isMissing(val);
       pointData[name] = val;
     }
@@ -729,6 +729,16 @@ anychart.core.series.Cartesian.prototype.getDrawingData = function(data, dataPus
     hasPointYErrors: hasYErrors,
     hasPointErrors: hasXErrors || hasYErrors
   };
+};
+
+
+/**
+ * @param value
+ * @returns {*}
+ * @protected
+ */
+anychart.core.series.Cartesian.prototype.normalizeYValue = function(value) {
+  return value;
 };
 
 

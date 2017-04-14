@@ -369,9 +369,7 @@ anychart.charts.Mekko.prototype.pointsPadding = function(opt_value) {
 
 /** @inheritDoc */
 anychart.charts.Mekko.prototype.createSeriesInstance = function(type, config) {
-  return this.barmekkoMode_ ?
-      new anychart.core.series.Cartesian(this, this, type, config, false) :
-      new anychart.core.series.Mekko(this, this, type, config, false);
+  return new anychart.core.series.Mekko(this, this, type, config, false, this.barmekkoMode_);
 };
 
 
