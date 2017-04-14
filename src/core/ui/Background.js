@@ -142,7 +142,7 @@ anychart.core.ui.Background.prototype.SIMPLE_PROPS_DESCRIPTORS = (function() {
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
       'cornerType',
       anychart.enums.normalizeBackgroundCornerType,
-      anychart.ConsistencyState.APPEARANCE,
+      anychart.ConsistencyState.APPEARANCE | anychart.ConsistencyState.BOUNDS,
       anychart.Signal.NEEDS_REDRAW);
 
   return map;
