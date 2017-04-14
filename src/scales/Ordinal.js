@@ -27,10 +27,25 @@ anychart.scales.Ordinal = function() {
   this.names_ = [];
 
   /**
+   * Weights values as it come from user.
    * @type {!(Array.<number>)}
    * @private
    */
   this.weights_ = [];
+
+  /**
+   * Normalized weights values.
+   * @type {!(Array.<number>)}
+   * @private
+   */
+  this.resultWeights_ = [];
+
+  /**
+   * Weights as ratio values.
+   * @type {!(Array.<number>)}
+   * @private
+   */
+  this.weightRatios_ = [];
 
   /**
    * @type {!Object.<number>}
@@ -191,15 +206,15 @@ anychart.scales.Ordinal.prototype.checkWeights = function() {
 anychart.scales.Ordinal.prototype.weights = function(opt_value) {
   if (goog.isDef(opt_value)) {
     if (goog.isNull(opt_value))
-      this.weights_ = [];
+      this.weights_.length = 0;
     else if (goog.isArray(opt_value))
       this.weights_ = goog.array.clone(opt_value);
 
     if (!this.checkWeights())
-      this.weights_ = [];
+      this.weights_.length = 0;
 
-    this.resultWeights_ = [];
-    this.weightRatios_ = [];
+    this.resultWeights_ .length = 0;
+    this.weightRatios_.length = 0;
     this.ticks().markInvalid();
     this.dispatchSignal(anychart.Signal.NEEDS_REAPPLICATION);
 
@@ -207,7 +222,7 @@ anychart.scales.Ordinal.prototype.weights = function(opt_value) {
   }
 
   if (!this.resultWeights_ || this.resultWeights_.length != this.values_.length) {
-    this.resultWeights_ = [];
+    this.resultWeights_.length = 0;
     // validate weights values
     var sum = 0;
     var count = 0;
@@ -323,8 +338,8 @@ anychart.scales.Ordinal.prototype.resetDataRange = function() {
   this.valuesMap_ = {};
   this.autoNames_ = null;
   this.resultNames_ = null;
-  this.resultWeights_ = [];
-  this.weightRatios_ = [];
+  this.resultWeights_.length = 0;
+  this.weightRatios_.length = 0;
   return this;
 };
 
@@ -479,7 +494,7 @@ anychart.scales.Ordinal.prototype.serialize = function() {
     json['names'] = this.names_;
   json['ticks'] = this.ticks().serialize();
 
-  if (this.weights_)
+  if (this.weights_.length)
     json['weights'] = this.weights_;
 
   return json;
