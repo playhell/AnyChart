@@ -101,7 +101,7 @@ anychart.math.cmf.calculationFunction = function(row, context) {
   var high = anychart.utils.toNumber(row.get('high'));
   var low = anychart.utils.toNumber(row.get('low'));
   var close = anychart.utils.toNumber(row.get('close'));
-  var volume = anychart.utils.toNumber(row.get('colume'));
+  var volume = anychart.utils.toNumber(row.get('volume'));
   var rv = anychart.math.cmf.calculate(context, high, low, close, volume);
   row.set('result', rv);
 };
