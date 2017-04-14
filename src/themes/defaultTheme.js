@@ -2375,12 +2375,12 @@ goog.provide('anychart.themes.defaultTheme');
     // merge with chart
     'mekko': {
       'defaultSeriesType': 'mekko',
+      'isVertical': false,
       'defaultSeriesSettings': {
         'mekko': {
           'stroke': returnStrokeSourceColor1
         }
       },
-      'series': [],
       'xAxes': [{}],
       'yAxes': [{}],
       'scales': [
@@ -2389,7 +2389,9 @@ goog.provide('anychart.themes.defaultTheme');
         },
         {
           'type': 'linear',
-          'stackMode': 'percent'
+          'stackMode': 'percent',
+          'minimumGap': 0,
+          'maximumGap': 0
         },
         {
           'type': 'ordinal'
@@ -2398,6 +2400,13 @@ goog.provide('anychart.themes.defaultTheme');
           'type': 'ordinal'
         }
       ],
+      'crosshair': {
+        'enabled': false,
+        'displayMode': 'float',
+        'xStroke': colorStrokeExtraBright,
+        'yStroke': colorStrokeExtraBright,
+        'zIndex': 41
+      },
       'xScale': 0,
       'yScale': 1,
       'leftCategoriesScale': 2,
@@ -2406,7 +2415,8 @@ goog.provide('anychart.themes.defaultTheme');
       'annotations': {
         'annotationsList': [],
         'zIndex': 2000
-      }
+      },
+      'pointsPadding': 0
     },
     // merge with mekko
     'mosaic': {

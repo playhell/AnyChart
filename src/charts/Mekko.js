@@ -314,7 +314,7 @@ anychart.charts.Mekko.prototype.calculate = function() {
       }
     }
 
-    this.xScale().weights(weights);
+    this.xScale().weights(weights, true);
   }
 
   if (this.hasInvalidationState(anychart.ConsistencyState.MEKKO_CATEGORY_SCALE)) {
@@ -338,8 +338,8 @@ anychart.charts.Mekko.prototype.calculateCategoriesScales = function() {
       leftWeights.push(this.drawingPlans[i].data[0].data['value']);
       rightWeights.push(this.drawingPlans[i].data[rightIndex].data['value']);
     }
-    this.leftCategoriesScale().values(values).weights(leftWeights);
-    this.rightCategoriesScale().values(values).weights(rightWeights);
+    this.leftCategoriesScale().values(values).weights(leftWeights, true);
+    this.rightCategoriesScale().values(values).weights(rightWeights, true);
   }
 };
 
@@ -388,6 +388,7 @@ anychart.charts.Mekko.prototype.normalizeSeriesType = function(type) {
 //----------------------------------------------------------------------------------------------------------------------
 /** @inheritDoc */
 anychart.charts.Mekko.prototype.serialize = function() {
+  debugger;
   var json = anychart.charts.Mekko.base(this, 'serialize');
   json['type'] = this.getType();
   json['pointsPadding'] = this.pointsPadding();

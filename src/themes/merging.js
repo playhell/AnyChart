@@ -640,6 +640,8 @@ anychart.themes.merging.mergingMap_ = [
     targets: [
       'cartesianBase.crosshair.xLabel',
       'cartesianBase.crosshair.yLabel',
+      'mekko.crosshair.xLabel',
+      'mekko.crosshair.yLabel',
       'scatter.crosshair.xLabel',
       'scatter.crosshair.yLabel',
       'map.crosshair.xLabel',
