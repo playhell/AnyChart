@@ -907,7 +907,6 @@ anychart.core.ui.Title.prototype.calcActualBounds_ = function() {
     this.applyTextSettings(isInitial);
     this.markConsistent(anychart.ConsistencyState.APPEARANCE);
   }
-  debugger;
   var textBounds;
   this.text_.width(null);
   this.text_.height(null);

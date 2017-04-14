@@ -951,7 +951,7 @@ anychart.core.ui.LabelsFactory.prototype.getDimension = function(formatProviderO
     formatProvider = measureLabel.formatProvider();
     positionProvider = opt_positionProvider || measureLabel.positionProvider() || {'value': {'x': 0, 'y': 0}};
     var settings = measureLabel.getMergedSettings();
-    isHtml = settings['isHtml'];
+    isHtml = settings['useHtml'];
     widthSettings = settings['width'];
     heightSettings = settings['height'];
     offsetY = /** @type {number|string} */(settings['offsetY']);
@@ -2577,17 +2577,19 @@ anychart.core.ui.LabelsFactory.Label.prototype.draw = function() {
     var backgroundJson, isBackgroundEnabled;
     var bgSettings = mergedSettings['background'];
     if (bgSettings instanceof anychart.core.ui.Background) {
-      if (bgSettings.enabled())
+      if (bgSettings.enabled() || (this.backgroundElement_ && this.backgroundElement_.enabled()))
         backgroundJson = bgSettings.serialize();
     } else {
       backgroundJson = bgSettings;
     }
-    if (backgroundJson && !('enabled' in backgroundJson))
+    if (goog.isObject(backgroundJson) && backgroundJson && !('enabled' in backgroundJson))
       backgroundJson['enabled'] = false;
 
-    isBackgroundEnabled = backgroundJson && backgroundJson['enabled'];
+    isBackgroundEnabled = goog.isString(backgroundJson) ||
+        goog.isBoolean(backgroundJson) ||
+        (backgroundJson && backgroundJson['enabled']);
 
-    if (isBackgroundEnabled) {
+    if (isBackgroundEnabled || this.backgroundElement_) {
       if (!this.backgroundElement_) {
         this.backgroundElement_ = new anychart.core.ui.Background();
         this.backgroundElement_.zIndex(0);
