@@ -77,25 +77,21 @@ anychart.scales.Geo = function() {
 
   /**
    * @type {boolean}
-   * @protected
    */
   this.minimumLongModeAuto = true;
 
   /**
    * @type {boolean}
-   * @protected
    */
   this.minimumLatModeAuto = true;
 
   /**
    * @type {boolean}
-   * @protected
    */
   this.maximumLongModeAuto = true;
 
   /**
    * @type {boolean}
-   * @protected
    */
   this.maximumLatModeAuto = true;
 
