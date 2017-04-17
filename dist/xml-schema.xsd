@@ -118,6 +118,9 @@
             <xsd:element minOccurs="0" maxOccurs="1" name="tasks" type="core.Tasks"/>
             <xsd:element minOccurs="0" maxOccurs="1" name="critical_path" type="core.CriticalPath"/>
 
+            <!-- chart.Mekko elements -->
+            <xsd:element minOccurs="0" maxOccurs="1" name="left_categories_scale" type="Scale"/>
+            <xsd:element minOccurs="0" maxOccurs="1" name="right_categories_scale" type="Scale"/>
         </xsd:all>
         <!-- core.Chart attrs -->
         <xsd:attributeGroup ref="attrs.VisualBase"/>
@@ -235,6 +238,9 @@
         <!-- Pert attributes -->
         <xsd:attribute name="vertical_spacing" type="simple.NumberOrPercent"/>
         <xsd:attribute name="horizontal_spacing" type="simple.NumberOrPercent"/>
+        <!-- Mekko attributes -->
+        <xsd:attribute name="left_categories_scale" type="simple.ChartScaleRef"/>
+        <xsd:attribute name="right_categories_scale" type="simple.ChartScaleRef"/>
     </xsd:complexType>
 
     <xsd:complexType name="Gauge">
@@ -1882,6 +1888,7 @@
             <xsd:element minOccurs="0" maxOccurs="1" name="names" type="OrdinalScaleNames"/>
             <xsd:element minOccurs="0" maxOccurs="1" name="ranges" type="OrdinalColorScaleRanges"/>
             <xsd:element minOccurs="0" maxOccurs="1" name="colors" type="OrdinalOrLinearScaleColors"/>
+            <xsd:element minOccurs="0" maxOccurs="1" name="weights" type="OrdinalScaleWeights"/>
         </xsd:all>
         <xsd:attribute name="type" type="enums.ScaleTypes" default="linear"/>
         <xsd:attribute name="max_ticks_count" type="xsd:integer" default="1000"/>
@@ -2048,6 +2055,12 @@
     </xsd:complexType>
 
     <xsd:complexType name="OrdinalScaleNames">
+        <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+            <xsd:element name="name" type="simple.Text"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="OrdinalScaleWeights">
         <xsd:sequence minOccurs="0" maxOccurs="unbounded">
             <xsd:element name="name" type="simple.Text"/>
         </xsd:sequence>
@@ -2853,6 +2866,9 @@
             <xsd:enumeration value="jumpLine"/>
             <xsd:enumeration value="stick"/>
             <xsd:enumeration value="pareto"/>
+            <xsd:enumeration value="mekko"/>
+            <xsd:enumeration value="mosaic"/>
+            <xsd:enumeration value="barmekko"/>
         </xsd:restriction>
     </xsd:simpleType>
 
@@ -3114,6 +3130,7 @@
             <xsd:enumeration value="connector"/>
             <xsd:enumeration value="polygon"/>
             <xsd:enumeration value="polyline"/>
+            <xsd:enumeration value="mekko"/>
         </xsd:restriction>
     </xsd:simpleType>
 
