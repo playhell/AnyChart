@@ -209,7 +209,7 @@ anychart.charts.Quadrant.prototype.defaultQuarterSettings = function(opt_value) 
 /** @inheritDoc */
 anychart.charts.Quadrant.prototype.serialize = function() {
   var json = anychart.charts.Quadrant.base(this, 'serialize');
-  json['crosslinesStroke'] = anychart.color.serialize(/** @type {acgraph.vector.Stroke}*/(this.crosslinesStroke()));
+  json['chart']['crosslinesStroke'] = anychart.color.serialize(/** @type {acgraph.vector.Stroke}*/(this.crosslinesStroke()));
 
   var quarters = [];
   for (var i = 0; i < this.quarters_.length; i++) {
@@ -217,7 +217,9 @@ anychart.charts.Quadrant.prototype.serialize = function() {
       quarters.push(this.quarters_[i].serialize());
   }
   if (quarters.length > 0)
-    json['quarters'] = quarters;
+    json['chart']['quarters'] = quarters;
+
+  json['chart']['type'] = anychart.enums.ChartTypes.QUADRANT;
 
   return json;
 };

@@ -1563,8 +1563,12 @@ anychart.themes.merging.multipleEntities_ = {
   'gauge.axes': 'gauge.defaultAxisSettings',
   'gauge.scaleBars': 'gauge.defaultScaleBarSettings',
   'map.callouts': 'map.defaultCalloutSettings',
-  'quadrant.quarter.labels': 'quadrant.quarter.defaultLabelSettings',
-  'quadrant.quarter': 'quadrant.defaultQuarterSettings'
+  // Quadrant chart
+  'chart.quarters': 'chart.defaultQuarterSettings',
+  'chart.quarters.0.labels': 'chart.defaultQuarterSettings.defaultLabelSettings',
+  'chart.quarters.1.labels': 'chart.defaultQuarterSettings.defaultLabelSettings',
+  'chart.quarters.2.labels': 'chart.defaultQuarterSettings.defaultLabelSettings',
+  'chart.quarters.3.labels': 'chart.defaultQuarterSettings.defaultLabelSettings'
 };
 
 

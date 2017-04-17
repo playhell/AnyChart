@@ -118,7 +118,7 @@
             <xsd:element minOccurs="0" maxOccurs="1" name="tasks" type="core.Tasks"/>
             <xsd:element minOccurs="0" maxOccurs="1" name="critical_path" type="core.CriticalPath"/>
             <!-- chart.Quadrant elements -->
-            <xsd:element minOccurs="0" maxOccurs="1" name="crosslinesStroke" type="Stroke"/>
+            <xsd:element minOccurs="0" maxOccurs="1" name="crosslines_stroke" type="Stroke"/>
             <xsd:element minOccurs="0" maxOccurs="1" name="quarters" type="core.quadrant.Quarters_list"/>
 
         </xsd:all>
@@ -238,6 +238,8 @@
         <!-- Pert attributes -->
         <xsd:attribute name="vertical_spacing" type="simple.NumberOrPercent"/>
         <xsd:attribute name="horizontal_spacing" type="simple.NumberOrPercent"/>
+        <!-- Quadrant attributes -->
+        <xsd:attribute name="crosslines_stroke" type="xsd:string"/>
     </xsd:complexType>
 
     <xsd:complexType name="Gauge">
