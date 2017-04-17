@@ -790,6 +790,8 @@ anychart.themes.merging.mergingMap_ = [
       'heatMap.defaultYAxisSettings',
       'scatter.defaultXAxisSettings',
       'scatter.defaultYAxisSettings',
+      'mekko.defaultXAxisSettings',
+      'mekko.defaultYAxisSettings',
       'bullet.axis',
       'radar.xAxis',
       'radar.yAxis',
@@ -1006,9 +1008,11 @@ anychart.themes.merging.mergingMap_ = [
     targets: ['area3d']
   },
   {
-    defaultObj: 'cartesianBase.defaultSeriesSettings.column',
+    defaultObj: 'mekko.defaultSeriesSettings.base',
     targets: [
-      'mekko.defaultSeriesSettings.mekko'
+      'mekko.defaultSeriesSettings.mekko',
+      'mekko.defaultSeriesSettings.mosaic',
+      'mekko.defaultSeriesSettings.barmekko'
     ]
   },
   {
@@ -1349,18 +1353,6 @@ anychart.themes.merging.mergingMap_ = [
       'resource.resourceList.types',
       'resource.resourceList.descriptions',
       'resource.resourceList.tags'
-    ]
-  },
-  {
-    defaultObj: 'cartesianBase.defaultXAxisSettings',
-    targets: [
-      'mekko.defaultXAxisSettings'
-    ]
-  },
-  {
-    defaultObj: 'cartesianBase.defaultYAxisSettings',
-    targets: [
-      'mekko.defaultYAxisSettings'
     ]
   },
   {

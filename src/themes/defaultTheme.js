@@ -175,13 +175,11 @@ goog.provide('anychart.themes.defaultTheme');
 
 
   /**
-   * @param {Object} context
-   * @param {*=} opt_color
+   * @this {*}
    * @return {*}
    */
-  var returnSourceColor65 = function(context, opt_color) {
-    var color = opt_color ? opt_color : this['sourceColor'];
-    return global['anychart']['color']['setOpacity'](color, 0.65, true);
+  var returnSourceColor65 = function() {
+    return global['anychart']['color']['setOpacity'](this['sourceColor'], 0.65, true);
   };
 
 
@@ -195,13 +193,11 @@ goog.provide('anychart.themes.defaultTheme');
 
 
   /**
-   * @param {Object} context
-   * @param {*=} opt_color
+   * @this {*}
    * @return {*}
    */
-  var returnSourceColor85 = function(context, opt_color) {
-    var color = opt_color ? opt_color : this['sourceColor'];
-    return global['anychart']['color']['setOpacity'](color, 0.85, true);
+  var returnSourceColor85 = function() {
+    return global['anychart']['color']['setOpacity'](this['sourceColor'], 0.85, true);
   };
 
 
@@ -224,24 +220,20 @@ goog.provide('anychart.themes.defaultTheme');
 
 
   /**
-   * @param {Object} context
-   * @param {*=} opt_color
+   * @this {*}
    * @return {*}
    */
-  var returnStrokeSourceColor = function(context, opt_color) {
-    var color = opt_color ? opt_color : this['sourceColor'];
-    return global['anychart']['color']['setThickness'](color, 1.5);
+  var returnStrokeSourceColor = function() {
+    return global['anychart']['color']['setThickness'](this['sourceColor'], 1.5);
   };
 
 
   /**
-   * @param {Object} context
-   * @param {*=} opt_color
+   * @this {*}
    * @return {*}
    */
-  var returnStrokeSourceColor1 = function(context, opt_color) {
-    var color = opt_color ? opt_color : this['sourceColor'];
-    return global['anychart']['color']['setThickness'](color, 1);
+  var returnStrokeSourceColor1 = function() {
+    return global['anychart']['color']['setThickness'](this['sourceColor'], 1);
   };
 
 
@@ -2377,9 +2369,45 @@ goog.provide('anychart.themes.defaultTheme');
       'defaultSeriesType': 'mekko',
       'isVertical': false,
       'defaultSeriesSettings': {
-        'mekko': {
+        'base': {
+          'fill': returnSourceColor85,
+          'hoverFill': returnSourceColor65,
+          'legendItem': {
+            'iconStroke': 'none'
+          },
+          'isVertical': false,
+          'labels': {
+            'offsetY': 3,
+            'format': VALUE_TOKEN_DECIMALS_COUNT_2
+          },
+          'tooltip': {
+            'anchor': 'leftTop'
+          },
           'stroke': returnStrokeSourceColor1
-        }
+        },
+        'mekko': {}
+      },
+      'defaultXAxisSettings': {
+        'orientation': 'bottom',
+        'title': {
+          'text': 'X-Axis',
+          'padding': {'top': 5, 'right': 0, 'bottom': 0, 'left': 0}
+        },
+        'labels': {
+          'format': VALUE_TOKEN_DECIMALS_COUNT_10
+        },
+        'scale': 0
+      },
+      'defaultYAxisSettings': {
+        'orientation': 'left',
+        'title': {
+          'text': 'Y-Axis',
+          'padding': {'top': 0, 'right': 0, 'bottom': 5, 'left': 0}
+        },
+        'labels': {
+          'format': VALUE_TOKEN_DECIMALS_COUNT_10
+        },
+        'scale': 1
       },
       'xAxes': [{}],
       'yAxes': [{}],
@@ -2455,7 +2483,7 @@ goog.provide('anychart.themes.defaultTheme');
            */
           'fill': function() {
             var color = this['chart'].getSeriesCount() > 1 ? this['sourceColor'] : this['chart'].palette().itemAt(this['iterator'].currentIndex);
-            return returnSourceColor85(/** @type {Object} */(this), color);
+            return global['anychart']['color']['setOpacity'](color, 0.85, true);
           },
           /**
            * @this {*}
@@ -2463,7 +2491,7 @@ goog.provide('anychart.themes.defaultTheme');
            */
           'hoverFill': function() {
             var color = this['chart'].getSeriesCount() > 1 ? this['sourceColor'] : this['chart'].palette().itemAt(this['iterator'].currentIndex);
-            return returnSourceColor65(/** @type {Object} */(this), color);
+            return global['anychart']['color']['setOpacity'](color, 0.65, true);
           },
           /**
            * @this {*}
@@ -2471,7 +2499,7 @@ goog.provide('anychart.themes.defaultTheme');
            */
           'stroke': function() {
             var color = this['chart'].getSeriesCount() > 1 ? this['sourceColor'] : this['chart'].palette().itemAt(this['iterator'].currentIndex);
-            return returnStrokeSourceColor1(/** @type {Object} */(this), color);
+            return global['anychart']['color']['setThickness'](color, 1);
           }
         }
       }
