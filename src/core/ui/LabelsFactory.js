@@ -962,7 +962,7 @@ anychart.core.ui.LabelsFactory.prototype.getDimension = function(formatProviderO
     if (!(padding instanceof anychart.core.utils.Padding))
       padding = new anychart.core.utils.Padding(padding);
 
-    textElement.setStyle(settings);
+    textElement.style(settings);
     // measureLabel.applyTextSettings(textElement, true, settings);
   } else {
     if (!this.measureCustomLabel_) {
@@ -2595,8 +2595,12 @@ anychart.core.ui.LabelsFactory.Label.prototype.draw = function() {
         this.backgroundElement_.zIndex(0);
         this.backgroundElement_.container(this.layer_);
       }
+      if (this.initBgSettings)
+        this.backgroundElement_.setup(this.initBgSettings instanceof anychart.core.ui.Background ? this.initBgSettings.serialize() : this.initBgSettings);
       this.backgroundElement_.setup(backgroundJson);
       this.backgroundElement_.draw();
+    } else if (bgSettings) {
+      this.initBgSettings = bgSettings;
     }
 
     this.getTextElement();
@@ -2782,8 +2786,6 @@ anychart.core.ui.LabelsFactory.Label.prototype.draw = function() {
   }
 
   if (this.checkInvalidationState(anychart.ConsistencyState.LABELS_FACTORY_POSITION)) {
-    mergedSettings = this.getMergedSettings();
-
     this.drawLabel(this.bounds_, this.finalParentBounds);
 
     if (isBackgroundEnabled) {
@@ -2791,8 +2793,8 @@ anychart.core.ui.LabelsFactory.Label.prototype.draw = function() {
       this.backgroundElement_.draw();
     }
 
-    var coordinateByAnchor = anychart.utils.getCoordinateByAnchor(this.bounds_, mergedSettings['anchor']);
-    this.layer_.setRotation(/** @type {number} */(mergedSettings['rotation']), coordinateByAnchor.x, coordinateByAnchor.y);
+    var coordinateByAnchor = anychart.utils.getCoordinateByAnchor(this.bounds_, this.mergedSettings['anchor']);
+    this.layer_.setRotation(/** @type {number} */(this.mergedSettings['rotation']), coordinateByAnchor.x, coordinateByAnchor.y);
 
     this.invalidate(anychart.ConsistencyState.LABELS_FACTORY_CONNECTOR);
     this.markConsistent(anychart.ConsistencyState.LABELS_FACTORY_POSITION);
@@ -2804,9 +2806,8 @@ anychart.core.ui.LabelsFactory.Label.prototype.draw = function() {
   }
 
   if (this.checkInvalidationState(anychart.ConsistencyState.LABELS_FACTORY_CLIP)) {
-    mergedSettings = this.getMergedSettings();
     if (this.layer_)
-      this.layer_.clip(mergedSettings['clip']);
+      this.layer_.clip(this.mergedSettings['clip']);
     this.markConsistent(anychart.ConsistencyState.LABELS_FACTORY_CLIP);
   }
   return this;

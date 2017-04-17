@@ -379,6 +379,7 @@ anychart.core.ui.CircularLabelsFactory.Label.prototype.drawLabel = function(boun
   bounds.left = /** @type {number} */(x);
   bounds.top = /** @type {number} */(y);
 
+  debugger;
   this.mergedSettings['rotation'] = this.getRotation(angle);
   this.textElement.x(/** @type {number} */(this.textX)).y(/** @type {number} */(this.textY));
 };
