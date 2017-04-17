@@ -109,6 +109,17 @@ anychart.charts.Mekko.prototype.SUPPORTED_CONSISTENCY_STATES =
     anychart.ConsistencyState.MEKKO_CATEGORY_SCALE;
 
 
+/** @inheritDoc */
+anychart.charts.Mekko.prototype.seriesInvalidated = function(event) {
+  anychart.charts.Mekko.base(this, 'seriesInvalidated', event);
+
+  if (event.hasSignal(anychart.Signal.NEED_UPDATE_LEGEND)) {
+    var state = anychart.ConsistencyState.MEKKO_CATEGORY_SCALE;
+    this.invalidate(state, anychart.Signal.NEEDS_REDRAW);
+  }
+};
+
+
 //endregion
 //region --- Scales
 //----------------------------------------------------------------------------------------------------------------------
@@ -338,8 +349,18 @@ anychart.charts.Mekko.prototype.calculateCategoriesScales = function() {
       leftWeights.push(this.drawingPlans[i].data[0].data['value']);
       rightWeights.push(this.drawingPlans[i].data[rightIndex].data['value']);
     }
-    this.leftCategoriesScale().values(values).weights(leftWeights, true);
-    this.rightCategoriesScale().values(values).weights(rightWeights, true);
+
+    var scale = this.leftCategoriesScale();
+    scale.startAutoCalc();
+    scale.extendDataRange.apply(scale, values);
+    scale.weights(leftWeights, true);
+    scale.finishAutoCalc();
+
+    scale = this.rightCategoriesScale();
+    scale.startAutoCalc();
+    scale.extendDataRange.apply(scale, values);
+    scale.weights(rightWeights, true);
+    scale.finishAutoCalc();
   }
 };
 
@@ -388,7 +409,6 @@ anychart.charts.Mekko.prototype.normalizeSeriesType = function(type) {
 //----------------------------------------------------------------------------------------------------------------------
 /** @inheritDoc */
 anychart.charts.Mekko.prototype.serialize = function() {
-  debugger;
   var json = anychart.charts.Mekko.base(this, 'serialize');
   json['type'] = this.getType();
   json['pointsPadding'] = this.pointsPadding();

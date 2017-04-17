@@ -230,9 +230,7 @@ anychart.scales.Ordinal.prototype.weights = function(opt_value, opt_asAuto) {
     this.dispatchSignal(anychart.Signal.NEEDS_REAPPLICATION);
 
     return this;
-  } /*else {
-    this.autoWeights_ = false;
-  }*/
+  }
 
   if (this.resultWeights_.length != this.values_.length) {
     this.resultWeights_.length = 0;
