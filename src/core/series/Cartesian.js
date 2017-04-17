@@ -733,8 +733,8 @@ anychart.core.series.Cartesian.prototype.getDrawingData = function(data, dataPus
 
 
 /**
- * @param value
- * @returns {*}
+ * @param {*} value
+ * @return {*}
  * @protected
  */
 anychart.core.series.Cartesian.prototype.normalizeYValue = function(value) {

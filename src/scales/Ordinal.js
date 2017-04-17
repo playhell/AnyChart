@@ -206,8 +206,8 @@ anychart.scales.Ordinal.prototype.checkWeights = function() {
 
 /**
  * Getter/setter for weights.
- * @param {(Array.<number>)=} opt_value Array of weights.
- * @param {boolean} opt_asAuto
+ * @param {Array.<number>=} opt_value Array of weights.
+ * @param {boolean=} opt_asAuto
  * @return {(Array.<number>|anychart.scales.Ordinal)} Scale weights or self for chaining.
  */
 anychart.scales.Ordinal.prototype.weights = function(opt_value, opt_asAuto) {
@@ -224,7 +224,7 @@ anychart.scales.Ordinal.prototype.weights = function(opt_value, opt_asAuto) {
     if (!this.checkWeights())
       this.weights_.length = 0;
 
-    this.resultWeights_ .length = 0;
+    this.resultWeights_.length = 0;
     this.weightRatios_.length = 0;
     this.ticks().markInvalid();
     this.dispatchSignal(anychart.Signal.NEEDS_REAPPLICATION);
