@@ -28,14 +28,14 @@ anychart.charts.Mekko = function(opt_useCategoryScale, opt_barmekkoMode) {
    * @type {anychart.scales.Ordinal}
    * @private
    */
-  this.leftCategoriesScale_ = null;
+  this.firstCategoriesScale_ = null;
 
   /**
    * Scale for RIGHT oriented Y axis. Uses last categories values to calculate weights.
    * @type {anychart.scales.Ordinal}
    * @private
    */
-  this.rightCategoriesScale_ = null;
+  this.lastCategoriesScale_ = null;
 
   /**
    * Should Y Axis use category scales or not.
@@ -127,18 +127,18 @@ anychart.charts.Mekko.prototype.seriesInvalidated = function(event) {
 //
 //----------------------------------------------------------------------------------------------------------------------
 /**
- * Getter/setter for leftCategoriesScale.
+ * Getter/setter for firstCategoriesScale.
  * @param {anychart.scales.Ordinal=} opt_value Ordinal scale to set.
  * @return {!(anychart.scales.Ordinal|anychart.charts.Mekko)}
  */
-anychart.charts.Mekko.prototype.leftCategoriesScale = function(opt_value) {
+anychart.charts.Mekko.prototype.firstCategoriesScale = function(opt_value) {
   if (goog.isDef(opt_value)) {
-    if (opt_value instanceof anychart.scales.Ordinal && this.leftCategoriesScale_ != opt_value) {
-      if (this.leftCategoriesScale_)
-        this.leftCategoriesScale_.unlistenSignals(this.categoriesScaleInvalidated, this);
-      this.leftCategoriesScale_ = opt_value;
-      if (this.leftCategoriesScale_)
-        this.leftCategoriesScale_.listenSignals(this.categoriesScaleInvalidated, this);
+    if (opt_value instanceof anychart.scales.Ordinal && this.firstCategoriesScale_ != opt_value) {
+      if (this.firstCategoriesScale_)
+        this.firstCategoriesScale_.unlistenSignals(this.categoriesScaleInvalidated, this);
+      this.firstCategoriesScale_ = opt_value;
+      if (this.firstCategoriesScale_)
+        this.firstCategoriesScale_.listenSignals(this.categoriesScaleInvalidated, this);
 
       var state = anychart.ConsistencyState.SCALE_CHART_SCALES |
           anychart.ConsistencyState.SCALE_CHART_Y_SCALES |
@@ -152,27 +152,27 @@ anychart.charts.Mekko.prototype.leftCategoriesScale = function(opt_value) {
     return this;
   }
 
-  if (!this.leftCategoriesScale_) {
-    this.leftCategoriesScale_ = /** @type {anychart.scales.Ordinal} */(this.createScaleByType('ordinal', true, false));
-    this.leftCategoriesScale_.listenSignals(this.categoriesScaleInvalidated, this);
+  if (!this.firstCategoriesScale_) {
+    this.firstCategoriesScale_ = /** @type {anychart.scales.Ordinal} */(this.createScaleByType('ordinal', true, false));
+    this.firstCategoriesScale_.listenSignals(this.categoriesScaleInvalidated, this);
   }
-  return /** @type {!anychart.scales.Ordinal} */(this.leftCategoriesScale_);
+  return /** @type {!anychart.scales.Ordinal} */(this.firstCategoriesScale_);
 };
 
 
 /**
- * Getter/setter for rightCategoriesScale.
+ * Getter/setter for lastCategoriesScale.
  * @param {anychart.scales.Ordinal=} opt_value Ordinal scale to set.
  * @return {!(anychart.scales.Ordinal|anychart.charts.Mekko)}
  */
-anychart.charts.Mekko.prototype.rightCategoriesScale = function(opt_value) {
+anychart.charts.Mekko.prototype.lastCategoriesScale = function(opt_value) {
   if (goog.isDef(opt_value)) {
-    if (opt_value instanceof anychart.scales.Ordinal && this.rightCategoriesScale_ != opt_value) {
-      if (this.rightCategoriesScale_)
-        this.rightCategoriesScale_.unlistenSignals(this.categoriesScaleInvalidated, this);
-      this.rightCategoriesScale_ = opt_value;
-      if (this.rightCategoriesScale_)
-        this.rightCategoriesScale_.listenSignals(this.categoriesScaleInvalidated, this);
+    if (opt_value instanceof anychart.scales.Ordinal && this.lastCategoriesScale_ != opt_value) {
+      if (this.lastCategoriesScale_)
+        this.lastCategoriesScale_.unlistenSignals(this.categoriesScaleInvalidated, this);
+      this.lastCategoriesScale_ = opt_value;
+      if (this.lastCategoriesScale_)
+        this.lastCategoriesScale_.listenSignals(this.categoriesScaleInvalidated, this);
 
       var state = anychart.ConsistencyState.SCALE_CHART_SCALES |
           anychart.ConsistencyState.SCALE_CHART_Y_SCALES |
@@ -182,11 +182,11 @@ anychart.charts.Mekko.prototype.rightCategoriesScale = function(opt_value) {
     return this;
   }
 
-  if (!this.rightCategoriesScale_) {
-    this.rightCategoriesScale_ = /** @type {anychart.scales.Ordinal} */(this.createScaleByType('ordinal', true, false));
-    this.rightCategoriesScale_.listenSignals(this.categoriesScaleInvalidated, this);
+  if (!this.lastCategoriesScale_) {
+    this.lastCategoriesScale_ = /** @type {anychart.scales.Ordinal} */(this.createScaleByType('ordinal', true, false));
+    this.lastCategoriesScale_.listenSignals(this.categoriesScaleInvalidated, this);
   }
-  return /** @type {!anychart.scales.Ordinal} */(this.rightCategoriesScale_);
+  return /** @type {!anychart.scales.Ordinal} */(this.lastCategoriesScale_);
 };
 
 
@@ -273,8 +273,8 @@ anychart.charts.Mekko.prototype.createLegendItemsProvider = function(sourceMode,
 anychart.charts.Mekko.prototype.setYAxisScale = function(axis) {
   if (this.useCategoryScale_) {
     var straight = !this.xScale().inverted();
-    var straightLeft = axis.orientation() == anychart.enums.Orientation.LEFT || axis.orientation() == anychart.enums.Orientation.BOTTOM;
-    axis.scale(/** @type {anychart.scales.Base} */(straightLeft == straight ? this.leftCategoriesScale() : this.rightCategoriesScale()));
+    var straightFirst = axis.orientation() == anychart.enums.Orientation.LEFT || axis.orientation() == anychart.enums.Orientation.BOTTOM;
+    axis.scale(/** @type {anychart.scales.Base} */(straightFirst == straight ? this.firstCategoriesScale() : this.lastCategoriesScale()));
   } else {
     axis.scale(/** @type {anychart.scales.Base} */(this.yScale()));
   }
@@ -349,13 +349,13 @@ anychart.charts.Mekko.prototype.calculateCategoriesScales = function() {
       rightWeights.push(this.drawingPlans[i].data[rightIndex].data['value']);
     }
 
-    var scale = this.leftCategoriesScale();
+    var scale = this.firstCategoriesScale();
     scale.startAutoCalc();
     scale.extendDataRange.apply(/** @type {anychart.scales.Ordinal} */(scale), values);
     scale.weights(leftWeights, true);
     scale.finishAutoCalc();
 
-    scale = this.rightCategoriesScale();
+    scale = this.lastCategoriesScale();
     scale.startAutoCalc();
     scale.extendDataRange.apply(/** @type {anychart.scales.Ordinal} */(scale), values);
     scale.weights(rightWeights, true);
@@ -417,8 +417,8 @@ anychart.charts.Mekko.prototype.serialize = function() {
 
 /** @inheritDoc */
 anychart.charts.Mekko.prototype.serializeWithScales = function(json, scales, scaleIds) {
-  this.serializeScale(json, 'leftCategoriesScale', /** @type {anychart.scales.Base} */(this.leftCategoriesScale()), scales, scaleIds);
-  this.serializeScale(json, 'rightCategoriesScale', /** @type {anychart.scales.Base} */(this.rightCategoriesScale()), scales, scaleIds);
+  this.serializeScale(json, 'firstCategoriesScale', /** @type {anychart.scales.Base} */(this.firstCategoriesScale()), scales, scaleIds);
+  this.serializeScale(json, 'lastCategoriesScale', /** @type {anychart.scales.Base} */(this.lastCategoriesScale()), scales, scaleIds);
 
   anychart.charts.Mekko.base(this, 'serializeWithScales', json, scales, scaleIds);
 };
@@ -438,8 +438,8 @@ anychart.charts.Mekko.prototype.setupByJSON = function(config, opt_default) {
 //exports
 (function() {
   var proto = anychart.charts.Mekko.prototype;
-  proto['leftCategoriesScale'] = proto.leftCategoriesScale;
-  proto['rightCategoriesScale'] = proto.rightCategoriesScale;
+  // proto['firstCategoriesScale'] = proto.firstCategoriesScale;
+  // proto['lastCategoriesScale'] = proto.lastCategoriesScale;
   proto['pointsPadding'] = proto.pointsPadding;
   proto['xScale'] = proto.xScale;
   proto['yScale'] = proto.yScale;

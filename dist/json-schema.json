@@ -2539,28 +2539,6 @@
             {"$ref": "#/definitions/anychart.scales.Logarithmic"},
             {"$ref": "#/definitions/anychart.scales.DateTime"}
           ]
-        },
-        "leftCategoriesScale": {
-          "anyOf": [
-            {
-              "type": [
-                "string",
-                "number"
-              ]
-            },
-            {"$ref": "#/definitions/anychart.scales.Ordinal"}
-          ]
-        },
-        "rightCategoriesScale": {
-          "anyOf": [
-            {
-              "type": [
-                "string",
-                "number"
-              ]
-            },
-            {"$ref": "#/definitions/anychart.scales.Ordinal"}
-          ]
         }
       },
       "required": ["type"]

@@ -2437,8 +2437,8 @@ goog.provide('anychart.themes.defaultTheme');
       },
       'xScale': 0,
       'yScale': 1,
-      'leftCategoriesScale': 2,
-      'rightCategoriesScale': 3,
+      'firstCategoriesScale': 2,
+      'lastCategoriesScale': 3,
       'defaultAnnotationSettings': {},
       'annotations': {
         'annotationsList': [],
