@@ -1431,69 +1431,6 @@ anychart.core.axes.Linear.prototype.getPixelBounds = function() {
 };
 
 
-anychart.core.axes.Linear.prototype.createLabel_ = function(index, isMajor, factory, formatProvider) {
-  var elems;
-  if (isMajor) {
-    if (!this.labelsEl_) this.labelsEl_ = [];
-    elems = this.labelsEl_;
-  } else {
-    if (!this.minorLabelsEl_) this.minorLabelsEl_ = [];
-    elems = this.minorLabelsEl_;
-  }
-  if (elems[index]) return elems[index];
-
-  var text = factory.callFormat(factory['format'](), formatProvider, index);
-
-  var textEl = anychart.graphics.getRenderer().createTextElement();
-  var textSegment = anychart.graphics.getRenderer().createTextSegmentElement();
-  var textNode = anychart.graphics.getRenderer().createTextNode(text);
-
-
-  goog.style.setStyle(textEl, {
-    'font-style': factory['fontStyle'](),
-    'font-variant': factory['fontVariant'](),
-    'font-family': factory['fontFamily'](),
-    'font-size': factory['fontSize'](),
-    'font-weight': factory['fontWeight'](),
-    'color': factory['fontColor'](),
-    'fill': factory['fontColor'](),
-    'letter-spacing': factory['letterSpacing'](),
-    'text-decoration': factory['textDirection'](),
-    'opacity': factory['fontOpacity']()
-  });
-
-  var align;
-  if (factory['textDirection']() == 'rtl') {
-    if (goog.userAgent.GECKO || goog.userAgent.IE) {
-      align = (factory['hAlign']() == acgraph.vector.Text.HAlign.END || factory['hAlign']() == acgraph.vector.Text.HAlign.LEFT) ?
-          acgraph.vector.Text.HAlign.START :
-          (factory['hAlign']() == acgraph.vector.Text.HAlign.START || factory['hAlign']() == acgraph.vector.Text.HAlign.RIGHT) ?
-              acgraph.vector.Text.HAlign.END :
-              'middle';
-    } else {
-      align = (factory['hAlign']() == acgraph.vector.Text.HAlign.END || factory['hAlign']() == acgraph.vector.Text.HAlign.LEFT) ?
-          acgraph.vector.Text.HAlign.END :
-          (factory['hAlign']() == acgraph.vector.Text.HAlign.START || factory['hAlign']() == acgraph.vector.Text.HAlign.RIGHT) ?
-              acgraph.vector.Text.HAlign.START :
-              'middle';
-    }
-  } else {
-    align = (factory['hAlign']() == acgraph.vector.Text.HAlign.END || factory['hAlign']() == acgraph.vector.Text.HAlign.RIGHT) ?
-        acgraph.vector.Text.HAlign.END :
-        (factory['hAlign']() == acgraph.vector.Text.HAlign.START || factory['hAlign']() == acgraph.vector.Text.HAlign.LEFT) ?
-            acgraph.vector.Text.HAlign.START :
-            'middle';
-  }
-  textEl.setAttribute('text-anchor', align);
-
-  goog.dom.appendChild(textEl, textSegment);
-  goog.dom.appendChild(textSegment, textNode);
-  goog.dom.appendChild(document.body, textEl);
-
-  return elems[index] = textEl;
-};
-
-
 /**
  * Calculate label bounds.
  * @param {number} index Label index.
@@ -1574,17 +1511,11 @@ anychart.core.axes.Linear.prototype.getLabelBounds_ = function(index, isMajor, t
   var formatProvider = this.getLabelsFormatProvider(index, value);
   var positionProvider = {'value': {'x': x, 'y': y}};
 
-  // var label = this.createLabel_(index, isMajor, labels, formatProvider);
-  // var bbox = label['getBBox']();
-  // var labelBounds = anychart.math.rect(bbox.x, bbox.y, bbox.width, bbox.height);
-
   var label = labels.add(formatProvider, positionProvider, index);
   var settings = {};
   goog.object.extend(settings, labels.themeSettings, labels.ownSettings);
   label.stateOrder([settings]);
-  // var labelBounds = labels.measure(formatProvider, positionProvider, undefined, index);
   var labelBounds = labels.measure(label, undefined, undefined, index);
-
 
   switch (this.orientation()) {
     case anychart.enums.Orientation.TOP:
@@ -1600,6 +1531,7 @@ anychart.core.axes.Linear.prototype.getLabelBounds_ = function(index, isMajor, t
       labelBounds.left += labelBounds.width / 2;
       break;
   }
+
 
   return boundsCache[index] = labelBounds.toCoordinateBox();
 };

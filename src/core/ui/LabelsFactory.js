@@ -963,7 +963,6 @@ anychart.core.ui.LabelsFactory.prototype.getDimension = function(formatProviderO
       padding = new anychart.core.utils.Padding(padding);
 
     textElement.style(settings);
-    // measureLabel.applyTextSettings(textElement, true, settings);
   } else {
     if (!this.measureCustomLabel_) {
       this.measureCustomLabel_ = this.createLabel();
@@ -1005,7 +1004,6 @@ anychart.core.ui.LabelsFactory.prototype.getDimension = function(formatProviderO
   //we should ask text element about bounds only after text format and text settings are applied
 
   text = this.callFormat(format, formatProvider, opt_cacheIndex);
-
   textElement.width(null);
   textElement.height(null);
   if (isHtml) {
@@ -2636,14 +2634,6 @@ anychart.core.ui.LabelsFactory.Label.prototype.draw = function() {
     else this.textElement.text(goog.isDef(text) ? String(text) : '');
 
     this.applyTextSettings(this.textElement, true, mergedSettings);
-    // this.iterateDrawingPlans_(function(state, settings, index) {
-    //   var isInit = index == 0;
-    //   if (settings instanceof anychart.core.ui.LabelsFactory || settings instanceof anychart.core.ui.LabelsFactory.Label) {
-    //     this.applyTextSettings.call(settings, this.textElement, isInit);
-    //   } else {
-    //     this.applyTextSettings(this.textElement, isInit, settings);
-    //   }
-    // }, true);
 
     //define is width and height set from settings
     var isWidthSet = !goog.isNull(mergedSettings['width']);
