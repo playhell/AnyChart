@@ -4359,6 +4359,10 @@
         {"$ref": "#/definitions/shape"}
       ],
       "properties": {
+        "topStroke": {"$ref": "#/definitions/stroke"},
+        "rightStroke": {"$ref": "#/definitions/stroke"},
+        "bottomStroke": {"$ref": "#/definitions/stroke"},
+        "leftStroke": {"$ref": "#/definitions/stroke"},
         "cornerType": {"$ref": "#/definitions/anychart.enums.BackgroundCornersType"},
         "corners": {
           "type": [

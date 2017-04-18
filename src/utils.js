@@ -1098,6 +1098,10 @@ anychart.utils.xml2json = function(xml) {
               result[name] = [result[name], subnode];
               multiProp[name] = true;
             }
+          } else if (node.nodeName == 'data') {
+            // always treat data as array
+            result[name] = [subnode];
+            multiProp[name] = true;
           } else {
             result[name] = subnode;
           }

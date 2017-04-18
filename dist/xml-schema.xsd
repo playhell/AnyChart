@@ -1053,10 +1053,18 @@
         <xsd:all>
             <xsd:element minOccurs="0" maxOccurs="1" name="fill" type="Fill"/>
             <xsd:element minOccurs="0" maxOccurs="1" name="stroke" type="Stroke"/>
+            <xsd:element minOccurs="0" maxOccurs="1" name="top_stroke" type="Stroke"/>
+            <xsd:element minOccurs="0" maxOccurs="1" name="right_stroke" type="Stroke"/>
+            <xsd:element minOccurs="0" maxOccurs="1" name="bottom_stroke" type="Stroke"/>
+            <xsd:element minOccurs="0" maxOccurs="1" name="left_stroke" type="Stroke"/>
             <xsd:element minOccurs="0" maxOccurs="1" name="corners" type="utils.Corners"/>
         </xsd:all>
         <xsd:attribute name="fill" type="xsd:string"/>
         <xsd:attribute name="stroke" type="xsd:string"/>
+        <xsd:attribute name="top_stroke" type="xsd:string"/>
+        <xsd:attribute name="right_stroke" type="xsd:string"/>
+        <xsd:attribute name="bottom_stroke" type="xsd:string"/>
+        <xsd:attribute name="left_stroke" type="xsd:string"/>
         <xsd:attribute name="disable_pointer_events" type="xsd:boolean"/>
         <xsd:attribute name="corner_type" type="enums.BackgroundCornerTypes" default="none"/>
         <xsd:attribute name="corners" type="xsd:double" default="0"/>
@@ -2508,6 +2516,10 @@
         <xsd:all>
             <xsd:element minOccurs="0" maxOccurs="1" name="fill" type="Fill" />
             <xsd:element minOccurs="0" maxOccurs="1" name="stroke" type="Stroke" />
+            <xsd:element minOccurs="0" maxOccurs="1" name="top_stroke" type="Stroke"/>
+            <xsd:element minOccurs="0" maxOccurs="1" name="right_stroke" type="Stroke"/>
+            <xsd:element minOccurs="0" maxOccurs="1" name="bottom_stroke" type="Stroke"/>
+            <xsd:element minOccurs="0" maxOccurs="1" name="left_stroke" type="Stroke"/>
             <xsd:element minOccurs="0" maxOccurs="1" name="title" type="core.Title" />
             <xsd:element minOccurs="0" maxOccurs="1" name="margin" type="utils.Space" />
             <xsd:element minOccurs="0" maxOccurs="1" name="padding" type="utils.Space" />
@@ -2519,6 +2531,10 @@
         <xsd:attribute name="stroke" type="xsd:string"/>
         <xsd:attribute name="title" type="simple.StringOrBoolOrNull" default="true"/>
         <!-- core.Background -->
+        <xsd:attribute name="top_stroke" type="xsd:string"/>
+        <xsd:attribute name="right_stroke" type="xsd:string"/>
+        <xsd:attribute name="bottom_stroke" type="xsd:string"/>
+        <xsd:attribute name="left_stroke" type="xsd:string"/>
         <xsd:attribute name="disable_pointer_events" type="xsd:boolean"/>
         <xsd:attribute name="corner_type" type="enums.BackgroundCornerTypes" default="none"/>
         <xsd:attribute name="corners" type="xsd:double" default="0"/>
