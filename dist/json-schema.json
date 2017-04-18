@@ -2548,7 +2548,7 @@
                 "number"
               ]
             },
-            {"$ref": "#/definitions/anychart.scales.Ordinal"},
+            {"$ref": "#/definitions/anychart.scales.Ordinal"}
           ]
         },
         "rightCategoriesScale": {
@@ -2559,7 +2559,7 @@
                 "number"
               ]
             },
-            {"$ref": "#/definitions/anychart.scales.Ordinal"},
+            {"$ref": "#/definitions/anychart.scales.Ordinal"}
           ]
         }
       },

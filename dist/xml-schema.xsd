@@ -2062,7 +2062,7 @@
 
     <xsd:complexType name="OrdinalScaleWeights">
         <xsd:sequence minOccurs="0" maxOccurs="unbounded">
-            <xsd:element name="name" type="simple.Text"/>
+            <xsd:element name="weight" type="simple.Text"/>
         </xsd:sequence>
     </xsd:complexType>
 

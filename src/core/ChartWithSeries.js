@@ -182,7 +182,8 @@ anychart.core.ChartWithSeries.prototype.normalizeSeriesType = function(type) {
  *    anychart.enums.ScatterSeriesType |
  *    anychart.enums.RadarSeriesType |
  *    anychart.enums.PolarSeriesType |
- *    anychart.enums.MapSeriesType
+ *    anychart.enums.MapSeriesType |
+ *    anychart.enums.MekkoSeriesType
  * )=} opt_value Default series type.
  * @return {
  *    anychart.core.ChartWithSeries |
@@ -190,7 +191,8 @@ anychart.core.ChartWithSeries.prototype.normalizeSeriesType = function(type) {
  *    anychart.enums.ScatterSeriesType |
  *    anychart.enums.RadarSeriesType |
  *    anychart.enums.PolarSeriesType |
- *    anychart.enums.MapSeriesType
+ *    anychart.enums.MapSeriesType |
+ *    anychart.enums.MekkoSeriesType
  * } Default series type or self for chaining.
  */
 anychart.core.ChartWithSeries.prototype.defaultSeriesType = function(opt_value) {
