@@ -5442,9 +5442,9 @@ anychart.enums.Statistics = {
   CATEGORY_Y_RANGE_MODE_ARR_: 'catYRangeModeArr_',
 
   X_SCALES_MIN: 'xScalesMin',
-  X_SCALES_MAX: 'xScalesMin',
+  X_SCALES_MAX: 'xScalesMax',
   Y_SCALES_MIN: 'yScalesMin',
-  Y_SCALES_MAX: 'yScalesMin'
+  Y_SCALES_MAX: 'yScalesMax'
 };
 
 
