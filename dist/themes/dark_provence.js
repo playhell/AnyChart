@@ -336,6 +336,7 @@
                 outlineStroke: "#5f5b61 0.8",
                 defaultSeriesSettings: {
                     base: {
+                        color: "#aa8ab3",
                         selectStroke: b
                     },
                     lineLike: {

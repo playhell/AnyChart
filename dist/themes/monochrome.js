@@ -8,7 +8,7 @@
     }
 
     function a() {
-        return b.anychart.color.setOpacity(this.sourceColor, .6, !0)
+        return this.sourceColor
     }
     var b = this;
     b.anychart = b.anychart || {};
@@ -20,12 +20,13 @@
         },
         defaultOrdinalColorScale: {
             autoColors: function(a) {
-                return b.anychart.color.blendedHueProgression("#e1e1e1",
-                    "#707070", a)
+                return b.anychart.color.blendedHueProgression("#e1e1e1", "#707070", a)
             }
         },
         defaultLinearColorScale: {
-            colors: ["#e1e1e1", "#707070"]
+            colors: ["#e1e1e1",
+                "#707070"
+            ]
         },
         defaultFontSettings: {
             fontFamily: "Verdana, Geneva, sans-serif",
@@ -89,6 +90,9 @@
                 },
                 lineLike: {
                     selectStroke: "3 #212121",
+                    markers: {
+                        enabled: !0
+                    },
                     selectMarkers: {
                         enabled: !0,
                         fill: "#bdbdbd",
@@ -268,6 +272,7 @@
                 outlineStroke: "#B9B9B9",
                 defaultSeriesSettings: {
                     base: {
+                        color: "#252525 0.6",
                         fill: "#999 0.6",
                         stroke: "#999 0.6",
                         selectFill: a,

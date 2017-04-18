@@ -4,7 +4,7 @@
     }
 
     function a() {
-        return b.anychart.color.setOpacity(this.sourceColor, .5, !0)
+        return this.sourceColor
     }
     var b = this;
     b.anychart = b.anychart || {};
@@ -325,9 +325,7 @@
                 outlineStroke: "#546e7a",
                 defaultSeriesSettings: {
                     base: {
-                        fill: "#999 0.6",
-                        stroke: "#999 0.6",
-                        selectFill: a,
+                        color: "#40c4ff 0.5",
                         selectStroke: a
                     },
                     lineLike: {
