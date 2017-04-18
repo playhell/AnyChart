@@ -24,6 +24,8 @@ goog.require('anychart.enums');
  */
 anychart.charts.Cartesian = function() {
   anychart.charts.Cartesian.base(this, 'constructor');
+
+  this.setType(anychart.enums.ChartTypes.CARTESIAN);
 };
 goog.inherits(anychart.charts.Cartesian, anychart.core.CartesianBase);
 

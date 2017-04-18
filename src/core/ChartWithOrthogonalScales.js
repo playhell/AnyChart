@@ -359,10 +359,17 @@ anychart.core.ChartWithOrthogonalScales.prototype.calculate = function() {
     this.calculateYScales();
   } else {
     this.calculateXYScales();
+    this.applyComplexZoom();
   }
   this.resumeSignalsDispatching(false);
   anychart.performance.end('Scale calculations');
 };
+
+
+/**
+ * Applies both X and Y zooms.
+ */
+anychart.core.ChartWithOrthogonalScales.prototype.applyComplexZoom = function() {};
 
 
 /**
@@ -457,7 +464,7 @@ anychart.core.ChartWithOrthogonalScales.prototype.calculateXScales = function() 
             xHashMap = {};
           }
         }
-        drawingPlan = series.getOrdinalDrawingPlan(xHashMap, xArray, restricted, xScale.getNamesField() || undefined);
+        drawingPlan = series.getOrdinalDrawingPlan(xHashMap, xArray, restricted);
       } else {
         drawingPlan = series.getScatterDrawingPlan(true, xScale instanceof anychart.scales.DateTime);
       }
@@ -676,7 +683,7 @@ anychart.core.ChartWithOrthogonalScales.prototype.calculateXScales = function() 
       if (xScale instanceof anychart.scales.Ordinal) {
         var namesField = xScale.getNamesField();
         // retrieving names
-        if (namesField != null) {
+        if (namesField) {
           var remainingNames = drawingPlans[0].xArray.length;
           var autoNames = new Array(remainingNames);
           for (i = 0; i < drawingPlans.length; i++) {
@@ -985,7 +992,7 @@ anychart.core.ChartWithOrthogonalScales.prototype.calculateXYScales = function()
       xScale = /** @type {anychart.scales.Base} */(series.xScale());
       yScale = /** @type {anychart.scales.Base} */(series.yScale());
       if (xScale instanceof anychart.scales.Ordinal) {
-        drawingPlan = series.getOrdinalDrawingPlan({}, [], false, undefined, true);
+        drawingPlan = series.getOrdinalDrawingPlan({}, [], false, true);
       } else {
         drawingPlan = series.getScatterDrawingPlan(false, xScale instanceof anychart.scales.DateTime);
       }
@@ -1779,7 +1786,7 @@ anychart.core.ChartWithOrthogonalScales.prototype.getSeriesStatus = function(eve
 
         var indexes = this.categorizeData ?
             series.findInRangeByX(minValue, maxValue) :
-            series.data().findInRangeByX(minValue, maxValue);
+            series.data().findInRangeByX(minValue, maxValue, series.xScale() instanceof anychart.scales.Ordinal);
 
         iterator = series.getResetIterator();
         var ind = [];
@@ -1830,7 +1837,7 @@ anychart.core.ChartWithOrthogonalScales.prototype.getSeriesStatus = function(eve
           var tmp = series.findX(value);
           index = tmp >= 0 ? [tmp] : [];
         } else {
-          index = series.data().findInUnsortedDataByX(anychart.utils.toNumber(value));
+          index = series.data().findInUnsortedDataByX(anychart.utils.toNumber(value), 'x', this.getValueFieldToSearchInData());
         }
         iterator = series.getIterator();
         minLength = Infinity;
@@ -1862,6 +1869,15 @@ anychart.core.ChartWithOrthogonalScales.prototype.getSeriesStatus = function(eve
   }
 
   return /** @type {Array.<Object>} */(points);
+};
+
+
+/**
+ * This method should be refactored.
+ * @return {string}
+ */
+anychart.core.ChartWithOrthogonalScales.prototype.getValueFieldToSearchInData = function() {
+  return 'value';
 };
 
 

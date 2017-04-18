@@ -805,6 +805,15 @@ anychart.core.series.Base.prototype.isSizeBased = function() {
 
 
 /**
+ * Tester if the series needs heat (HeatMap).
+ * @return {boolean}
+ */
+anychart.core.series.Base.prototype.needsHeat = function() {
+  return false;
+};
+
+
+/**
  * Tester if the series is width based (column, rangeColumn).
  * @return {boolean}
  */
@@ -2217,7 +2226,7 @@ anychart.core.series.Base.prototype.drawSingleFactoryElement = function(factory,
     element.setSettings(/** @type {Object} */(pointOverride), /** @type {Object} */(statePointOverride));
   }
 
-  element.draw();
+  // element.draw();
   return element;
 };
 
@@ -2309,35 +2318,26 @@ anychart.core.series.Base.prototype.labelsInvalidated_ = function(event) {
  * Draws label for a point.
  * @param {anychart.data.IRowInfo} point
  * @param {anychart.PointState|number} pointState Point state - normal, hover or select.
+ * @param {boolean=} opt_pointStateChanged
  * @protected
  */
-anychart.core.series.Base.prototype.drawLabel = function(point, pointState) {
-  if (this.check(anychart.core.series.Capabilities.SUPPORTS_LABELS))
-    point.meta('label', this.drawFactoryElement(
-        [this.labels, this.hoverLabels, this.selectLabels],
-        [this.getChart().labels, this.getChart().hoverLabels, this.getChart().selectLabels],
-        ['label', 'hoverLabel', 'selectLabel'],
-        this.planHasPointLabels(),
-        true,
-        null,
-        point,
-        pointState));
+anychart.core.series.Base.prototype.drawLabel = function(point, pointState, opt_pointStateChanged) {
+  point.meta('label', this.drawFactoryElement(
+      [this.labels, this.hoverLabels, this.selectLabels],
+      [this.getChart().labels, this.getChart().hoverLabels, this.getChart().selectLabels],
+      ['label', 'hoverLabel', 'selectLabel'],
+      this.planHasPointLabels(),
+      true,
+      null,
+      point,
+      pointState));
 };
 
 
 /**
- * Returns labels default font color.
- * @return {string}
+ * Additional labels initialization for HeatMap.
  */
-anychart.core.series.Base.prototype.getLabelsColor = function() {
-  var color;
-  if (anychart.DEFAULT_THEME != 'v6') {
-    color = anychart.color.darken(/** @type {acgraph.vector.Fill} */(this.getOption('color')));
-    if (goog.isObject(color)) {
-      color = /** @type {string|undefined} */(color['color']);
-    }
-  }
-  return /** @type {string} */(color || '');
+anychart.core.series.Base.prototype.additionalLabelsInitialize = function() {
 };
 
 
@@ -2432,16 +2432,15 @@ anychart.core.series.Base.prototype.markersInvalidated_ = function(event) {
  * @protected
  */
 anychart.core.series.Base.prototype.drawMarker = function(point, pointState) {
-  if (this.check(anychart.core.series.Capabilities.SUPPORTS_MARKERS))
-    point.meta('marker', this.drawFactoryElement(
-        [this.markers, this.hoverMarkers, this.selectMarkers],
-        null,
-        ['marker', 'hoverMarker', 'selectMarker'],
-        this.planHasPointMarkers(),
-        false,
-        null,
-        point,
-        pointState));
+  point.meta('marker', this.drawFactoryElement(
+      [this.markers, this.hoverMarkers, this.selectMarkers],
+      null,
+      ['marker', 'hoverMarker', 'selectMarker'],
+      this.planHasPointMarkers(),
+      false,
+      null,
+      point,
+      pointState));
 };
 
 
@@ -2560,10 +2559,8 @@ anychart.core.series.Base.prototype.outlierMarkersInvalidated_ = function(event)
  * @protected
  */
 anychart.core.series.Base.prototype.drawPointOutliers = function(iterator, pointState) {
-  var outliers;
-  if (this.check(anychart.core.drawers.Capabilities.SUPPORTS_OUTLIERS) &&
-      (outliers = iterator.meta('outliers')) &&
-      outliers.length)
+  var outliers = iterator.meta('outliers');
+  if (outliers && outliers.length)
     this.drawFactoryElement(
         [this.outlierMarkers, this.hoverOutlierMarkers, this.selectOutlierMarkers],
         null,
@@ -2813,6 +2810,7 @@ anychart.core.series.Base.prototype.draw = function() {
   var elementsDrawers = [];
   var factoriesToFinalize = [];
   var factory, i, state, stateFactoriesEnabled;
+  var labelsAreToBeRedrawn = false;
   var COMMON_STATES = anychart.ConsistencyState.CONTAINER | anychart.ConsistencyState.SERIES_POINTS;
 
   // preparing to draw different series parts
@@ -2830,7 +2828,8 @@ anychart.core.series.Base.prototype.draw = function() {
       factory.setAutoZIndex(/** @type {number} */(this.zIndex() + this.LABELS_ZINDEX));
       // see DVF-2259
       factory.invalidate(anychart.ConsistencyState.Z_INDEX);
-      elementsDrawers.push(this.drawLabel);
+      if (this.check(anychart.core.series.Capabilities.SUPPORTS_LABELS))
+        elementsDrawers.push(this.drawLabel);
       factoriesToFinalize.push(factory);
     }
     this.markConsistent(anychart.ConsistencyState.SERIES_LABELS);
@@ -2842,7 +2841,8 @@ anychart.core.series.Base.prototype.draw = function() {
     if (this.prepareFactory(factory, stateFactoriesEnabled, this.planHasPointMarkers(),
             anychart.core.series.Capabilities.SUPPORTS_MARKERS, anychart.ConsistencyState.SERIES_MARKERS)) {
       factory.setAutoZIndex(/** @type {number} */(this.zIndex() + anychart.core.shapeManagers.MARKERS_ZINDEX));
-      elementsDrawers.push(this.drawMarker);
+      if (this.check(anychart.core.series.Capabilities.SUPPORTS_MARKERS))
+        elementsDrawers.push(this.drawMarker);
       factoriesToFinalize.push(factory);
     }
     this.markConsistent(anychart.ConsistencyState.SERIES_MARKERS);
@@ -2864,7 +2864,8 @@ anychart.core.series.Base.prototype.draw = function() {
     if (this.prepareFactory(factory, stateFactoriesEnabled, this.planHasPointOutliers(),
             anychart.core.drawers.Capabilities.SUPPORTS_OUTLIERS, anychart.ConsistencyState.SERIES_OUTLIERS)) {
       factory.setAutoZIndex(/** @type {number} */(this.zIndex() + anychart.core.shapeManagers.OUTLIERS_ZINDEX));
-      elementsDrawers.push(this.drawPointOutliers);
+      if (this.check(anychart.core.drawers.Capabilities.SUPPORTS_OUTLIERS))
+        elementsDrawers.push(this.drawPointOutliers);
       factoriesToFinalize.push(factory);
     }
     this.markConsistent(anychart.ConsistencyState.SERIES_OUTLIERS);
@@ -2875,17 +2876,19 @@ anychart.core.series.Base.prototype.draw = function() {
   if (this.hasInvalidationState(anychart.ConsistencyState.SERIES_POINTS)) {
     anychart.performance.start('Series drawing points');
     var columns = this.retrieveDataColumns();
-    var iterator;
+    var iterator = this.getResetIterator();
+    var yValueNames = this.getYValueNames();
     if (columns) {
-      this.prepareMetaMakers();
+      this.prepareMetaMakers(columns, yValueNames);
+      if (labelsAreToBeRedrawn)
+        this.additionalLabelsInitialize();
       this.startDrawing();
 
-      iterator = this.getResetIterator();
       // currently this section is actual only for Stock, because
       // Cartesian processes preFirst point as a regular point in iterator
       var point = this.getPreFirstPoint();
       if (point) {
-        this.makePointMeta(point, this.getYValueNames(), columns);
+        this.makePointMeta(point, yValueNames, columns);
         this.drawPoint(point, this.getPointState(point.getIndex()));
       }
 
@@ -2893,7 +2896,7 @@ anychart.core.series.Base.prototype.draw = function() {
       iterator.reset();
       while (iterator.advance()) {
         state = this.getPointState(iterator.getIndex());
-        this.makePointMeta(iterator, this.getYValueNames(), columns);
+        this.makePointMeta(iterator, yValueNames, columns);
         this.drawPoint(iterator, state);
         for (i = 0; i < elementsDrawersLength; i++)
           elementsDrawers[i].call(this, iterator, state);
@@ -2903,15 +2906,14 @@ anychart.core.series.Base.prototype.draw = function() {
       // Cartesian processes preFirst point as a regular point in iterator
       point = this.getPostLastPoint();
       if (point) {
-        this.makePointMeta(point, this.getYValueNames(), columns);
+        this.makePointMeta(point, yValueNames, columns);
         this.drawPoint(point, this.getPointState(point.getIndex()));
       }
 
       this.finalizeDrawing();
     } else {
-      iterator = this.getResetIterator();
       while (iterator.advance()) {
-        this.makeMissing(iterator, this.getYValueNames(), NaN);
+        this.makeMissing(iterator, yValueNames, NaN);
       }
     }
     this.markConsistent(anychart.ConsistencyState.SERIES_COLOR | anychart.ConsistencyState.Z_INDEX);
@@ -2921,6 +2923,8 @@ anychart.core.series.Base.prototype.draw = function() {
     }
     anychart.performance.end('Series drawing points');
   } else if (elementsDrawersLength) {
+    if (labelsAreToBeRedrawn)
+      this.additionalLabelsInitialize();
     iterator = this.getResetIterator();
     while (iterator.advance()) {
       state = this.getPointState(iterator.getIndex());
@@ -3436,9 +3440,11 @@ anychart.core.series.Base.prototype.makeOutliersMeta = function(rowInfo, yNames,
 
 /**
  * Prepares meta makers pipe.
+ * @param {Array.<string>} yNames
+ * @param {Array.<string|number>} yColumns
  * @protected
  */
-anychart.core.series.Base.prototype.prepareMetaMakers = function() {
+anychart.core.series.Base.prototype.prepareMetaMakers = function(yNames, yColumns) {
   this.metaMakers.length = 0;
   if (this.planIsStacked()) {
     this.metaMakers.push(this.makeStackedMeta);

@@ -475,8 +475,7 @@ anychart.core.series.Map.prototype.labelsDrawingMap = function(opt_value) {
  */
 anychart.core.series.Map.prototype.drawLabel = function(point, pointState) {
   var index = point.getIndex();
-  if (this.check(anychart.core.series.Capabilities.SUPPORTS_LABELS) &&
-      !(this.labelsDrawingMap_ && goog.isDef(this.labelsDrawingMap_[index]) && !this.labelsDrawingMap_[index])) {
+  if (!(this.labelsDrawingMap_ && goog.isDef(this.labelsDrawingMap_[index]) && !this.labelsDrawingMap_[index])) {
     anychart.core.series.Map.base(this, 'drawLabel', point, pointState);
   }
 };
@@ -883,8 +882,10 @@ anychart.core.series.Map.prototype.applyAppearanceToPoint = function(pointState)
     this.drawPointOutliers(iterator, pointState);
   }
   this.drawer.updatePoint(iterator, pointState);
-  this.drawMarker(iterator, pointState);
-  this.drawLabel(iterator, pointState);
+  if (this.check(anychart.core.series.Capabilities.SUPPORTS_MARKERS))
+    this.drawMarker(iterator, pointState);
+  if (this.check(anychart.core.series.Capabilities.SUPPORTS_LABELS))
+    this.drawLabel(iterator, pointState, true);
 };
 
 

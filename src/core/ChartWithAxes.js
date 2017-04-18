@@ -335,6 +335,37 @@ anychart.core.ChartWithAxes.prototype.onGridSignal = function(event) {
 };
 
 
+/**
+ * Calculates grid padding for heat map cells.
+ */
+anychart.core.ChartWithAxes.prototype.calculateGridsThickness = function() {
+  var grids = this.grids_;
+  var maxVerticalThickness = 0;
+  var maxHorizontalThickness = 0;
+  for (var i = 0, len = grids.length; i < len; i++) {
+    var grid = grids[i];
+    if (!grid) continue;
+
+    var thickness = acgraph.vector.getThickness(/** @type {acgraph.vector.Stroke} */(grid.stroke()));
+
+    if (grid.isHorizontal()) {
+      if (thickness > maxHorizontalThickness) {
+        maxHorizontalThickness = thickness;
+      }
+    } else {
+      if (thickness > maxVerticalThickness) {
+        maxVerticalThickness = thickness;
+      }
+    }
+  }
+
+  return {
+    vertical: maxVerticalThickness,
+    horizontal: maxHorizontalThickness
+  };
+};
+
+
 //endregion
 //region --- Axes
 //----------------------------------------------------------------------------------------------------------------------

@@ -340,7 +340,7 @@ anychart.core.utils.ChartA11y.prototype.disposeInternal = function() {
 //----------------------------------------------------------------------------------------------------------------------
 /**
  * Anychart series accessibility class.
- * @param {anychart.core.series.Base|anychart.core.SeriesBase} series - Related series instance.
+ * @param {anychart.core.series.Base} series - Related series instance.
  * @constructor
  * @extends {anychart.core.utils.A11y}
  */
@@ -349,7 +349,7 @@ anychart.core.utils.SeriesA11y = function(series) {
 
   /**
    * Series reference.
-   * @type {anychart.core.series.Base|anychart.core.SeriesBase}
+   * @type {anychart.core.series.Base}
    * @private
    */
   this.series_ = series;

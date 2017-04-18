@@ -881,26 +881,6 @@ anychart.charts.Sparkline.prototype.dataInvalidated_ = function(e) {
 
 
 /**
- * DO NOT PUBLISH.
- */
-anychart.charts.Sparkline.prototype.resetCategorisation = function() {
-  if (this.data_ != this.parentView_)
-    goog.dispose(this.data_);
-  this.data_ = /** @type {!anychart.data.View} */(this.parentView_);
-};
-
-
-/**
- * DO NOT PUBLISH.
- * @param {!Array.<*>|boolean} categories If Array - ordinal scale, if false - scatter scale with numbers,
- *    true - datetime scale.
- */
-anychart.charts.Sparkline.prototype.categoriseData = function(categories) {
-  this.data_ = this.parentView_.prepare('x', categories);
-};
-
-
-/**
  * Returns current mapping iterator.
  * @return {!anychart.data.Iterator} Current series iterator.
  */

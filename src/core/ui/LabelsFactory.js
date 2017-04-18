@@ -467,10 +467,9 @@ anychart.core.ui.LabelsFactory.prototype.textSettings = function(opt_objectOrNam
 //----------------------------------------------------------------------------------------------------------------------
 /**
  * Helper method.
- * @private
  * @return {boolean} is adjustment enabled.
  */
-anychart.core.ui.LabelsFactory.prototype.adjustEnabled_ = function() {
+anychart.core.ui.LabelsFactory.prototype.adjustEnabled = function() {
   var adjustFontSize = this.getOption('adjustFontSize');
   return !!adjustFontSize && (adjustFontSize['width'] || adjustFontSize['height']);
 };
@@ -485,7 +484,7 @@ anychart.core.ui.LabelsFactory.prototype.adjustFontSizeMode = function(opt_value
     opt_value = anychart.enums.normalizeAdjustFontSizeMode(opt_value);
     if (this.adjustFontSizeMode_ != opt_value) {
       this.adjustFontSizeMode_ = opt_value;
-      if (this.adjustEnabled_())
+      if (this.adjustEnabled())
         this.invalidate(anychart.ConsistencyState.BOUNDS, anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED);
     }
     return this;
@@ -1859,17 +1858,6 @@ anychart.core.ui.LabelsFactory.Label.prototype.autoVertical = function(opt_value
 //  Checkers.
 //
 //----------------------------------------------------------------------------------------------------------------------
-/**
- * Helper method.
- * @private
- * @return {boolean} is adjustment enabled.
- */
-anychart.core.ui.LabelsFactory.Label.prototype.adjustEnabled_ = function() {
-  var adjustFontSize = this.getOption('adjustFontSize');
-  return !!adjustFontSize && (adjustFontSize['width'] || adjustFontSize['height']);
-};
-
-
 /**
  * Check
  * @param {number} width
