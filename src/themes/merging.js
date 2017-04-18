@@ -849,7 +849,8 @@ anychart.themes.merging.mergingMap_ = [
       'treeMap',
       'linearGauge',
       'pert',
-      'resource'
+      'resource',
+      'venn'
     ]
   },
   {

@@ -274,6 +274,10 @@ anychart.ConsistencyState = {
   PERT_CALCULATIONS: 1 << 13,
   PERT_LABELS: 1 << 14,
   PERT_APPEARANCE: 1 << 15,
+  //---------------------------------- VENN CHART (SEPARATE CHART) ----------------------------------
+  VENN_DATA: 1 << 12,
+  VENN_LABELS: 1 << 13,
+  VENN_APPEARANCE: 1 << 14,
   //---------------------------------- ANNOTATIONS (VB) ----------------------------------
   ANNOTATIONS_ANCHORS: 1 << 6,
   ANNOTATIONS_LAST_POINT: 1 << 7,

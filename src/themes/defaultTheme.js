@@ -5033,6 +5033,24 @@ goog.provide('anychart.themes.defaultTheme');
       }
     },
 
+    'venn': {
+      'setsSeparator': '&',
+      'background': {
+        'zIndex': 0
+      },
+      'padding': {
+        'top': 15,
+        'right': 5,
+        'bottom': 15,
+        'left': 5
+      },
+      'a11y': {
+        'enabled': true,
+        'titleFormat': chartA11yTitleFormatter,
+        'mode': 'chartElements'
+      }
+    },
+
     // standalone components
     'standalones': {
       'background': {
