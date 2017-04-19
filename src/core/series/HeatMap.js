@@ -53,7 +53,8 @@ anychart.core.series.HeatMap.prototype.calcMinFontSize_ = function(point, pointS
       true,
       null,
       point,
-      pointState);
+      pointState,
+      false);
 
   if (label) {
     var mergedSettings = label.getMergedSettings();
@@ -244,11 +245,11 @@ anychart.core.series.HeatMap.prototype.prepareMetaMakers = function(yNames, yCol
 
 
 /** @inheritDoc */
-anychart.core.series.HeatMap.prototype.drawLabel = function(point, pointState, opt_pointStateChanged) {
-  anychart.core.series.HeatMap.base(this, 'drawLabel', point, pointState, opt_pointStateChanged);
-
+anychart.core.series.HeatMap.prototype.drawLabel = function(point, pointState, pointStateChanged) {
   var displayMode = (/** @type {anychart.charts.HeatMap} */(this.chart)).labelsDisplayMode();
-  if (displayMode != anychart.enums.LabelsDisplayMode.ALWAYS_SHOW) {
+  var needsMoreWork = displayMode != anychart.enums.LabelsDisplayMode.ALWAYS_SHOW;
+  anychart.core.series.HeatMap.base(this, 'drawLabel', point, pointState, needsMoreWork ? false : pointStateChanged);
+  if (needsMoreWork) {
     var iterator = this.getIterator();
     var label = /** @type {anychart.core.ui.LabelsFactory.Label} */(iterator.meta('label'));
     if (label) {
@@ -287,6 +288,8 @@ anychart.core.series.HeatMap.prototype.drawLabel = function(point, pointState, o
       if (outOfBounds && displayMode == anychart.enums.LabelsDisplayMode.DROP) {
         this.labels().clear(label.getIndex());
         point.meta('label', null);
+      } else if (pointStateChanged) {
+        label.draw();
       }
     }
   }

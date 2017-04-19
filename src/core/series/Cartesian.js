@@ -974,11 +974,11 @@ anychart.core.series.Cartesian.prototype.applyAppearanceToPoint = function(point
         /** @type {Object.<string, acgraph.vector.Shape>} */(iterator.meta('shapes')));
   }
   if (this.supportsOutliers()) {
-    this.drawPointOutliers(iterator, pointState);
+    this.drawPointOutliers(iterator, pointState, true);
   }
   this.drawer.updatePoint(iterator, pointState);
   if (this.check(anychart.core.series.Capabilities.SUPPORTS_MARKERS))
-    this.drawMarker(iterator, pointState);
+    this.drawMarker(iterator, pointState, true);
   if (this.check(anychart.core.series.Capabilities.SUPPORTS_LABELS))
     this.drawLabel(iterator, pointState, true);
 };
@@ -1000,7 +1000,7 @@ anychart.core.series.Cartesian.prototype.applyAppearanceToSeries = function(poin
   this.shapeManager.updateColors(pointState,
       /** @type {Object.<string, acgraph.vector.Shape>} */(iterator.meta('shapes')));
   if (this.supportsOutliers()) {
-    this.drawPointOutliers(iterator, pointState);
+    this.drawPointOutliers(iterator, pointState, true);
   }
 };
 

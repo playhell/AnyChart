@@ -467,16 +467,11 @@ anychart.core.series.Map.prototype.labelsDrawingMap = function(opt_value) {
 };
 
 
-/**
- * Draws label for a point.
- * @param {anychart.data.IRowInfo} point
- * @param {anychart.PointState|number} pointState Point state - normal, hover or select.
- * @protected
- */
-anychart.core.series.Map.prototype.drawLabel = function(point, pointState) {
+/** @inheritDoc */
+anychart.core.series.Map.prototype.drawLabel = function(point, pointState, pointStateChanged) {
   var index = point.getIndex();
   if (!(this.labelsDrawingMap_ && goog.isDef(this.labelsDrawingMap_[index]) && !this.labelsDrawingMap_[index])) {
-    anychart.core.series.Map.base(this, 'drawLabel', point, pointState);
+    anychart.core.series.Map.base(this, 'drawLabel', point, pointState, pointStateChanged);
   }
 };
 
@@ -879,11 +874,11 @@ anychart.core.series.Map.prototype.applyAppearanceToPoint = function(pointState)
     }
   }
   if (this.supportsOutliers()) {
-    this.drawPointOutliers(iterator, pointState);
+    this.drawPointOutliers(iterator, pointState, true);
   }
   this.drawer.updatePoint(iterator, pointState);
   if (this.check(anychart.core.series.Capabilities.SUPPORTS_MARKERS))
-    this.drawMarker(iterator, pointState);
+    this.drawMarker(iterator, pointState, true);
   if (this.check(anychart.core.series.Capabilities.SUPPORTS_LABELS))
     this.drawLabel(iterator, pointState, true);
 };
@@ -1142,7 +1137,8 @@ anychart.core.series.Map.prototype.createFormatProvider = function(opt_force) {
 
 
 /** @inheritDoc */
-anychart.core.series.Map.prototype.drawSingleFactoryElement = function(factory, index, positionProvider, formatProvider, chartNormalFactory, seriesStateFactory, chartStateFactory, pointOverride, statePointOverride, opt_position) {
+anychart.core.series.Map.prototype.drawSingleFactoryElement = function(factory, index, positionProvider, formatProvider,
+    chartNormalFactory, seriesStateFactory, chartStateFactory, pointOverride, statePointOverride, callDraw, opt_position) {
   if (!positionProvider['value'])
     return null;
 
@@ -1187,7 +1183,8 @@ anychart.core.series.Map.prototype.drawSingleFactoryElement = function(factory, 
     }
   }
 
-  element.draw();
+  if (callDraw)
+    element.draw();
 
   //Needs for correct drawing of label connectors in zoomed map state.
   if (this.drawer.type == anychart.enums.SeriesDrawerTypes.CHOROPLETH) {

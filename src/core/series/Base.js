@@ -1999,10 +1999,11 @@ anychart.core.series.Base.prototype.prepareFactory = function(factory, stateFact
  * @param {?Array.<number>} positionYs
  * @param {anychart.data.IRowInfo} point
  * @param {anychart.PointState|number} state
+ * @param {boolean} callDraw
  * @return {anychart.core.ui.MarkersFactory.Marker|anychart.core.ui.LabelsFactory.Label|null}
  * @protected
  */
-anychart.core.series.Base.prototype.drawFactoryElement = function(seriesFactoryGetters, chartFactoryGetters, overrideNames, hasPointOverrides, isLabel, positionYs, point, state) {
+anychart.core.series.Base.prototype.drawFactoryElement = function(seriesFactoryGetters, chartFactoryGetters, overrideNames, hasPointOverrides, isLabel, positionYs, point, state, callDraw) {
   var isDraw, positionProvider, i, indexes;
   var index = point.getIndex();
   if (positionYs) {
@@ -2058,13 +2059,13 @@ anychart.core.series.Base.prototype.drawFactoryElement = function(seriesFactoryG
         for (i = 0; i < positionYs.length; i++) {
           positionProvider = {'value': {'x': positionYs[i], 'y': x}};
           indexes[i] = this.drawSingleFactoryElement(mainFactory, indexes[i], positionProvider, formatProvider,
-              chartNormalFactory, seriesStateFactory, chartStateFactory, pointOverride, statePointOverride).getIndex();
+              chartNormalFactory, seriesStateFactory, chartStateFactory, pointOverride, statePointOverride, callDraw).getIndex();
         }
       } else {
         for (i = 0; i < positionYs.length; i++) {
           positionProvider = {'value': {'x': x, 'y': positionYs[i]}};
           indexes[i] = this.drawSingleFactoryElement(mainFactory, indexes[i], positionProvider, formatProvider,
-              chartNormalFactory, seriesStateFactory, chartStateFactory, pointOverride, statePointOverride).getIndex();
+              chartNormalFactory, seriesStateFactory, chartStateFactory, pointOverride, statePointOverride, callDraw).getIndex();
         }
       }
     } else {
@@ -2084,7 +2085,7 @@ anychart.core.series.Base.prototype.drawFactoryElement = function(seriesFactoryG
 
       positionProvider = this.createPositionProvider(/** @type {anychart.enums.Position|string} */(position), true);
       return this.drawSingleFactoryElement(mainFactory, index, positionProvider, formatProvider,
-          chartNormalFactory, seriesStateFactory, chartStateFactory, pointOverride, statePointOverride, position);
+          chartNormalFactory, seriesStateFactory, chartStateFactory, pointOverride, statePointOverride, callDraw, position);
     }
   } else {
     if (positionYs) {
@@ -2184,11 +2185,13 @@ anychart.core.series.Base.prototype.checkBoundsCollision = function(factory, lab
  * @param {anychart.core.ui.MarkersFactory|anychart.core.ui.LabelsFactory|null} chartStateFactory
  * @param {*} pointOverride
  * @param {*} statePointOverride
+ * @param {boolean} callDraw
  * @param {(?anychart.enums.Position|string)=} opt_position Position which is needed to calculate label auto anchor.
  * @return {anychart.core.ui.MarkersFactory.Marker|anychart.core.ui.LabelsFactory.Label}
  * @protected
  */
-anychart.core.series.Base.prototype.drawSingleFactoryElement = function(factory, index, positionProvider, formatProvider, chartNormalFactory, seriesStateFactory, chartStateFactory, pointOverride, statePointOverride, opt_position) {
+anychart.core.series.Base.prototype.drawSingleFactoryElement = function(factory, index, positionProvider, formatProvider,
+    chartNormalFactory, seriesStateFactory, chartStateFactory, pointOverride, statePointOverride, callDraw, opt_position) {
   var element = formatProvider ? factory.getLabel(/** @type {number} */(index)) : factory.getMarker(/** @type {number} */(index));
   if (element) {
     if (formatProvider)
@@ -2226,7 +2229,8 @@ anychart.core.series.Base.prototype.drawSingleFactoryElement = function(factory,
     element.setSettings(/** @type {Object} */(pointOverride), /** @type {Object} */(statePointOverride));
   }
 
-  // element.draw();
+  if (callDraw)
+    element.draw();
   return element;
 };
 
@@ -2318,10 +2322,10 @@ anychart.core.series.Base.prototype.labelsInvalidated_ = function(event) {
  * Draws label for a point.
  * @param {anychart.data.IRowInfo} point
  * @param {anychart.PointState|number} pointState Point state - normal, hover or select.
- * @param {boolean=} opt_pointStateChanged
+ * @param {boolean} pointStateChanged
  * @protected
  */
-anychart.core.series.Base.prototype.drawLabel = function(point, pointState, opt_pointStateChanged) {
+anychart.core.series.Base.prototype.drawLabel = function(point, pointState, pointStateChanged) {
   point.meta('label', this.drawFactoryElement(
       [this.labels, this.hoverLabels, this.selectLabels],
       [this.getChart().labels, this.getChart().hoverLabels, this.getChart().selectLabels],
@@ -2330,7 +2334,8 @@ anychart.core.series.Base.prototype.drawLabel = function(point, pointState, opt_
       true,
       null,
       point,
-      pointState));
+      pointState,
+      pointStateChanged));
 };
 
 
@@ -2429,9 +2434,10 @@ anychart.core.series.Base.prototype.markersInvalidated_ = function(event) {
  * Draws marker for the point.
  * @param {anychart.data.IRowInfo} point
  * @param {anychart.PointState|number} pointState Point state.
+ * @param {boolean} pointStateChanged
  * @protected
  */
-anychart.core.series.Base.prototype.drawMarker = function(point, pointState) {
+anychart.core.series.Base.prototype.drawMarker = function(point, pointState, pointStateChanged) {
   point.meta('marker', this.drawFactoryElement(
       [this.markers, this.hoverMarkers, this.selectMarkers],
       null,
@@ -2440,7 +2446,8 @@ anychart.core.series.Base.prototype.drawMarker = function(point, pointState) {
       false,
       null,
       point,
-      pointState));
+      pointState,
+      pointStateChanged));
 };
 
 
@@ -2556,9 +2563,10 @@ anychart.core.series.Base.prototype.outlierMarkersInvalidated_ = function(event)
  * Draws outliers markers for the point.
  * @param {anychart.data.IIterator} iterator
  * @param {anychart.PointState|number} pointState Point state.
+ * @param {boolean} pointStateChanged
  * @protected
  */
-anychart.core.series.Base.prototype.drawPointOutliers = function(iterator, pointState) {
+anychart.core.series.Base.prototype.drawPointOutliers = function(iterator, pointState, pointStateChanged) {
   var outliers = iterator.meta('outliers');
   if (outliers && outliers.length)
     this.drawFactoryElement(
@@ -2569,7 +2577,8 @@ anychart.core.series.Base.prototype.drawPointOutliers = function(iterator, point
         false,
         /** @type {Array.<number>} */(outliers),
         iterator,
-        pointState);
+        pointState,
+        pointStateChanged);
 };
 
 
@@ -2899,7 +2908,7 @@ anychart.core.series.Base.prototype.draw = function() {
         this.makePointMeta(iterator, yValueNames, columns);
         this.drawPoint(iterator, state);
         for (i = 0; i < elementsDrawersLength; i++)
-          elementsDrawers[i].call(this, iterator, state);
+          elementsDrawers[i].call(this, iterator, state, false);
       }
 
       // currently this section is actual only for Stock, because
@@ -2929,7 +2938,7 @@ anychart.core.series.Base.prototype.draw = function() {
     while (iterator.advance()) {
       state = this.getPointState(iterator.getIndex());
       for (i = 0; i < elementsDrawersLength; i++)
-        elementsDrawers[i].call(this, iterator, state);
+        elementsDrawers[i].call(this, iterator, state, false);
     }
   }
 
