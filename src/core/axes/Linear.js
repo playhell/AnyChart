@@ -336,6 +336,7 @@ anychart.core.axes.Linear.prototype.labelsInvalidated_ = function(event) {
   this.dropStaggeredLabelsCache_();
   this.dropOverlappedLabelsCache_();
   this.dropBoundsCache();
+  this.labels().clear();
   this.invalidate(state, signal);
 };
 
@@ -381,6 +382,7 @@ anychart.core.axes.Linear.prototype.minorLabelsInvalidated_ = function(event) {
   }
   this.dropOverlappedLabelsCache_();
   this.dropBoundsCache();
+  this.minorLabels().clear();
   this.invalidate(state, signal);
 };
 
@@ -753,8 +755,6 @@ anychart.core.axes.Linear.prototype.staggerMaxLines = function(opt_value) {
  */
 anychart.core.axes.Linear.prototype.dropBoundsCache = function() {
   if (this.labelsBoundingRects_) this.labelsBoundingRects_.length = 0;
-  this.labels().clear();
-  this.minorLabels().clear();
   this.labelsBounds_.length = 0;
   this.minorLabelsBounds_.length = 0;
 };
@@ -2112,12 +2112,6 @@ anychart.core.axes.Linear.prototype.draw = function() {
     }
 
     this.labels().draw();
-    // for (var k = 0, len = this.labelsEl_.length; k < len; k++) {
-    //   var layer = new acgraph.vector.UnmanagedLayer();
-    //   layer.zIndex(100);
-    //   layer.content(this.labelsEl_[k]);
-    //   layer.parent(this.container());
-    // }
   }
 
   this.title().resumeSignalsDispatching(false);
