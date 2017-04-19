@@ -2420,12 +2420,6 @@ goog.provide('anychart.themes.defaultTheme');
           'stackMode': 'percent',
           'minimumGap': 0,
           'maximumGap': 0
-        },
-        {
-          'type': 'ordinal'
-        },
-        {
-          'type': 'ordinal'
         }
       ],
       'crosshair': {
@@ -2437,8 +2431,6 @@ goog.provide('anychart.themes.defaultTheme');
       },
       'xScale': 0,
       'yScale': 1,
-      'firstCategoriesScale': 2,
-      'lastCategoriesScale': 3,
       'defaultAnnotationSettings': {},
       'annotations': {
         'annotationsList': [],
@@ -2467,12 +2459,6 @@ goog.provide('anychart.themes.defaultTheme');
         {
           'type': 'linear',
           'stackMode': 'value'
-        },
-        {
-          'type': 'ordinal'
-        },
-        {
-          'type': 'ordinal'
         }
       ],
       'defaultSeriesSettings': {
