@@ -2885,14 +2885,15 @@ anychart.core.series.Base.prototype.draw = function() {
   if (this.hasInvalidationState(anychart.ConsistencyState.SERIES_POINTS)) {
     anychart.performance.start('Series drawing points');
     var columns = this.retrieveDataColumns();
-    var iterator = this.getResetIterator();
-    var yValueNames = this.getYValueNames();
+    var iterator;
     if (columns) {
+      var yValueNames = this.getYValueNames();
       this.prepareMetaMakers(columns, yValueNames);
       if (labelsAreToBeRedrawn)
         this.additionalLabelsInitialize();
       this.startDrawing();
 
+      iterator = this.getResetIterator();
       // currently this section is actual only for Stock, because
       // Cartesian processes preFirst point as a regular point in iterator
       var point = this.getPreFirstPoint();
@@ -2921,8 +2922,9 @@ anychart.core.series.Base.prototype.draw = function() {
 
       this.finalizeDrawing();
     } else {
+      iterator = this.getResetIterator();
       while (iterator.advance()) {
-        this.makeMissing(iterator, yValueNames, NaN);
+        this.makeMissing(iterator, this.getYValueNames(), NaN);
       }
     }
     this.markConsistent(anychart.ConsistencyState.SERIES_COLOR | anychart.ConsistencyState.Z_INDEX);
