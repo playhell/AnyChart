@@ -545,8 +545,8 @@ anychart.core.axes.Linear.prototype.scale = function(opt_value) {
       this.dropStaggeredLabelsCache_();
       this.dropOverlappedLabelsCache_();
       this.dropBoundsCache();
-      this.labels().dropCallsCache();
-      this.minorLabels().dropCallsCache();
+      this.labels().clear();
+      this.minorLabels().clear();
       this.invalidate(this.ALL_VISUAL_STATES, anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED);
     }
     return this;
@@ -566,8 +566,8 @@ anychart.core.axes.Linear.prototype.scaleInvalidated_ = function(event) {
     this.dropStaggeredLabelsCache_();
     this.dropOverlappedLabelsCache_();
     this.dropBoundsCache();
-    this.labels().dropCallsCache();
-    this.minorLabels().dropCallsCache();
+    this.labels().clear();
+    this.minorLabels().clear();
     this.invalidate(this.ALL_VISUAL_STATES, anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED);
   }
 };
