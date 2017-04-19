@@ -85,11 +85,16 @@ anychart.charts.HeatMap.prototype.seriesConfig = (function() {
 })();
 
 
+//----------------------------------------------------------------------------------------------------------------------
+//
+//  Overwritten series methods. (for encapsulation series)
+//
+//----------------------------------------------------------------------------------------------------------------------
 /**
  * Methods that are proxied from the series.
  * @const {Array.<string>}
  */
-anychart.charts.HeatMap.prototype.PROXY_METHODS = ([
+anychart.charts.HeatMap.PROXY_METHODS = ([
   'fill',
   'hoverFill',
   'selectFill',
@@ -109,11 +114,6 @@ anychart.charts.HeatMap.prototype.PROXY_METHODS = ([
 ]);
 
 
-//----------------------------------------------------------------------------------------------------------------------
-//
-//  Overwritten series methods. (for encapsulation series)
-//
-//----------------------------------------------------------------------------------------------------------------------
 (function() {
   /**
    * A proxy template to make partials for the methods of series.
@@ -130,7 +130,7 @@ anychart.charts.HeatMap.prototype.PROXY_METHODS = ([
     var res = series[name].apply(series, args);
     return goog.isDef(args[1]) ? res : this;
   };
-  var methods = this.PROXY_METHODS;
+  var methods = anychart.charts.HeatMap.PROXY_METHODS;
   for (var i = 0; i < methods.length; i++) {
     var name = methods[i];
     anychart.charts.HeatMap.prototype[name] = goog.partial(proxy, name);
@@ -786,7 +786,7 @@ anychart.charts.HeatMap.prototype.serialize = function() {
 anychart.charts.HeatMap.prototype.setupSeriesByJSON = function(config, scalesInstances, opt_default) {
   var json = {};
   var seriesConfig = {};
-  var methods = this.PROXY_METHODS;
+  var methods = anychart.charts.HeatMap.PROXY_METHODS;
   for (var i = 0; i < methods.length; i++) {
     var method = methods[i];
     if (goog.isDef(config[method]))
@@ -813,7 +813,7 @@ anychart.charts.HeatMap.prototype.serializeSeries = function(json, scales, scale
   var series = this.seriesList[0];
   if (series) {
     var config = series.serialize();
-    var methods = this.PROXY_METHODS;
+    var methods = anychart.charts.HeatMap.PROXY_METHODS;
     for (var i = 0; i < methods.length; i++) {
       var method = methods[i];
       if (goog.isDef(config[method]))
