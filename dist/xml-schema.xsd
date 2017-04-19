@@ -2538,6 +2538,7 @@
         <xsd:attribute name="disable_pointer_events" type="xsd:boolean"/>
         <xsd:attribute name="corner_type" type="enums.BackgroundCornerTypes" default="none"/>
         <xsd:attribute name="corners" type="xsd:double" default="0"/>
+        <xsd:attributeGroup ref="attrs.VisualBase"/>
     </xsd:complexType>
 
     <xsd:complexType name="core.quadrant.Quarters_list">
