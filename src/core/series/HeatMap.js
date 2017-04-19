@@ -168,10 +168,10 @@ anychart.core.series.HeatMap.prototype.makeHeatMapMeta = function(rowInfo, yName
   var hoverStrokeThicknessHalf = acgraph.vector.getThickness(hoverStroke) / 2;
   var selectStrokeThicknessHalf = acgraph.vector.getThickness(selectStroke) / 2;
 
-  var vPadding = this.verticalGridThickness % 2 / 2 + this.verticalGridThickness / 2;
+  var vPadding = 0;//this.verticalGridThickness % 2 / 2 + this.verticalGridThickness / 2;
   //if (isLastCol) vPadding -= this.verticalGridThickness % 2;
-  var hPadding = -this.horizontalGridThickness % 2 / 2 + this.horizontalGridThickness / 2;
-  if (isLastRow) hPadding += this.horizontalGridThickness % 2;
+  var hPadding = 0;//-this.horizontalGridThickness % 2 / 2 + this.horizontalGridThickness / 2;
+  // if (isLastRow) hPadding += this.horizontalGridThickness % 2;
 
   var x = Math.floor(left + vPadding);
   var y = Math.floor(top + hPadding);
@@ -237,6 +237,7 @@ anychart.core.series.HeatMap.prototype.prepareMetaMakers = function(yNames, yCol
   this.metaMakers.length = 0;
   this.metaMakers.push(this.makeHeatMapMeta);
   var iterator = this.getIterator();
+  iterator.reset();
   while (iterator.advance()) {
     this.makePointMeta(iterator, yNames, yColumns);
   }
@@ -248,7 +249,16 @@ anychart.core.series.HeatMap.prototype.prepareMetaMakers = function(yNames, yCol
 anychart.core.series.HeatMap.prototype.drawLabel = function(point, pointState, pointStateChanged) {
   var displayMode = (/** @type {anychart.charts.HeatMap} */(this.chart)).labelsDisplayMode();
   var needsMoreWork = displayMode != anychart.enums.LabelsDisplayMode.ALWAYS_SHOW;
-  anychart.core.series.HeatMap.base(this, 'drawLabel', point, pointState, needsMoreWork ? false : pointStateChanged);
+  point.meta('label', this.drawFactoryElement(
+      [this.labels, this.hoverLabels, this.selectLabels],
+      null,
+      ['label', 'hoverLabel', 'selectLabel'],
+      this.planHasPointLabels(),
+      true,
+      null,
+      point,
+      pointState,
+      needsMoreWork ? false : pointStateChanged));
   if (needsMoreWork) {
     var iterator = this.getIterator();
     var label = /** @type {anychart.core.ui.LabelsFactory.Label} */(iterator.meta('label'));
@@ -273,7 +283,7 @@ anychart.core.series.HeatMap.prototype.drawLabel = function(point, pointState, p
       mergedSettings['width'] = null;
       mergedSettings['height'] = null;
       if (mergedSettings['adjustByWidth'] || mergedSettings['adjustByHeight'])
-        mergedSettings['fontSize'] = label.currentLabelsFactory().autoSettings['fontSize'];
+        mergedSettings['fontSize'] = label.parentLabelsFactory().autoSettings['fontSize'];
 
       var bounds = this.labels().measure(label.formatProvider(), label.positionProvider(), mergedSettings);
 
@@ -367,4 +377,15 @@ anychart.core.series.HeatMap.prototype.updateContext = function(provider, opt_ro
 
   return /** @type {anychart.format.Context} */ (provider.propagate(values));
 };
+
+
+/** @inheritDoc */
+anychart.core.series.HeatMap.prototype.getColorResolutionContext = function(opt_baseColor, opt_ignorePointSettings, opt_ignoreColorScale) {
+  var result = anychart.core.series.HeatMap.base(this, 'getColorResolutionContext', opt_baseColor, opt_ignorePointSettings, opt_ignoreColorScale);
+  result['colorScale'] = (/** @type {anychart.charts.HeatMap} */(this.getChart())).colorScale();
+  return result;
+};
+
+
+
 

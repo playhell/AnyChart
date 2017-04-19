@@ -187,6 +187,34 @@ anychart.core.shapeManagers.pathHatchConfig = {
  * Template shape config for easy reusage.
  * @const {anychart.core.shapeManagers.ShapeConfig}
  */
+anychart.core.shapeManagers.rectFillStrokeConfig = {
+  name: 'rect',
+  shapeType: anychart.enums.ShapeType.RECT,
+  fillNames: ['fill', 'hoverFill', 'selectFill'],
+  strokeNames: ['stroke', 'hoverStroke', 'selectStroke'],
+  isHatchFill: false,
+  zIndex: anychart.core.shapeManagers.FILL_SHAPES_ZINDEX
+};
+
+
+/**
+ * Template shape config for easy reusage.
+ * @const {anychart.core.shapeManagers.ShapeConfig}
+ */
+anychart.core.shapeManagers.rectHatchConfig = {
+  name: 'hatchRect',
+  shapeType: anychart.enums.ShapeType.RECT,
+  fillNames: ['hatchFill', 'hoverHatchFill', 'selectHatchFill'],
+  strokeNames: null,
+  isHatchFill: true,
+  zIndex: anychart.core.shapeManagers.HATCH_FILL_SHAPES_ZINDEX
+};
+
+
+/**
+ * Template shape config for easy reusage.
+ * @const {anychart.core.shapeManagers.ShapeConfig}
+ */
 anychart.core.shapeManagers.circleFillStrokeConfig = {
   name: 'circle',
   shapeType: anychart.enums.ShapeType.CIRCLE,

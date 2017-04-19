@@ -25,7 +25,7 @@ goog.require('anychart.themes.merging');
  * @constructor
  */
 anychart.charts.HeatMap = function(opt_data, opt_csvSettings) {
-  anychart.charts.HeatMap.base(this, 'constructor');
+  anychart.charts.HeatMap.base(this, 'constructor', false);
 
   /**
    * Zoom settings.
@@ -35,6 +35,19 @@ anychart.charts.HeatMap = function(opt_data, opt_csvSettings) {
   this.yZoom_ = new anychart.core.utils.OrdinalZoom(this, false);
 
   this.setType(anychart.enums.ChartTypes.HEAT_MAP);
+  this.defaultSeriesType(anychart.enums.HeatMapSeriesType.HEAT_MAP);
+
+  var config = anychart.getFullTheme('heatMap');
+  this.defaultSeriesSettings({
+    'heatMap': anychart.themes.merging.getThemePart(config, 'defaultSeriesSettings.base')
+  });
+
+  /**
+   * Series instance.
+   * @type {anychart.core.series.HeatMap}
+   * @private
+   */
+  this.series_ = this.createSeriesByType('', opt_data || null, opt_csvSettings);
 };
 goog.inherits(anychart.charts.HeatMap, anychart.core.CartesianBase);
 
@@ -45,7 +58,8 @@ goog.inherits(anychart.charts.HeatMap, anychart.core.CartesianBase);
  */
 anychart.charts.HeatMap.prototype.SUPPORTED_CONSISTENCY_STATES =
     anychart.core.CartesianBase.prototype.SUPPORTED_CONSISTENCY_STATES |
-    anychart.ConsistencyState.HEATMAP_Y_SCROLLER;
+    anychart.ConsistencyState.HEATMAP_Y_SCROLLER |
+    anychart.ConsistencyState.HEATMAP_COLOR_SCALE;
 
 
 /**
@@ -65,21 +79,14 @@ anychart.charts.HeatMap.prototype.seriesConfig = (function() {
     drawerType: anychart.enums.SeriesDrawerTypes.HEAT_MAP,
     shapeManagerType: anychart.enums.ShapeManagerTypes.PER_POINT,
     shapesConfig: [
-      anychart.core.shapeManagers.pathTopArea3DConfig,
-      anychart.core.shapeManagers.pathBottom3DConfig,
-      anychart.core.shapeManagers.pathLeft3DConfig,
-      anychart.core.shapeManagers.pathRight3DConfig,
-      anychart.core.shapeManagers.pathBack3DConfig,
-      anychart.core.shapeManagers.pathFront3DConfig,
-      // anychart.core.shapeManagers.pathRight3DHatchConfig,
-      // anychart.core.shapeManagers.pathTop3DHatchConfig,
-      anychart.core.shapeManagers.pathFront3DHatchConfig
+      anychart.core.shapeManagers.rectFillStrokeConfig,
+      anychart.core.shapeManagers.rectHatchConfig
     ],
     secondaryShapesConfig: null,
     postProcessor: null,
     capabilities: capabilities,
-    anchoredPositionTop: 'value',
-    anchoredPositionBottom: 'zero'
+    anchoredPositionTop: 'y',
+    anchoredPositionBottom: 'y'
   };
   return res;
 })();
@@ -105,9 +112,9 @@ anychart.charts.HeatMap.PROXY_METHODS = ([
   'hoverHatchFill',
   'selectHatchFill',
   // it seems that default chart labels method should work ok
-  // 'labels',
-  // 'hoverLabels',
-  // 'selectLabels',
+  'labels',
+  'hoverLabels',
+  'selectLabels',
   'markers',
   'hoverMarkers',
   'selectMarkers'
@@ -136,6 +143,12 @@ anychart.charts.HeatMap.PROXY_METHODS = ([
     anychart.charts.HeatMap.prototype[name] = goog.partial(proxy, name);
   }
 })();
+
+
+/** @inheritDoc */
+anychart.charts.HeatMap.prototype.normalizeSeriesType = function(type) {
+  return anychart.enums.normalizeHeatMapSeriesType(type);
+};
 
 
 /** @inheritDoc */
@@ -244,7 +257,7 @@ anychart.charts.HeatMap.prototype.checkXScaleType = function(scale) {
 
 /** @inheritDoc */
 anychart.charts.HeatMap.prototype.onGridSignal = function(event) {
-  this.seriesList[0].invalidate(anychart.ConsistencyState.SERIES_POINTS);
+  this.series_.invalidate(anychart.ConsistencyState.SERIES_POINTS);
   this.invalidate(anychart.ConsistencyState.AXES_CHART_GRIDS | anychart.ConsistencyState.SERIES_CHART_SERIES,
       anychart.Signal.NEEDS_REDRAW);
 };
@@ -311,7 +324,7 @@ anychart.charts.HeatMap.prototype.createLegendItemsProvider = function(sourceMod
     this.calculate();
     var scale = this.colorScale();
     if (scale && scale instanceof anychart.scales.OrdinalColor) {
-      var series = this.seriesList[0];
+      var series = this.series_;
       var ranges = scale.getProcessedRanges();
       for (i = 0, count = ranges.length; i < count; i++) {
         var range = ranges[i];
@@ -451,7 +464,7 @@ anychart.charts.HeatMap.prototype.labelsDisplayMode = function(opt_value) {
     opt_value = anychart.enums.normalizeLabelsDisplayMode(opt_value);
     if (this.labelDisplayMode_ != opt_value) {
       this.labelDisplayMode_ = opt_value;
-      this.seriesList[0].invalidate(anychart.ConsistencyState.SERIES_LABELS);
+      this.series_.invalidate(anychart.ConsistencyState.SERIES_LABELS);
       this.invalidate(anychart.ConsistencyState.SERIES_CHART_SERIES, anychart.Signal.NEEDS_REDRAW);
     }
     return this;
@@ -500,7 +513,7 @@ anychart.charts.HeatMap.prototype.makeCurrentPoint = function(seriesStatus, even
 
 /** @inheritDoc */
 anychart.charts.HeatMap.prototype.getPoint = function(index) {
-  return this.seriesList[0].getPoint(index);
+  return this.series_.getPoint(index);
 };
 
 
@@ -601,7 +614,7 @@ anychart.charts.HeatMap.prototype.calculateXYScales = function() {
         yAutoNames = [];
       }
 
-      var iterator = this.seriesList[0].getResetIterator();
+      var iterator = this.series_.getResetIterator();
       while (iterator.advance()) {
         if (xScaleNamesField) {
           valueIndex = xScale.getIndexByValue(iterator.get('x'));
@@ -624,79 +637,21 @@ anychart.charts.HeatMap.prototype.calculateXYScales = function() {
       if (yScaleNamesField)
         yScale.setAutoNames(yAutoNames);
     }
-  }
-};
-
-
-/**
- * @inheritDoc
- */
-anychart.charts.HeatMap.prototype.calculate = function() {
-  var series = this.seriesList[0];
-  if (this.hasInvalidationState(anychart.ConsistencyState.SCALE_CHART_SCALES |
-          anychart.ConsistencyState.SCALE_CHART_Y_SCALES |
-          anychart.ConsistencyState.SCALE_CHART_SCALE_MAPS)) {
-    var iterator, value;
-
-    var yScale = /** @type {anychart.scales.Base} */(this.yScale());
-    var xScale = /** @type {anychart.scales.Base} */(this.xScale());
-
-    series.xScale(xScale);
-    series.yScale(yScale);
-
-    var xScaleNeedAutoCalc = xScale.needsAutoCalc();
-    var yScaleNeedAutoCalc = yScale.needsAutoCalc();
-
-    if (xScaleNeedAutoCalc || yScaleNeedAutoCalc) {
-      if (xScaleNeedAutoCalc) xScale.startAutoCalc();
-      if (yScaleNeedAutoCalc) yScale.startAutoCalc();
-
-      iterator = series.getResetIterator();
-      while (iterator.advance()) {
-        if (xScaleNeedAutoCalc) {
-          value = iterator.get('x');
-          if (goog.isDef(value)) {
-            xScale.extendDataRange(value);
-          }
-        }
-
-        if (yScaleNeedAutoCalc) {
-          value = iterator.get('y');
-          if (goog.isDef(value)) {
-            yScale.extendDataRange(value);
-          }
-        }
-      }
-    }
-
-    var scalesChanged = false;
-
-    if (this.xScale().needsAutoCalc())
-      scalesChanged |= this.xScale().finishAutoCalc();
-
-    if (this.yScale().needsAutoCalc())
-      scalesChanged |= this.yScale().finishAutoCalc();
-
-    if (scalesChanged) {
-      this.invalidate(anychart.ConsistencyState.SERIES_CHART_SERIES | anychart.ConsistencyState.SCALE_CHART_STATISTICS);
-      series.invalidate(anychart.ConsistencyState.SERIES_COLOR);
-    }
-    this.markConsistent(anychart.ConsistencyState.SCALE_CHART_SCALES |
-        anychart.ConsistencyState.SCALE_CHART_Y_SCALES |
-        anychart.ConsistencyState.SCALE_CHART_SCALE_MAPS);
+    this.invalidate(anychart.ConsistencyState.HEATMAP_COLOR_SCALE);
   }
 
   if (this.hasInvalidationState(anychart.ConsistencyState.HEATMAP_COLOR_SCALE)) {
     if (this.colorScale_ && this.colorScale_.needsAutoCalc()) {
       this.colorScale_.startAutoCalc();
-      iterator = series.getResetIterator();
+      iterator = this.series_.getIterator();
+      iterator.reset();
       while (iterator.advance()) {
         this.colorScale_.extendDataRange(iterator.get('heat'));
       }
       this.colorScale_.finishAutoCalc();
+      this.series_.invalidate(anychart.ConsistencyState.SERIES_COLOR);
+      this.invalidate(anychart.ConsistencyState.SERIES_CHART_SERIES);
     }
-    this.invalidate(anychart.ConsistencyState.SERIES_CHART_SERIES);
-    series.invalidate(anychart.ConsistencyState.SERIES_COLOR);
     this.markConsistent(anychart.ConsistencyState.HEATMAP_COLOR_SCALE);
   }
 };
@@ -716,10 +671,10 @@ anychart.charts.HeatMap.prototype.data = function(opt_value, opt_csvSettings) {
       if (title) this.title(title);
       if (opt_value['rows']) opt_value = opt_value['rows'];
     }
-    this.seriesList[0].data(opt_value, opt_csvSettings);
+    this.series_.data(opt_value, opt_csvSettings);
     return this;
   }
-  return /** @type {!anychart.data.View} */(this.seriesList[0].data());
+  return /** @type {!anychart.data.View} */(this.series_.data());
 };
 
 
@@ -729,7 +684,7 @@ anychart.charts.HeatMap.prototype.data = function(opt_value, opt_csvSettings) {
  * @return {!anychart.charts.HeatMap} instance for method chaining.
  */
 anychart.charts.HeatMap.prototype.hover = function(opt_indexOrIndexes) {
-  this.seriesList[0].hover(opt_indexOrIndexes);
+  this.series_.hover(opt_indexOrIndexes);
   return this;
 };
 
@@ -740,7 +695,7 @@ anychart.charts.HeatMap.prototype.hover = function(opt_indexOrIndexes) {
  * @return {!anychart.charts.HeatMap} instance for method chaining.
  */
 anychart.charts.HeatMap.prototype.select = function(opt_indexOrIndexes) {
-  this.seriesList[0].select(opt_indexOrIndexes);
+  this.series_.select(opt_indexOrIndexes);
   return this;
 };
 
@@ -752,6 +707,24 @@ anychart.charts.HeatMap.prototype.select = function(opt_indexOrIndexes) {
 //----------------------------------------------------------------------------------------------------------------------
 /** @inheritDoc */
 anychart.charts.HeatMap.prototype.setupByJSONWithScales = function(config, scalesInstances, opt_default) {
+  var scale;
+  var json = config['colorScale'];
+  if (goog.isNumber(json)) {
+    scale = scalesInstances[json];
+  } else if (goog.isString(json)) {
+    scale = anychart.scales.Base.fromString(json, null);
+    if (!scale)
+      scale = scalesInstances[json];
+  } else if (goog.isObject(json)) {
+    scale = anychart.scales.Base.fromString(json['type'], null);
+    if (scale)
+      scale.setup(json);
+  } else {
+    scale = null;
+  }
+  if (scale)
+    this.colorScale(scale);
+
   anychart.charts.HeatMap.base(this, 'setupByJSONWithScales', config, scalesInstances, opt_default);
 
   this.labelsDisplayMode(config['labelsDisplayMode']);
@@ -772,19 +745,18 @@ anychart.charts.HeatMap.prototype.setupByJSONWithScales = function(config, scale
 /**
  * @inheritDoc
  */
-anychart.charts.HeatMap.prototype.serialize = function() {
-  var json = anychart.charts.HeatMap.base(this, 'serialize');
-  var chart = json['chart'];
-  chart['yScroller'] = this.yScroller().serialize();
-  chart['yZoom'] = this.yZoom().serialize();
-  chart['labelsDisplayMode'] = this.labelsDisplayMode();
-  return json;
+anychart.charts.HeatMap.prototype.serializeWithScales = function(json, scales, scaleIds) {
+  anychart.charts.HeatMap.base(this, 'serializeWithScales', json, scales, scaleIds);
+  json['yScroller'] = this.yScroller().serialize();
+  json['yZoom'] = this.yZoom().serialize();
+  json['labelsDisplayMode'] = this.labelsDisplayMode();
+
+  this.serializeScale(json, 'colorScale', /** @type {anychart.scales.Base} */(this.colorScale), scales, scaleIds);
 };
 
 
 /** @inheritDoc */
 anychart.charts.HeatMap.prototype.setupSeriesByJSON = function(config, scalesInstances, opt_default) {
-  var json = {};
   var seriesConfig = {};
   var methods = anychart.charts.HeatMap.PROXY_METHODS;
   for (var i = 0; i < methods.length; i++) {
@@ -794,34 +766,21 @@ anychart.charts.HeatMap.prototype.setupSeriesByJSON = function(config, scalesIns
   }
   if (goog.isDef(config['data']))
     seriesConfig['data'] = config['data'];
-
-  if (this.getSeriesCount()) {
-    this.seriesList[0].setupByJSON(seriesConfig, opt_default);
-  } else {
-    var defSettings = anychart.themes.merging.getThemePart(config, 'defaultSeriesSettings.base');
-    if (defSettings) {
-      json['defaultSeriesSettings'] = {'heatMap': defSettings};
-    }
-    json['series'] = [seriesConfig];
-    anychart.charts.HeatMap.base(this, 'setupSeriesByJSON', json, scalesInstances, opt_default);
-  }
+  this.series_.setupByJSON(seriesConfig, opt_default);
 };
 
 
 /** @inheritDoc */
 anychart.charts.HeatMap.prototype.serializeSeries = function(json, scales, scaleIds) {
-  var series = this.seriesList[0];
-  if (series) {
-    var config = series.serialize();
-    var methods = anychart.charts.HeatMap.PROXY_METHODS;
-    for (var i = 0; i < methods.length; i++) {
-      var method = methods[i];
-      if (goog.isDef(config[method]))
-        json[method] = config[method];
-    }
-    if (goog.isDef(config['data']))
-      json['data'] = config['data'];
+  var config = this.series_.serialize();
+  var methods = anychart.charts.HeatMap.PROXY_METHODS;
+  for (var i = 0; i < methods.length; i++) {
+    var method = methods[i];
+    if (goog.isDef(config[method]))
+      json[method] = config[method];
   }
+  if (goog.isDef(config['data']))
+    json['data'] = config['data'];
 };
 
 
@@ -832,6 +791,7 @@ anychart.charts.HeatMap.prototype.disposeInternal = function() {
   anychart.charts.HeatMap.base(this, 'disposeInternal');
   goog.disposeAll(this.yScroller_);
   this.yScroller_ = null;
+  this.series_ = null;
 };
 
 
