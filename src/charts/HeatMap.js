@@ -12,6 +12,7 @@ goog.require('anychart.core.utils.OrdinalZoom');
 goog.require('anychart.enums');
 goog.require('anychart.scales.Ordinal');
 goog.require('anychart.scales.OrdinalColor');
+goog.require('anychart.themes.merging');
 
 
 
@@ -34,14 +35,6 @@ anychart.charts.HeatMap = function(opt_data, opt_csvSettings) {
   this.yZoom_ = new anychart.core.utils.OrdinalZoom(this, false);
 
   this.setType(anychart.enums.ChartTypes.HEAT_MAP);
-
-  /**
-   * Series.
-   * @type {anychart.core.series.Cartesian}
-   * @private
-   */
-  this.series_ = this.createSeriesByType('heatMap', opt_data || null, opt_csvSettings);
-  this.series_.a11y(/** @type {boolean|Object|undefined} */(anychart.getFullTheme(this.getType() + '.defaultSeriesSettings.base.a11y')));
 };
 goog.inherits(anychart.charts.HeatMap, anychart.core.CartesianBase);
 
@@ -62,12 +55,12 @@ anychart.charts.HeatMap.prototype.SUPPORTED_CONSISTENCY_STATES =
 anychart.charts.HeatMap.prototype.seriesConfig = (function() {
   var res = {};
   var capabilities = (
-  anychart.core.series.Capabilities.ALLOW_INTERACTIVITY |
-  anychart.core.series.Capabilities.ALLOW_POINT_SETTINGS |
-  // anychart.core.series.Capabilities.ALLOW_ERROR |
-  anychart.core.series.Capabilities.SUPPORTS_MARKERS |
-  anychart.core.series.Capabilities.SUPPORTS_LABELS |
-  0);
+      anychart.core.series.Capabilities.ALLOW_INTERACTIVITY |
+      anychart.core.series.Capabilities.ALLOW_POINT_SETTINGS |
+      // anychart.core.series.Capabilities.ALLOW_ERROR |
+      anychart.core.series.Capabilities.SUPPORTS_MARKERS |
+      anychart.core.series.Capabilities.SUPPORTS_LABELS |
+      0);
   res['heatMap'] = {
     drawerType: anychart.enums.SeriesDrawerTypes.HEAT_MAP,
     shapeManagerType: anychart.enums.ShapeManagerTypes.PER_POINT,
@@ -92,11 +85,62 @@ anychart.charts.HeatMap.prototype.seriesConfig = (function() {
 })();
 
 
+/**
+ * Methods that are proxied from the series.
+ * @const {Array.<string>}
+ */
+anychart.charts.HeatMap.prototype.PROXY_METHODS = ([
+  'fill',
+  'hoverFill',
+  'selectFill',
+  'stroke',
+  'hoverStroke',
+  'selectStroke',
+  'hatchFill',
+  'hoverHatchFill',
+  'selectHatchFill',
+  // it seems that default chart labels method should work ok
+  // 'labels',
+  // 'hoverLabels',
+  // 'selectLabels',
+  'markers',
+  'hoverMarkers',
+  'selectMarkers'
+]);
+
+
+//----------------------------------------------------------------------------------------------------------------------
+//
+//  Overwritten series methods. (for encapsulation series)
+//
+//----------------------------------------------------------------------------------------------------------------------
+(function() {
+  /**
+   * A proxy template to make partials for the methods of series.
+   * @param {string} name
+   * @param {...*} var_args
+   * @return {anychart.charts.HeatMap|*}
+   * @this {anychart.charts.HeatMap}
+   */
+  var proxy = function(name, var_args) {
+    var args = [];
+    for (var i = 1; i < arguments.length; i++)
+      args.push(arguments[i]);
+    var series = this.getSeriesAt(0);
+    var res = series[name].apply(series, args);
+    return goog.isDef(args[1]) ? res : this;
+  };
+  var methods = this.PROXY_METHODS;
+  for (var i = 0; i < methods.length; i++) {
+    var name = methods[i];
+    anychart.charts.HeatMap.prototype[name] = goog.partial(proxy, name);
+  }
+})();
+
+
 /** @inheritDoc */
 anychart.charts.HeatMap.prototype.getConfigByType = function(type) {
-  if (this.series_)
-    return null;
-  return anychart.charts.HeatMap.base(this, 'getConfigByType', type);
+  return this.getSeriesCount() ? null : anychart.charts.HeatMap.base(this, 'getConfigByType', type);
 };
 
 
@@ -106,17 +150,6 @@ anychart.charts.HeatMap.prototype.createSeriesInstance = function(type, config) 
 };
 
 
-// /** @inheritDoc */
-// anychart.charts.HeatMap.prototype.setupSeries = function(series) {
-//   anychart.charts.HeatMap
-// };
-
-
-//----------------------------------------------------------------------------------------------------------------------
-//
-//  Zoom
-//
-//----------------------------------------------------------------------------------------------------------------------
 /**
  * Ensures that scales are ready for zooming.
  */
@@ -211,7 +244,7 @@ anychart.charts.HeatMap.prototype.checkXScaleType = function(scale) {
 
 /** @inheritDoc */
 anychart.charts.HeatMap.prototype.onGridSignal = function(event) {
-  this.series_.invalidate(anychart.ConsistencyState.SERIES_POINTS);
+  this.seriesList[0].invalidate(anychart.ConsistencyState.SERIES_POINTS);
   this.invalidate(anychart.ConsistencyState.AXES_CHART_GRIDS | anychart.ConsistencyState.SERIES_CHART_SERIES,
       anychart.Signal.NEEDS_REDRAW);
 };
@@ -230,11 +263,6 @@ anychart.charts.HeatMap.prototype.createScaleByType = function(value, isXScale, 
 };
 
 
-//----------------------------------------------------------------------------------------------------------------------
-//
-//  Color scale.
-//
-//----------------------------------------------------------------------------------------------------------------------
 /**
  * Color scale.
  * @param {anychart.scales.OrdinalColor=} opt_value
@@ -271,11 +299,6 @@ anychart.charts.HeatMap.prototype.colorScaleInvalidated_ = function(event) {
 };
 
 
-//----------------------------------------------------------------------------------------------------------------------
-//
-//  Legend.
-//
-//----------------------------------------------------------------------------------------------------------------------
 /** @inheritDoc */
 anychart.charts.HeatMap.prototype.createLegendItemsProvider = function(sourceMode, itemsFormat) {
   var i, count;
@@ -428,7 +451,7 @@ anychart.charts.HeatMap.prototype.labelsDisplayMode = function(opt_value) {
     opt_value = anychart.enums.normalizeLabelsDisplayMode(opt_value);
     if (this.labelDisplayMode_ != opt_value) {
       this.labelDisplayMode_ = opt_value;
-      this.series_.invalidate(anychart.ConsistencyState.SERIES_LABELS);
+      this.seriesList[0].invalidate(anychart.ConsistencyState.SERIES_LABELS);
       this.invalidate(anychart.ConsistencyState.SERIES_CHART_SERIES, anychart.Signal.NEEDS_REDRAW);
     }
     return this;
@@ -437,11 +460,6 @@ anychart.charts.HeatMap.prototype.labelsDisplayMode = function(opt_value) {
 };
 
 
-//----------------------------------------------------------------------------------------------------------------------
-//
-//  Interactivity.
-//
-//----------------------------------------------------------------------------------------------------------------------
 /** @inheritDoc */
 anychart.charts.HeatMap.prototype.createEventSeriesStatus = function(seriesStatus, opt_empty) {
   var eventSeriesStatus = [];
@@ -482,7 +500,7 @@ anychart.charts.HeatMap.prototype.makeCurrentPoint = function(seriesStatus, even
 
 /** @inheritDoc */
 anychart.charts.HeatMap.prototype.getPoint = function(index) {
-  return this.series_.getPoint(index);
+  return this.seriesList[0].getPoint(index);
 };
 
 
@@ -556,6 +574,7 @@ anychart.charts.HeatMap.prototype.applyComplexZoom = function() {
 };
 
 
+/** @inheritDoc */
 anychart.charts.HeatMap.prototype.calculateXYScales = function() {
   var needsCalc = this.hasInvalidationState(anychart.ConsistencyState.SCALE_CHART_SCALES |
       anychart.ConsistencyState.SCALE_CHART_Y_SCALES);
@@ -582,7 +601,7 @@ anychart.charts.HeatMap.prototype.calculateXYScales = function() {
         yAutoNames = [];
       }
 
-      var iterator = this.series_.getResetIterator();
+      var iterator = this.seriesList[0].getResetIterator();
       while (iterator.advance()) {
         if (xScaleNamesField) {
           valueIndex = xScale.getIndexByValue(iterator.get('x'));
@@ -613,6 +632,7 @@ anychart.charts.HeatMap.prototype.calculateXYScales = function() {
  * @inheritDoc
  */
 anychart.charts.HeatMap.prototype.calculate = function() {
+  var series = this.seriesList[0];
   if (this.hasInvalidationState(anychart.ConsistencyState.SCALE_CHART_SCALES |
           anychart.ConsistencyState.SCALE_CHART_Y_SCALES |
           anychart.ConsistencyState.SCALE_CHART_SCALE_MAPS)) {
@@ -621,8 +641,8 @@ anychart.charts.HeatMap.prototype.calculate = function() {
     var yScale = /** @type {anychart.scales.Base} */(this.yScale());
     var xScale = /** @type {anychart.scales.Base} */(this.xScale());
 
-    this.series_.xScale(xScale);
-    this.series_.yScale(yScale);
+    series.xScale(xScale);
+    series.yScale(yScale);
 
     var xScaleNeedAutoCalc = xScale.needsAutoCalc();
     var yScaleNeedAutoCalc = yScale.needsAutoCalc();
@@ -631,7 +651,7 @@ anychart.charts.HeatMap.prototype.calculate = function() {
       if (xScaleNeedAutoCalc) xScale.startAutoCalc();
       if (yScaleNeedAutoCalc) yScale.startAutoCalc();
 
-      iterator = this.series_.getResetIterator();
+      iterator = series.getResetIterator();
       while (iterator.advance()) {
         if (xScaleNeedAutoCalc) {
           value = iterator.get('x');
@@ -659,7 +679,7 @@ anychart.charts.HeatMap.prototype.calculate = function() {
 
     if (scalesChanged) {
       this.invalidate(anychart.ConsistencyState.SERIES_CHART_SERIES | anychart.ConsistencyState.SCALE_CHART_STATISTICS);
-      this.series_.invalidate(anychart.ConsistencyState.SERIES_COLOR);
+      series.invalidate(anychart.ConsistencyState.SERIES_COLOR);
     }
     this.markConsistent(anychart.ConsistencyState.SCALE_CHART_SCALES |
         anychart.ConsistencyState.SCALE_CHART_Y_SCALES |
@@ -669,62 +689,17 @@ anychart.charts.HeatMap.prototype.calculate = function() {
   if (this.hasInvalidationState(anychart.ConsistencyState.HEATMAP_COLOR_SCALE)) {
     if (this.colorScale_ && this.colorScale_.needsAutoCalc()) {
       this.colorScale_.startAutoCalc();
-      iterator = this.series_.getResetIterator();
+      iterator = series.getResetIterator();
       while (iterator.advance()) {
         this.colorScale_.extendDataRange(iterator.get('heat'));
       }
       this.colorScale_.finishAutoCalc();
     }
     this.invalidate(anychart.ConsistencyState.SERIES_CHART_SERIES);
-    this.series_.invalidate(anychart.ConsistencyState.SERIES_COLOR);
+    series.invalidate(anychart.ConsistencyState.SERIES_COLOR);
     this.markConsistent(anychart.ConsistencyState.HEATMAP_COLOR_SCALE);
   }
 };
-
-
-//----------------------------------------------------------------------------------------------------------------------
-//
-//  Overwritten series methods. (for encapsulation series)
-//
-//----------------------------------------------------------------------------------------------------------------------
-(function() {
-  /**
-   * A proxy template to make partials for the methods of series.
-   * @param {string} name
-   * @param {...*} var_args
-   * @return {anychart.charts.HeatMap|*}
-   * @this {anychart.charts.HeatMap}
-   */
-  var proxy = function(name, var_args) {
-    var args = [];
-    for (var i = 1; i < arguments.length; i++)
-      args.push(arguments[i]);
-    var res = this.series_[name].apply(this.series_, args);
-    return goog.isDef(args[1]) ? res : this;
-  };
-  var methods = [
-    'fill',
-    'hoverFill',
-    'selectFill',
-    'stroke',
-    'hoverStroke',
-    'selectStroke',
-    'hatchFill',
-    'hoverHatchFill',
-    'selectHatchFill',
-    // it seems that default chart labels method should work ok
-    // 'labels',
-    // 'hoverLabels',
-    // 'selectLabels',
-    'markers',
-    'hoverMarkers',
-    'selectMarkers'
-  ];
-  for (var i = 0; i < methods.length; i++) {
-    var name = methods[i];
-    anychart.charts.HeatMap.prototype[name] = goog.partial(proxy, name);
-  }
-})();
 
 
 /**
@@ -741,10 +716,10 @@ anychart.charts.HeatMap.prototype.data = function(opt_value, opt_csvSettings) {
       if (title) this.title(title);
       if (opt_value['rows']) opt_value = opt_value['rows'];
     }
-    this.series_.data(opt_value, opt_csvSettings);
+    this.seriesList[0].data(opt_value, opt_csvSettings);
     return this;
   }
-  return /** @type {!anychart.data.View} */(this.series_.data());
+  return /** @type {!anychart.data.View} */(this.seriesList[0].data());
 };
 
 
@@ -754,7 +729,7 @@ anychart.charts.HeatMap.prototype.data = function(opt_value, opt_csvSettings) {
  * @return {!anychart.charts.HeatMap} instance for method chaining.
  */
 anychart.charts.HeatMap.prototype.hover = function(opt_indexOrIndexes) {
-  this.series_.hover(opt_indexOrIndexes);
+  this.seriesList[0].hover(opt_indexOrIndexes);
   return this;
 };
 
@@ -765,7 +740,7 @@ anychart.charts.HeatMap.prototype.hover = function(opt_indexOrIndexes) {
  * @return {!anychart.charts.HeatMap} instance for method chaining.
  */
 anychart.charts.HeatMap.prototype.select = function(opt_indexOrIndexes) {
-  this.series_.select(opt_indexOrIndexes);
+  this.seriesList[0].select(opt_indexOrIndexes);
   return this;
 };
 
@@ -775,183 +750,21 @@ anychart.charts.HeatMap.prototype.select = function(opt_indexOrIndexes) {
 //  Setup
 //
 //----------------------------------------------------------------------------------------------------------------------
-/**
- * @inheritDoc
- */
-anychart.charts.HeatMap.prototype.setupByJSON = function(config, opt_default) {
-  anychart.charts.HeatMap.base(this, 'setupByJSON', config, opt_default);
-
-  if ('defaultXAxisSettings' in config)
-    this.defaultXAxisSettings(config['defaultXAxisSettings']);
-
-  if ('defaultYAxisSettings' in config)
-    this.defaultYAxisSettings(config['defaultYAxisSettings']);
-
-  if ('defaultGridSettings' in config)
-    this.defaultGridSettings(config['defaultGridSettings']);
-
-  var i, json, scale;
-  var grids = config['grids'];
-  var xAxes = config['xAxes'];
-  var yAxes = config['yAxes'];
-  var scales = config['scales'];
-  var type = this.getType();
-
-  var scalesInstances = {};
-  if (goog.isArray(scales)) {
-    for (i = 0; i < scales.length; i++) {
-      json = scales[i];
-      if (goog.isString(json)) {
-        json = {'type': json};
-      }
-      json = anychart.themes.merging.mergeScale(json, i, type, anychart.enums.ScaleTypes.ORDINAL);
-      scale = anychart.scales.Base.fromString(json['type'], false);
-      scale.setup(json);
-      scalesInstances[i] = scale;
-    }
-  } else if (goog.isObject(scales)) {
-    for (i in scales) {
-      if (!scales.hasOwnProperty(i)) continue;
-      json = scales[i];
-      if (goog.isString(json)) {
-        json = {'type': json};
-      }
-      json = anychart.themes.merging.mergeScale(json, i, type, anychart.enums.ScaleTypes.ORDINAL);
-      scale = anychart.scales.Base.fromString(json['type'], false);
-      scale.setup(json);
-      scalesInstances[i] = scale;
-    }
-  }
-
-  json = config['xScale'];
-  if (goog.isNumber(json)) {
-    scale = scalesInstances[json];
-  } else if (goog.isString(json)) {
-    scale = anychart.scales.Base.fromString(json, null);
-    if (!scale)
-      scale = scalesInstances[json];
-  } else if (goog.isObject(json)) {
-    scale = anychart.scales.Base.fromString(json['type'], true);
-    scale.setup(json);
-  } else {
-    scale = null;
-  }
-  if (scale)
-    this.xScale(scale);
-
-  json = config['yScale'];
-  if (goog.isNumber(json)) {
-    scale = scalesInstances[json];
-  } else if (goog.isString(json)) {
-    scale = anychart.scales.Base.fromString(json, null);
-    if (!scale)
-      scale = scalesInstances[json];
-  } else if (goog.isObject(json)) {
-    scale = anychart.scales.Base.fromString(json['type'], false);
-    scale.setup(json);
-  } else {
-    scale = null;
-  }
-  if (scale)
-    this.yScale(scale);
-
-  json = config['colorScale'];
-  if (goog.isNumber(json)) {
-    scale = scalesInstances[json];
-  } else if (goog.isString(json)) {
-    scale = anychart.scales.Base.fromString(json, null);
-    if (!scale)
-      scale = scalesInstances[json];
-  } else if (goog.isObject(json)) {
-    scale = anychart.scales.Base.fromString(json['type'], null);
-    if (scale)
-      scale.setup(json);
-  } else {
-    scale = null;
-  }
-  if (scale)
-    this.colorScale(scale);
-
-  if (goog.isArray(xAxes)) {
-    for (i = 0; i < xAxes.length; i++) {
-      json = xAxes[i];
-      this.xAxis(i, json);
-      if (goog.isObject(json) && 'scale' in json && json['scale'] > 1) this.xAxis(i).scale(scalesInstances[json['scale']]);
-    }
-  }
-
-  if (goog.isArray(yAxes)) {
-    for (i = 0; i < yAxes.length; i++) {
-      json = yAxes[i];
-      this.yAxis(i, json);
-      if (goog.isObject(json) && 'scale' in json && json['scale'] > 1) this.yAxis(i).scale(scalesInstances[json['scale']]);
-    }
-  }
-
-  if (goog.isArray(grids)) {
-    for (i = 0; i < grids.length; i++) {
-      json = grids[i];
-      this.grid(i, json);
-      if (goog.isObject(json) && 'scale' in json && json['scale'] > 1) this.grid(i).scale(scalesInstances[json['scale']]);
-    }
-  }
-
-  if (goog.isFunction(this['fill']))
-    this.fill(config['fill']);
-  if (goog.isFunction(this['hoverFill']))
-    this.hoverFill(config['hoverFill']);
-  if (goog.isFunction(this['selectFill']))
-    this.selectFill(config['selectFill']);
-
-  if (goog.isFunction(this['stroke']))
-    this.stroke(config['stroke']);
-  if (goog.isFunction(this['hoverStroke']))
-    this.hoverStroke(config['hoverStroke']);
-  if (goog.isFunction(this['selectStroke']))
-    this.selectStroke(config['selectStroke']);
-
-  if (goog.isFunction(this['hatchFill']))
-    this.hatchFill(config['hatchFill']);
-  if (goog.isFunction(this['hoverHatchFill']))
-    this.hoverHatchFill(config['hoverHatchFill']);
-  if (goog.isFunction(this['selectHatchFill']))
-    this.selectHatchFill(config['selectHatchFill']);
-
-  if ('data' in config)
-    this.data(config['data'] || null);
-
-  this.labels().setupInternal(!!opt_default, config['labels']);
-  this.hoverLabels().setupInternal(!!opt_default, config['hoverLabels']);
-  this.selectLabels().setupInternal(!!opt_default, config['selectLabels']);
-
-  this.markers().setup(config['markers']);
-  this.hoverMarkers().setup(config['hoverMarkers']);
-  this.selectMarkers().setup(config['selectMarkers']);
+/** @inheritDoc */
+anychart.charts.HeatMap.prototype.setupByJSONWithScales = function(config, scalesInstances, opt_default) {
+  anychart.charts.HeatMap.base(this, 'setupByJSONWithScales', config, scalesInstances, opt_default);
 
   this.labelsDisplayMode(config['labelsDisplayMode']);
-
-  this.xScroller(config['xScroller']);
   this.yScroller(config['yScroller']);
-
-  var xZoom = config['xZoom'];
-  var tmp;
-  if (goog.isObject(xZoom) && (goog.isNumber(xZoom['scale']) || goog.isString(xZoom['scale']))) {
-    tmp = xZoom['scale'];
-    xZoom['scale'] = scalesInstances[xZoom['scale']];
-    this.xZoom(xZoom);
-    xZoom['scale'] = tmp;
-  } else {
-    this.xZoom(xZoom);
-  }
 
   var yZoom = config['yZoom'];
   if (goog.isObject(yZoom) && (goog.isNumber(yZoom['scale']) || goog.isString(yZoom['scale']))) {
-    tmp = yZoom['scale'];
+    var tmp = yZoom['scale'];
     yZoom['scale'] = scalesInstances[yZoom['scale']];
-    this.xZoom(yZoom);
+    this.yZoom(yZoom);
     yZoom['scale'] = tmp;
   } else {
-    this.xZoom(yZoom);
+    this.yZoom(yZoom);
   }
 };
 
@@ -961,266 +774,54 @@ anychart.charts.HeatMap.prototype.setupByJSON = function(config, opt_default) {
  */
 anychart.charts.HeatMap.prototype.serialize = function() {
   var json = anychart.charts.HeatMap.base(this, 'serialize');
-  var i;
-  var scalesIds = {};
-  var scales = [];
-  var axesIds = [];
+  var chart = json['chart'];
+  chart['yScroller'] = this.yScroller().serialize();
+  chart['yZoom'] = this.yZoom().serialize();
+  chart['labelsDisplayMode'] = this.labelsDisplayMode();
+  return json;
+};
 
-  var scale;
-  var config;
-  var objId;
-  var axisId;
-  var axis;
-  var axisIndex;
-  var axisScale;
-  var axisOrientation;
-  var isHorizontal;
 
-  scalesIds[goog.getUid(this.xScale())] = this.xScale().serialize();
-  scales.push(scalesIds[goog.getUid(this.xScale())]);
-  json['xScale'] = scales.length - 1;
-
-  if (this.xScale() != this.yScale()) {
-    scalesIds[goog.getUid(this.yScale())] = this.yScale().serialize();
-    scales.push(scalesIds[goog.getUid(this.yScale())]);
+/** @inheritDoc */
+anychart.charts.HeatMap.prototype.setupSeriesByJSON = function(config, scalesInstances, opt_default) {
+  var json = {};
+  var seriesConfig = {};
+  var methods = this.PROXY_METHODS;
+  for (var i = 0; i < methods.length; i++) {
+    var method = methods[i];
+    if (goog.isDef(config[method]))
+      seriesConfig[method] = config[method];
   }
-  json['yScale'] = scales.length - 1;
+  if (goog.isDef(config['data']))
+    seriesConfig['data'] = config['data'];
 
-  if (this.colorScale()) {
-    scalesIds[goog.getUid(this.colorScale())] = this.colorScale().serialize();
-    scales.push(scalesIds[goog.getUid(this.colorScale())]);
-    json['colorScale'] = scales.length - 1;
-  }
-
-  json['type'] = this.getType();
-
-  var xAxes = [];
-  for (i = 0; i < this.xAxes_.length; i++) {
-    var xAxis = this.xAxes_[i];
-    if (xAxis) {
-      config = xAxis.serialize();
-      scale = xAxis.scale();
-      if (scale) {
-        objId = goog.getUid(scale);
-        if (!scalesIds[objId]) {
-          scalesIds[objId] = scale.serialize();
-          scales.push(scalesIds[objId]);
-          config['scale'] = scales.length - 1;
-        } else {
-          config['scale'] = goog.array.indexOf(scales, scalesIds[objId]);
-        }
-      }
-      xAxes.push(config);
+  if (this.getSeriesCount()) {
+    this.seriesList[0].setupByJSON(seriesConfig, opt_default);
+  } else {
+    var defSettings = anychart.themes.merging.getThemePart(config, 'defaultSeriesSettings.base');
+    if (defSettings) {
+      json['defaultSeriesSettings'] = {'heatMap': defSettings};
     }
+    json['series'] = [seriesConfig];
+    anychart.charts.HeatMap.base(this, 'setupSeriesByJSON', json, scalesInstances, opt_default);
   }
-  if (xAxes.length)
-    json['xAxes'] = xAxes;
+};
 
-  var yAxes = [];
-  for (i = 0; i < this.yAxes_.length; i++) {
-    var yAxis = this.yAxes_[i];
-    if (yAxis) {
-      config = yAxis.serialize();
-      scale = yAxis.scale();
-      if (scale) {
-        objId = goog.getUid(scale);
-        if (!scalesIds[objId]) {
-          scalesIds[objId] = scale.serialize();
-          scales.push(scalesIds[objId]);
-          config['scale'] = scales.length - 1;
-        } else {
-          config['scale'] = goog.array.indexOf(scales, scalesIds[objId]);
-        }
-      }
-      yAxes.push(config);
+
+/** @inheritDoc */
+anychart.charts.HeatMap.prototype.serializeSeries = function(json, scales, scaleIds) {
+  var series = this.seriesList[0];
+  if (series) {
+    var config = series.serialize();
+    var methods = this.PROXY_METHODS;
+    for (var i = 0; i < methods.length; i++) {
+      var method = methods[i];
+      if (goog.isDef(config[method]))
+        json[method] = config[method];
     }
+    if (goog.isDef(config['data']))
+      json['data'] = config['data'];
   }
-  if (yAxes.length)
-    json['yAxes'] = yAxes;
-
-
-  var grids = [];
-  for (i = 0; i < this.grids_.length; i++) {
-    var grid = this.grids_[i];
-    if (grid) {
-      config = grid.serialize();
-      scale = grid.scale();
-      if (scale) {
-        objId = goog.getUid(scale);
-        if (!scalesIds[objId]) {
-          scalesIds[objId] = scale.serialize();
-          scales.push(scalesIds[objId]);
-          config['scale'] = scales.length - 1;
-        } else {
-          config['scale'] = goog.array.indexOf(scales, scalesIds[objId]);
-        }
-      }
-
-      axis = grid.axis();
-      if (axis) {
-        axisId = goog.getUid(axis);
-        axisIndex = goog.array.indexOf(axesIds, axisId);
-        if (axisIndex < 0) { //axis presents but not found in existing axes. Taking scale and layout from it.
-          axisScale = axis.scale();
-          if (!('layout' in config)) {
-            axisOrientation = axis.orientation();
-            isHorizontal = (axisOrientation == anychart.enums.Orientation.LEFT || axisOrientation == anychart.enums.Orientation.RIGHT);
-            config['layout'] = isHorizontal ? anychart.enums.Layout.HORIZONTAL : anychart.enums.Layout.VERTICAL;
-          }
-          if (!('scale' in config)) { //doesn't override the scale already set.
-            objId = goog.getUid(axisScale);
-            if (!scalesIds[objId]) {
-              scalesIds[objId] = axisScale.serialize();
-              scales.push(scalesIds[objId]);
-              config['scale'] = scales.length - 1;
-            } else {
-              config['scale'] = goog.array.indexOf(scales, scalesIds[objId]);
-            }
-          }
-        } else {
-          config['axis'] = axisIndex;
-        }
-      }
-
-      grids.push(config);
-    }
-  }
-  if (grids.length)
-    json['grids'] = grids;
-
-  if (scales.length)
-    json['scales'] = scales;
-
-  if (goog.isFunction(this['fill'])) {
-    if (goog.isFunction(this.fill())) {
-      anychart.core.reporting.warning(
-          anychart.enums.WarningCode.CANT_SERIALIZE_FUNCTION,
-          null,
-          ['Series fill']
-      );
-    } else {
-      json['fill'] = anychart.color.serialize(/** @type {acgraph.vector.Fill}*/(this.fill()));
-    }
-  }
-  if (goog.isFunction(this['hoverFill'])) {
-    if (goog.isFunction(this.hoverFill())) {
-      anychart.core.reporting.warning(
-          anychart.enums.WarningCode.CANT_SERIALIZE_FUNCTION,
-          null,
-          ['Series hoverFill']
-      );
-    } else {
-      json['hoverFill'] = anychart.color.serialize(/** @type {acgraph.vector.Fill}*/(this.hoverFill()));
-    }
-  }
-  if (goog.isFunction(this['selectFill'])) {
-    if (goog.isFunction(this.selectFill())) {
-      anychart.core.reporting.warning(
-          anychart.enums.WarningCode.CANT_SERIALIZE_FUNCTION,
-          null,
-          ['Series selectFill']
-      );
-    } else {
-      json['selectFill'] = anychart.color.serialize(/** @type {acgraph.vector.Fill}*/(this.selectFill()));
-    }
-  }
-
-  if (goog.isFunction(this['stroke'])) {
-    if (goog.isFunction(this.stroke())) {
-      anychart.core.reporting.warning(
-          anychart.enums.WarningCode.CANT_SERIALIZE_FUNCTION,
-          null,
-          ['Series stroke']
-      );
-    } else {
-      json['stroke'] = anychart.color.serialize(/** @type {acgraph.vector.Stroke}*/(this.stroke()));
-    }
-  }
-  if (goog.isFunction(this['hoverStroke'])) {
-    if (goog.isFunction(this.hoverStroke())) {
-      anychart.core.reporting.warning(
-          anychart.enums.WarningCode.CANT_SERIALIZE_FUNCTION,
-          null,
-          ['Series hoverStroke']
-      );
-    } else {
-      json['hoverStroke'] = anychart.color.serialize(/** @type {acgraph.vector.Stroke}*/(this.hoverStroke()));
-    }
-  }
-  if (goog.isFunction(this['selectStroke'])) {
-    if (goog.isFunction(this.selectStroke())) {
-      anychart.core.reporting.warning(
-          anychart.enums.WarningCode.CANT_SERIALIZE_FUNCTION,
-          null,
-          ['Series selectStroke']
-      );
-    } else {
-      json['selectStroke'] = anychart.color.serialize(/** @type {acgraph.vector.Stroke}*/(this.selectStroke()));
-    }
-  }
-
-  if (goog.isFunction(this['hatchFill'])) {
-    if (goog.isFunction(this.hatchFill())) {
-      anychart.core.reporting.warning(
-          anychart.enums.WarningCode.CANT_SERIALIZE_FUNCTION,
-          null,
-          ['Series hatchFill']
-      );
-    } else {
-      json['hatchFill'] = anychart.color.serialize(/** @type {acgraph.vector.Fill}*/(this.hatchFill()));
-    }
-  }
-  if (goog.isFunction(this['hoverHatchFill'])) {
-    if (goog.isFunction(this.hoverHatchFill())) {
-      anychart.core.reporting.warning(
-          anychart.enums.WarningCode.CANT_SERIALIZE_FUNCTION,
-          null,
-          ['Series hoverHatchFill']
-      );
-    } else {
-      var hoverHatchFill = this.hoverHatchFill();
-      if (goog.isDef(hoverHatchFill)) {
-        json['hoverHatchFill'] = anychart.color.serialize(/** @type {acgraph.vector.Fill}*/(hoverHatchFill));
-      }
-    }
-  }
-  if (goog.isFunction(this['selectHatchFill'])) {
-    if (goog.isFunction(this.selectHatchFill())) {
-      anychart.core.reporting.warning(
-          anychart.enums.WarningCode.CANT_SERIALIZE_FUNCTION,
-          null,
-          ['Series selectHatchFill']
-      );
-    } else {
-      json['selectHatchFill'] = anychart.color.serialize(/** @type {acgraph.vector.Fill}*/
-          (this.selectHatchFill()));
-    }
-  }
-
-  json['data'] = this.data().serialize();
-
-  json['labels'] = this.labels().serialize();
-  json['hoverLabels'] = this.hoverLabels().getChangedSettings();
-  json['selectLabels'] = this.selectLabels().getChangedSettings();
-  if (goog.isNull(json['hoverLabels']['enabled'])) {
-    delete json['hoverLabels']['enabled'];
-  }
-  if (goog.isNull(json['selectLabels']['enabled'])) {
-    delete json['selectLabels']['enabled'];
-  }
-
-  json['markers'] = this.markers().serialize();
-  json['hoverMarkers'] = this.hoverMarkers().serialize();
-  json['selectMarkers'] = this.selectMarkers().serialize();
-
-  json['labelsDisplayMode'] = this.labelsDisplayMode();
-
-  json['xScroller'] = this.xScroller().serialize();
-  json['yScroller'] = this.yScroller().serialize();
-  json['xZoom'] = this.xZoom().serialize();
-  json['yZoom'] = this.yZoom().serialize();
-
-  return {'chart': json};
 };
 
 
@@ -1231,7 +832,6 @@ anychart.charts.HeatMap.prototype.disposeInternal = function() {
   anychart.charts.HeatMap.base(this, 'disposeInternal');
   goog.disposeAll(this.yScroller_);
   this.yScroller_ = null;
-  this.series_ = null;
 };
 
 

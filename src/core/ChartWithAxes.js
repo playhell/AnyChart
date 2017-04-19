@@ -336,7 +336,7 @@ anychart.core.ChartWithAxes.prototype.onGridSignal = function(event) {
 
 
 /**
- * Calculates grid padding for heat map cells.
+ * @return {{vertical: number, horizontal: number}}
  */
 anychart.core.ChartWithAxes.prototype.calculateGridsThickness = function() {
   var grids = this.grids_;

@@ -27,6 +27,7 @@ anychart.core.series.HeatMap = function(chart, plot, type, config, sortedMode) {
   /**
    * Stroke resolver.
    * @type {function(anychart.core.series.Base, number, boolean=, boolean=):acgraph.vector.Stroke}
+   * @private
    */
   this.strokeResolver_ = /** @type {function(anychart.core.series.Base, number, boolean=, boolean=):acgraph.vector.Stroke} */(
       anychart.core.series.Base.getColorResolver(
@@ -276,9 +277,9 @@ anychart.core.series.HeatMap.prototype.drawLabel = function(point, pointState, o
       var bounds = this.labels().measure(label.formatProvider(), label.positionProvider(), mergedSettings);
 
       var outOfBounds = !(cellBounds.left <= bounds.left &&
-      cellBounds.getRight() >= bounds.getRight() &&
-      cellBounds.top <= bounds.top &&
-      cellBounds.getBottom() >= bounds.getBottom());
+          cellBounds.getRight() >= bounds.getRight() &&
+          cellBounds.top <= bounds.top &&
+          cellBounds.getBottom() >= bounds.getBottom());
 
       label['clip'](cellBounds);
       label['width'](cellBounds.width);

@@ -689,15 +689,16 @@ anychart.charts.Cartesian3d.prototype.setupByJSON = function(config, opt_default
  */
 anychart.charts.Cartesian3d.prototype.serialize = function() {
   var json = anychart.charts.Cartesian3d.base(this, 'serialize');
+  var chart = json['chart'];
 
-  json['chart']['zAngle'] = this.zAngle();
+  chart['zAngle'] = this.zAngle();
   if (goog.isDefAndNotNull(this.zDepthInternal)) {
     // we should not place warning here on serialization.
-    json['chart']['zDepth'] = this.zDepthInternal;
+    chart['zDepth'] = this.zDepthInternal;
   }
-  json['chart']['zAspect'] = this.zAspect();
-  json['chart']['zDistribution'] = this.zDistribution();
-  json['chart']['zPadding'] = this.zPadding();
+  chart['zAspect'] = this.zAspect();
+  chart['zDistribution'] = this.zDistribution();
+  chart['zPadding'] = this.zPadding();
 
   return json;
 };

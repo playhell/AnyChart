@@ -1894,42 +1894,6 @@ anychart.core.ChartWithOrthogonalScales.prototype.onInteractivitySignal = functi
 //
 //----------------------------------------------------------------------------------------------------------------------
 /**
- * Setup with scale instances.
- * @param {!Object} config
- * @param {Object.<anychart.scales.Base>} scalesInstances
- * @param {boolean=} opt_default
- * @protected
- */
-anychart.core.ChartWithOrthogonalScales.prototype.setupByJSONWithScales = function(config, scalesInstances, opt_default) {
-  this.defaultSeriesType(config['defaultSeriesType']);
-  this.minBubbleSize(config['minBubbleSize']);
-  this.maxBubbleSize(config['maxBubbleSize']);
-  this.palette(config['palette']);
-  this.markerPalette(config['markerPalette']);
-  this.hatchFillPalette(config['hatchFillPalette']);
-  this.defaultSeriesSettings(config['defaultSeriesSettings']);
-
-  var i, json;
-  var series = config['series'];
-  if (goog.isArray(series)) {
-    for (i = 0; i < series.length; i++) {
-      json = series[i];
-      var seriesType = json['seriesType'] || this.defaultSeriesType();
-      var data = json['data'];
-      var seriesInst = this.createSeriesByType(seriesType, data);
-      if (seriesInst) {
-        seriesInst.setup(json);
-        if (goog.isObject(json)) {
-          if ('xScale' in json && json['xScale'] > 1) seriesInst.xScale(scalesInstances[json['xScale']]);
-          if ('yScale' in json && json['yScale'] > 1) seriesInst.yScale(scalesInstances[json['yScale']]);
-        }
-      }
-    }
-  }
-};
-
-
-/**
  * @inheritDoc
  */
 anychart.core.ChartWithOrthogonalScales.prototype.setupByJSON = function(config, opt_default) {
@@ -2001,6 +1965,102 @@ anychart.core.ChartWithOrthogonalScales.prototype.setupByJSON = function(config,
 
 
 /**
+ * @inheritDoc
+ */
+anychart.core.ChartWithOrthogonalScales.prototype.serialize = function() {
+  var json = anychart.core.ChartWithOrthogonalScales.base(this, 'serialize');
+  var scaleIds = {};
+  var scales = [];
+
+  this.serializeScale(json, 'xScale', /** @type {anychart.scales.Base} */(this.xScale()), scales, scaleIds);
+  this.serializeScale(json, 'yScale', /** @type {anychart.scales.Base} */(this.yScale()), scales, scaleIds);
+
+  this.serializeWithScales(json, scales, scaleIds);
+
+  json['scales'] = scales;
+  return json;
+};
+
+
+/**
+ * Setup with scale instances.
+ * @param {!Object} config
+ * @param {Object.<anychart.scales.Base>} scalesInstances
+ * @param {boolean=} opt_default
+ * @protected
+ */
+anychart.core.ChartWithOrthogonalScales.prototype.setupByJSONWithScales = function(config, scalesInstances, opt_default) {
+  this.setupSeriesByJSON(config, scalesInstances, opt_default);
+};
+
+
+/**
+ * Serialization function with scales context.
+ * @param {!Object} json
+ * @param {Array.<Object>} scales
+ * @param {Object} scaleIds
+ * @protected
+ */
+anychart.core.ChartWithOrthogonalScales.prototype.serializeWithScales = function(json, scales, scaleIds) {
+  this.serializeSeries(json, scales, scaleIds);
+};
+
+
+/**
+ * Setup series with scale instances.
+ * @param {!Object} config
+ * @param {Object.<anychart.scales.Base>} scalesInstances
+ * @param {boolean=} opt_default
+ * @protected
+ */
+anychart.core.ChartWithOrthogonalScales.prototype.setupSeriesByJSON = function(config, scalesInstances, opt_default) {
+  this.defaultSeriesSettings(config['defaultSeriesSettings']);
+  var i, json;
+  var series = config['series'];
+  if (goog.isArray(series)) {
+    for (i = 0; i < series.length; i++) {
+      json = series[i];
+      var seriesType = json['seriesType'] || this.defaultSeriesType();
+      var data = json['data'];
+      var seriesInst = this.createSeriesByType(seriesType, data);
+      if (seriesInst) {
+        seriesInst.setupInternal(!!opt_default, json);
+        if (goog.isObject(json)) {
+          if ('xScale' in json && json['xScale'] > 1) seriesInst.xScale(scalesInstances[json['xScale']]);
+          if ('yScale' in json && json['yScale'] > 1) seriesInst.yScale(scalesInstances[json['yScale']]);
+        }
+      }
+    }
+  }
+};
+
+
+/**
+ * Serialization function with scales context.
+ * @param {!Object} json
+ * @param {Array.<Object>} scales
+ * @param {Object} scaleIds
+ * @protected
+ */
+anychart.core.ChartWithOrthogonalScales.prototype.serializeSeries = function(json, scales, scaleIds) {
+  var i;
+  var scale;
+  var config;
+  var seriesList = [];
+  for (i = 0; i < this.seriesList.length; i++) {
+    var series = this.seriesList[i];
+    config = series.serialize();
+    scale = series.xScale();
+    this.serializeScale(config, 'xScale', /** @type {anychart.scales.Base} */(series.xScale()), scales, scaleIds);
+    this.serializeScale(config, 'yScale', /** @type {anychart.scales.Base} */(series.yScale()), scales, scaleIds);
+    seriesList.push(config);
+  }
+  if (seriesList.length)
+    json['series'] = seriesList;
+};
+
+
+/**
  * Setups elements defined by an array of json with scale instances map.
  * @param {*} items
  * @param {Function} itemConstructor
@@ -2047,31 +2107,6 @@ anychart.core.ChartWithOrthogonalScales.prototype.serializeElementsWithScales = 
 
 
 /**
- * Serialization function with scales context.
- * @param {!Object} json
- * @param {Array.<Object>} scales
- * @param {Object} scaleIds
- * @protected
- */
-anychart.core.ChartWithOrthogonalScales.prototype.serializeWithScales = function(json, scales, scaleIds) {
-  var i;
-  var scale;
-  var config;
-  var seriesList = [];
-  for (i = 0; i < this.seriesList.length; i++) {
-    var series = this.seriesList[i];
-    config = series.serialize();
-    scale = series.xScale();
-    this.serializeScale(config, 'xScale', /** @type {anychart.scales.Base} */(series.xScale()), scales, scaleIds);
-    this.serializeScale(config, 'yScale', /** @type {anychart.scales.Base} */(series.yScale()), scales, scaleIds);
-    seriesList.push(config);
-  }
-  if (seriesList.length)
-    json['series'] = seriesList;
-};
-
-
-/**
  * Serializes scale.
  * @param {Object} json
  * @param {string} propName
@@ -2089,24 +2124,6 @@ anychart.core.ChartWithOrthogonalScales.prototype.serializeScale = function(json
     }
     json[propName] = scaleIds[objId];
   }
-};
-
-
-/**
- * @inheritDoc
- */
-anychart.core.ChartWithOrthogonalScales.prototype.serialize = function() {
-  var json = anychart.core.ChartWithOrthogonalScales.base(this, 'serialize');
-  var scaleIds = {};
-  var scales = [];
-
-  this.serializeScale(json, 'xScale', /** @type {anychart.scales.Base} */(this.xScale()), scales, scaleIds);
-  this.serializeScale(json, 'yScale', /** @type {anychart.scales.Base} */(this.yScale()), scales, scaleIds);
-
-  this.serializeWithScales(json, scales, scaleIds);
-
-  json['scales'] = scales;
-  return json;
 };
 
 

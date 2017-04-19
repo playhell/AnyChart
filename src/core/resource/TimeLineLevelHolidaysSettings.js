@@ -210,8 +210,7 @@ anychart.core.resource.TimeLineLevelHolidaysSettings.TEXT_DESCRIPTORS = (functio
       anychart.ConsistencyState.ONLY_DISPATCHING,
       anychart.ConsistencyState.ONLY_DISPATCHING,
       anychart.Signal.NEEDS_REDRAW | anychart.Signal.BOUNDS_CHANGED,
-      anychart.Signal.NEEDS_REDRAW
-  );
+      anychart.Signal.NEEDS_REDRAW);
   anychart.core.settings.createDescriptor(
       map,
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
