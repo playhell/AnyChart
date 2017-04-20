@@ -475,6 +475,9 @@ def __call_console_commands(commands, cwd=None, module=None):
     retcode = p.poll()
     if len(output) > 0:
         print '({}) {}'.format(module, output)
+    if retcode:
+        print 'Build script exit code {}'.format(retcode)
+        sys.exit(retcode)
 
 
 def __get_copyrigth(modules):
