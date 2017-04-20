@@ -1848,6 +1848,13 @@ anychart.core.axes.Linear.prototype.drawLabel_ = function(value, ratio, index, p
   }
   var positionProvider = {'value': {x: x, y: y}};
   var label = labels.getLabel(index);
+  if (!label) {
+    var formatProvider = this.getLabelsFormatProvider(index, value);
+    label = labels.add(formatProvider, positionProvider, index);
+    var settings = {};
+    goog.object.extend(settings, labels.themeSettings, labels.ownSettings);
+    label.stateOrder([settings]);
+  }
   label.positionProvider(positionProvider);
 };
 
