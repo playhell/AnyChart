@@ -2425,7 +2425,9 @@ goog.provide('anychart.themes.defaultTheme');
           'orientation': 'top'
         }
       ],
-      'crosslinesStroke': '#bbdefb'
+      'crossing': {
+        'stroke': '#bbdefb'
+      }
     },
 
     // merge with chart

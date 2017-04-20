@@ -16,7 +16,6 @@ goog.require('anychart.modules.pie');
 goog.require('anychart.modules.pie3d');
 goog.require('anychart.modules.polar');
 goog.require('anychart.modules.pyramid');
-goog.require('anychart.modules.quadrant');
 goog.require('anychart.modules.radar');
 goog.require('anychart.modules.scatter');
 goog.require('anychart.modules.sparkline');
