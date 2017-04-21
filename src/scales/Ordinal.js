@@ -265,7 +265,7 @@ anychart.scales.Ordinal.prototype.weights = function(opt_value) {
 
 /**
  * Wrapper for weights() method. Sets weights as auto calculated and does not affect serialization.
- * @param {Array.<number>=} values Array of weights.
+ * @param {Array.<number>} values Array of weights.
  * @return {(Array.<number>|anychart.scales.Ordinal)} Scale weights or self for chaining.
  */
 anychart.scales.Ordinal.prototype.setAutoWeights = function(values) {
