@@ -10,6 +10,73 @@ goog.require('goog.array');
 anychart.math.venn.SMALL = 1e-10;
 
 
+/**
+ * @typedef {{
+ *   x: number,
+ *   y: number,
+ * }}
+ */
+anychart.math.venn.Point;
+
+
+/**
+ * @typedef {{
+ *   x: number,
+ *   y: number,
+ *   radius: number,
+ *   setid: (string|undefined)
+ * }}
+ */
+anychart.math.venn.Circle;
+
+
+/**
+ * @typedef {{
+ *   x: number,
+ *   y: number,
+ *   radius: number,
+ *   rowid: string,
+ *   size: number
+ * }}
+ */
+anychart.math.venn.SizedCircle;
+
+
+/**
+ * @typedef {{
+ *   angle: number,
+ *   parentIndex: Array.<number>,
+ *   x: number,
+ *   y: number
+ * }}
+ */
+anychart.math.venn.IntersectionPoint;
+
+
+/**
+ * @typedef {{
+ *   circle: anychart.math.venn.Circle,
+ *   p1: anychart.math.venn.IntersectionPoint,
+ *   p2: anychart.math.venn.IntersectionPoint,
+ *   width: number
+ * }}
+ */
+anychart.math.venn.Arc;
+
+
+/**
+ * @typedef {{
+ *  arcArea: number,
+ *  arcs: Array.<anychart.math.venn.Arc>,
+ *  area: number,
+ *  innerPoints: Array.<anychart.math.venn.IntersectionPoint>,
+ *  intersectionPoints: Array.<anychart.math.venn.IntersectionPoint>,
+ *  polygonArea: number
+ * }}
+ */
+anychart.math.venn.Stats;
+
+
 ////////////////////////////////////////////////////////////////////
 // fmin/bisect.js
 ////////////////////////////////////////////////////////////////////
@@ -19,13 +86,13 @@ anychart.math.venn.SMALL = 1e-10;
  * @param {function(number):number} f - Function to find its zeros.
  * @param {number} a - Start point;
  * @param {number} b - End point.
- * @param {Object} parameters
+ * @param {Object=} opt_parameters
  * @return {number}
  */
-anychart.math.venn.bisect = function(f, a, b, parameters) {
-  parameters = parameters || {};
-  var maxIterations = parameters.maxIterations || 100,
-      tolerance = parameters.tolerance || 1e-10,
+anychart.math.venn.bisect = function(f, a, b, opt_parameters) {
+  opt_parameters = opt_parameters || {};
+  var maxIterations = opt_parameters.maxIterations || 100,
+      tolerance = opt_parameters.tolerance || 1e-10,
       fA = f(a),
       fB = f(b),
       delta = b - a;
@@ -149,11 +216,11 @@ anychart.math.venn.weightedSum = function(ret, w1, v1, w2, v2) {
  * @param current
  * @param next
  * @param a
- * @param c1
- * @param c2
+ * @param {number=} opt_c1
+ * @param {number=} opt_c2
  * @return {*}
  */
-anychart.math.venn.wolfeLineSearch = function(f, pk, current, next, a, c1, c2) {
+anychart.math.venn.wolfeLineSearch = function(f, pk, current, next, a, opt_c1, opt_c2) {
   /*
     searches along line 'pk' for a point that satifies the wolfe conditions
     See 'Numerical Optimization' by Nocedal and Wright p59-60
@@ -171,8 +238,8 @@ anychart.math.venn.wolfeLineSearch = function(f, pk, current, next, a, c1, c2) {
   var a0 = 0;
 
   a = a || 1;
-  c1 = c1 || 1e-6;
-  c2 = c2 || 0.1;
+  opt_c1 = opt_c1 || 1e-6;
+  opt_c2 = opt_c2 || 0.1;
 
   function zoom(a_lo, a_high, phi_lo) {
     for (var iteration = 0; iteration < 16; ++iteration) {
@@ -181,10 +248,10 @@ anychart.math.venn.wolfeLineSearch = function(f, pk, current, next, a, c1, c2) {
       phi = next.fx = f(next.x, next.fxprime);
       phiPrime = anychart.math.venn.dot(next.fxprime, pk);
 
-      if ((phi > (phi0 + c1 * a * phiPrime0)) || (phi >= phi_lo)) {
+      if ((phi > (phi0 + opt_c1 * a * phiPrime0)) || (phi >= phi_lo)) {
         a_high = a;
       } else {
-        if (Math.abs(phiPrime) <= -c2 * phiPrime0)
+        if (Math.abs(phiPrime) <= -opt_c2 * phiPrime0)
           return a;
 
         if (phiPrime * (a_high - a_lo) >= 0)
@@ -202,12 +269,12 @@ anychart.math.venn.wolfeLineSearch = function(f, pk, current, next, a, c1, c2) {
     anychart.math.venn.weightedSum(next.x, 1.0, current.x, a, pk);
     phi = next.fx = f(next.x, next.fxprime);
     phiPrime = anychart.math.venn.dot(next.fxprime, pk);
-    if ((phi > (phi0 + c1 * a * phiPrime0)) ||
+    if ((phi > (phi0 + opt_c1 * a * phiPrime0)) ||
         (iteration && (phi >= phi_old))) {
       return zoom(a0, a, phi_old);
     }
 
-    if (Math.abs(phiPrime) <= -c2 * phiPrime0) {
+    if (Math.abs(phiPrime) <= -opt_c2 * phiPrime0) {
       return a;
     }
 
@@ -232,7 +299,7 @@ anychart.math.venn.wolfeLineSearch = function(f, pk, current, next, a, c1, c2) {
  * @param f
  * @param initial
  * @param params
- * @return {{x: (ArrayBuffer|string|Blob|!Array.<T>|*|!goog.iter.Iterator.<VALUE>), fx: number, fxprime: (ArrayBuffer|string|Blob|!Array.<T>|*|!goog.iter.Iterator.<VALUE>)}}
+ * @return {Object}
  */
 anychart.math.venn.conjugateGradient = function(f, initial, params) {
   // allocate all memory up front here, keep out of the loop for perfomance
@@ -308,7 +375,7 @@ anychart.math.venn.conjugateGradient = function(f, initial, params) {
  * @param f
  * @param initial
  * @param params
- * @return {{x: (ArrayBuffer|string|Blob|!Array.<T>|*|!goog.iter.Iterator.<VALUE>), fx: number, fxprime: (ArrayBuffer|string|Blob|!Array.<T>|*|!goog.iter.Iterator.<VALUE>)}}
+ * @return {Object}
  */
 anychart.math.venn.gradientDescent = function(f, initial, params) {
   params = params || {};
@@ -341,7 +408,7 @@ anychart.math.venn.gradientDescent = function(f, initial, params) {
  * @param f
  * @param initial
  * @param params
- * @return {{x: (ArrayBuffer|string|Blob|!Array.<T>|*|!goog.iter.Iterator.<VALUE>), fx: number, fxprime: (ArrayBuffer|string|Blob|!Array.<T>|*|!goog.iter.Iterator.<VALUE>)}}
+ * @return {Object}
  */
 anychart.math.venn.gradientDescentLineSearch = function(f, initial, params) {
   params = params || {};
@@ -366,7 +433,7 @@ anychart.math.venn.gradientDescentLineSearch = function(f, initial, params) {
 
   current.fx = f(current.x, current.fxprime);
   for (var i = 0; i < maxIterations; ++i) {
-    scale(pk, current.fxprime, -1);
+    anychart.math.venn.scale(pk, current.fxprime, -1);
     learnRate = anychart.math.venn.wolfeLineSearch(f, pk, current, next, learnRate, c1, c2);
 
     if (params.history) {
@@ -397,10 +464,10 @@ anychart.math.venn.gradientDescentLineSearch = function(f, initial, params) {
 ////////////////////////////////////////////////////////////////////
 /**
  * TODO (A.Kudryavtsev): Descr.
- * @param f
- * @param x0
- * @param parameters
- * @return {{fx, x: *}}
+ * @param {function(Array.<number>):number} f - .
+ * @param {Array.<number>} x0 - .
+ * @param {Object} parameters - .
+ * @return {Object}
  */
 anychart.math.venn.nelderMead = function(f, x0, parameters) {
   // minimizes a function using the downhill simplex method.
@@ -559,11 +626,11 @@ anychart.math.venn.nelderMead = function(f, x0, parameters) {
 /**
  * TODO (A.Kudryavtsev): Describe.
  * Returns the intersection area of a bunch of circles (where each circle is an object having an x,y and radius property).
- * @param circles
- * @param stats
+ * @param {Array.<anychart.math.venn.Circle>} circles - Circles data.
+ * @param {anychart.math.venn.Stats=} opt_stats - Stats storage. Collects intersection arcs data.
  * @return {number}
  */
-anychart.math.venn.intersectionArea = function(circles, stats) {
+anychart.math.venn.intersectionArea = function(circles, opt_stats) {
   // get all the intersection points of the circles
   var intersectionPoints = anychart.math.venn.getIntersectionPoints(circles);
 
@@ -675,13 +742,13 @@ anychart.math.venn.intersectionArea = function(circles, stats) {
   }
 
   polygonArea /= 2;
-  if (stats) {
-    stats.area = arcArea + polygonArea;
-    stats.arcArea = arcArea;
-    stats.polygonArea = polygonArea;
-    stats.arcs = arcs;
-    stats.innerPoints = innerPoints;
-    stats.intersectionPoints = intersectionPoints;
+  if (opt_stats) {
+    opt_stats.area = arcArea + polygonArea;
+    opt_stats.arcArea = arcArea;
+    opt_stats.polygonArea = polygonArea;
+    opt_stats.arcs = arcs;
+    opt_stats.innerPoints = innerPoints;
+    opt_stats.intersectionPoints = intersectionPoints;
   }
 
   return arcArea + polygonArea;
@@ -691,8 +758,8 @@ anychart.math.venn.intersectionArea = function(circles, stats) {
 /**
  * TODO (A.Kudryavtsev): Describe.
  * Returns whether a point is contained by all of a list of circles.
- * @param point
- * @param circles
+ * @param {anychart.math.venn.IntersectionPoint} point - Point.
+ * @param {Array.<anychart.math.venn.Circle>} circles - Circles.
  * @return {boolean}
  */
 anychart.math.venn.containedInCircles = function(point, circles) {
@@ -708,8 +775,8 @@ anychart.math.venn.containedInCircles = function(point, circles) {
 /**
  * TODO (A.Kudryavtsev): Descr.
  * Gets all intersection points between a bunch of circles.
- * @param circles
- * @return {Array}
+ * @param {Array.<anychart.math.venn.Circle>} circles - Circles.
+ * @return {Array.<anychart.math.venn.IntersectionPoint>} - Inersection poits.
  */
 anychart.math.venn.getIntersectionPoints = function(circles) {
   var ret = [];
@@ -730,9 +797,9 @@ anychart.math.venn.getIntersectionPoints = function(circles) {
 
 /**
  * TODO (A.Kudryavtsev): Descr.
- * @param r
- * @param x
- * @return {number}
+ * @param {number} r - .
+ * @param {number} x - .
+ * @return {number} - Calculated result.
  */
 anychart.math.venn.circleIntegral = function(r, x) {
   var y = Math.sqrt(r * r - x * x);
@@ -743,9 +810,9 @@ anychart.math.venn.circleIntegral = function(r, x) {
 /**
  * TODO (A.Kudryavtsev): Descr.
  * Returns the area of a circle of radius r - up to width.
- * @param r
- * @param width
- * @return {number}
+ * @param {number} r - .
+ * @param {number} width - .
+ * @return {number} - Area.
  */
 anychart.math.venn.circleArea = function(r, width) {
   return anychart.math.venn.circleIntegral(r, width - r) - anychart.math.venn.circleIntegral(r, -r);
@@ -755,8 +822,8 @@ anychart.math.venn.circleArea = function(r, width) {
 /**
  * TODO (A.Kudryavtsev): Descr.
  * Euclidean distance between two points.
- * @param p1
- * @param p2
+ * @param {anychart.math.venn.SizedCircle|anychart.math.venn.Point} p1 - .
+ * @param {anychart.math.venn.SizedCircle|anychart.math.venn.Point} p2 - .
  * @return {number}
  */
 anychart.math.venn.distance = function(p1, p2) {
@@ -768,10 +835,10 @@ anychart.math.venn.distance = function(p1, p2) {
  * TODO (A.Kudryavtsev): Descr.
  * Returns the overlap area of two circles of radius r1 and r2 - that have their centers separated by distance d.
  * Simpler faster circle intersection for only two circles.
- * @param r1
- * @param r2
- * @param d
- * @return {*}
+ * @param {number} r1 - .
+ * @param {number} r2 - .
+ * @param {number} d - .
+ * @return {number} - .
  */
 anychart.math.venn.circleOverlap = function(r1, r2, d) {
   // no overlap
@@ -793,9 +860,9 @@ anychart.math.venn.circleOverlap = function(r1, r2, d) {
 /**
  * Given two circles (containing a x/y/radius attributes), returns the intersecting points if possible.
  * Note: doesn't handle cases where there are infinitely many intersection points (circles are equivalent):, or only one intersection point.
- * @param p1
- * @param p2
- * @return {*}
+ * @param {anychart.math.venn.Circle} p1 - .
+ * @param {anychart.math.venn.Circle} p2 - .
+ * @return {Array.<anychart.math.venn.Point>} - .
  */
 anychart.math.venn.circleCircleIntersection = function(p1, p2) {
   var d = anychart.math.venn.distance(p1, p2),
@@ -820,8 +887,8 @@ anychart.math.venn.circleCircleIntersection = function(p1, p2) {
 
 /**
  * Returns the center of a bunch of points.
- * @param points
- * @return {{x: number, y: number}}
+ * @param {Array.<anychart.math.venn.IntersectionPoint>} points - Intersection points.
+ * @return {anychart.math.venn.Point} - Center point.
  */
 anychart.math.venn.getCenter = function(points) {
   var center = {x: 0, y: 0};
@@ -842,14 +909,14 @@ anychart.math.venn.getCenter = function(points) {
  * TODO (A.Kudryavtsev): Descr.
  * Given a list of set objects, and their corresponding overlaps.
  * Updates the (x, y, radius) attribute on each set such that their positions roughly correspond to the desired overlaps.
- * @param areas
- * @param parameters
- * @return {*}
+ * @param {Array.<anychart.charts.Venn.DataReflection>} areas - Data reflections.
+ * @param {Object=} opt_parameters - .
+ * @return {Object.<string, anychart.math.venn.SizedCircle>} - Solution object, the map of sized circles.
  */
-anychart.math.venn.venn = function(areas, parameters) {
-  parameters = parameters || {};
-  parameters.maxIterations = parameters.maxIterations || 500;
-  var initialLayout = parameters.initialLayout || anychart.math.venn.bestInitialLayout;
+anychart.math.venn.venn = function(areas, opt_parameters) {
+  opt_parameters = opt_parameters || {};
+  opt_parameters.maxIterations = opt_parameters.maxIterations || 500;
+  var initialLayout = opt_parameters.initialLayout || anychart.math.venn.bestInitialLayout;
 
   // add in missing pairwise areas as having 0 size
   areas = anychart.math.venn.addMissingAreas(areas);
@@ -885,7 +952,7 @@ anychart.math.venn.venn = function(areas, parameters) {
         return anychart.math.venn.lossFunction(current, areas);
       },
       initial,
-      parameters);
+      opt_parameters);
 
   // transform solution vector back to x/y points
   var positions = solution.x;
@@ -924,8 +991,8 @@ anychart.math.venn.distanceFromIntersectArea = function(r1, r2, overlap) {
  * Missing pair-wise intersection area data can cause problems:
  * treating as an unknown means that sets will be laid out overlapping, which isn't what people expect.
  * To reflect that we want disjoint sets here, set the overlap to 0 for all missing pairwise set intersections.
- * @param areas
- * @return {ArrayBuffer|string|Blob|!Array.<T>|*|!goog.iter.Iterator.<VALUE>}
+ * @param {Array.<anychart.charts.Venn.DataReflection>} areas - .
+ * @return {Array.<anychart.charts.Venn.DataReflection>} - .
  */
 anychart.math.venn.addMissingAreas = function(areas) {
   areas = areas.slice();
@@ -943,19 +1010,17 @@ anychart.math.venn.addMissingAreas = function(areas) {
       pairs[[b, a]] = true;
     }
   }
-  ids.sort(function(a, b) {
-    return a > b;
-  });
+  //TODO (A.Kudryavtsev): Extremely suspicious sorting because a and b are strings. Commented for a while.
+  // ids.sort(function(a, b) {
+  //   return a > b;
+  // });
 
   for (i = 0; i < ids.length; ++i) {
     a = ids[i];
     for (j = i + 1; j < ids.length; ++j) {
       b = ids[j];
       if (!([a, b] in pairs)) {
-        areas.push({
-          'sets': [a, b],
-          'size': 0
-        });
+        areas.push({sets: [a, b], size: 0, iteratorIndex: NaN});
       }
     }
   }
@@ -969,7 +1034,7 @@ anychart.math.venn.addMissingAreas = function(areas) {
  * @param areas
  * @param sets
  * @param setids
- * @return {{distances: *, constraints: *}}
+ * @return {Object}
  */
 anychart.math.venn.getDistanceMatrices = function(areas, sets, setids) {
   // initialize an empty distance matrix between all the points
@@ -1051,12 +1116,12 @@ anychart.math.venn.constrainedMDSGradient = function(x, fxprime, distances, cons
 /**
  * TODO (A.Kudryavtsev): Descr.
  * Takes the best working variant of either constrained MDS or greedy.
- * @param areas
- * @param params
- * @return {*}
+ * @param {Array.<anychart.charts.Venn.DataReflection>} areas - .
+ * @param {Object} params - .
+ * @return {Object.<string, anychart.math.venn.SizedCircle>} - .
  */
 anychart.math.venn.bestInitialLayout = function(areas, params) {
-  var initial = anychart.math.venn.greedyLayout(areas, params);
+  var initial = anychart.math.venn.greedyLayout(areas);
 
   // greedylayout is sufficient for all 2/3 circle cases. try out
   // constrained MDS for higher order problems, take its output
@@ -1079,7 +1144,7 @@ anychart.math.venn.bestInitialLayout = function(areas, params) {
  * Use the constrained MDS variant to generate an initial layout.
  * @param areas
  * @param params
- * @return {{}}
+ * @return {Object}
  */
 anychart.math.venn.constrainedMDSLayout = function(areas, params) {
   params = params || {};
@@ -1136,7 +1201,7 @@ anychart.math.venn.constrainedMDSLayout = function(areas, params) {
 
   if (params.history) {
     for (i = 0; i < params.history.length; ++i) {
-      scale(params.history[i].x, norm);
+      anychart.math.venn.scale(params.history[i].x, norm);
     }
   }
   return circles;
@@ -1147,8 +1212,8 @@ anychart.math.venn.constrainedMDSLayout = function(areas, params) {
  * TODO (A.Kudryavtsev): Descr.
  * Lays out a Venn diagram greedily, going from most overlapped sets to least overlapped,
  * attempting to position each new set such that the overlapping areas to already positioned sets are basically right.
- * @param areas
- * @return {{}}
+ * @param {Array.<anychart.charts.Venn.DataReflection>} areas - .
+ * @return {Object.<string, anychart.math.venn.SizedCircle>} - .
  */
 anychart.math.venn.greedyLayout = function(areas) {
   // define a circle for each set
@@ -1289,8 +1354,8 @@ anychart.math.venn.greedyLayout = function(areas) {
  * Given a bunch of sets, and the desired overlaps between these sets - computes the distance from the actual overlaps
  * to the desired overlaps.
  * Note that this method ignores overlaps of more than 2 circles.
- * @param sets
- * @param overlaps
+ * @param {Object.<string, anychart.math.venn.SizedCircle>} sets - Sets map.
+ * @param {Array.<anychart.charts.Venn.DataReflection>} overlaps - Overlaps data.
  * @return {number}
  */
 anychart.math.venn.lossFunction = function(sets, overlaps) {
@@ -1450,7 +1515,7 @@ anychart.math.venn.disjointCluster = function(circles) {
 /**
  * TODO (A.Kudryavtsev): Descr.
  * @param circles
- * @return {{xRange: {max, min}, yRange: {max, min}}}
+ * @return {Object}
  */
 anychart.math.venn.getBoundingBox = function(circles) {
   var minMax = function(d) {
@@ -1471,10 +1536,10 @@ anychart.math.venn.getBoundingBox = function(circles) {
 
 /**
  * TODO (A.Kudryavtsev): Descr.
- * @param solution
- * @param orientation
- * @param orientationOrder
- * @return {{}}
+ * @param {Object.<string, anychart.math.venn.SizedCircle>} solution - .
+ * @param {number} orientation - .
+ * @param {Object} orientationOrder - .
+ * @return {Object.<string, anychart.math.venn.Circle>} - .
  */
 anychart.math.venn.normalizeSolution = function(solution, orientation, orientationOrder) {
   if (orientation === null) {
@@ -1571,11 +1636,11 @@ anychart.math.venn.normalizeSolution = function(solution, orientation, orientati
  * TODO (A.Kudryavtsev): Descr.
  * Scales a solution from venn.venn or venn.greedyLayout such that it fits in a rectangle of width/height - with
  * padding around the borders. Also centers the diagram in the available space at the same time.
- * @param solution
- * @param width
- * @param height
- * @param padding
- * @return {{}}
+ * @param {Object.<string, anychart.math.venn.Circle>} solution - .
+ * @param {number} width - .
+ * @param {number} height - .
+ * @param {number} padding - .
+ * @return {Object.<string, anychart.math.venn.Circle>} - .
  */
 anychart.math.venn.scaleSolution = function(solution, width, height, padding) {
   var circles = [], setids = [];
@@ -1711,7 +1776,7 @@ anychart.math.venn.computeTextCentre = function(interior, exterior) {
     if (interior.length == 1) {
       ret = {x: interior[0].x, y: interior[0].y};
     } else {
-      var areaStats = {};
+      var areaStats = /** @type {anychart.math.venn.Stats} */ ({});
       anychart.math.venn.intersectionArea(interior, areaStats);
 
       if (areaStats.arcs.length === 0) {

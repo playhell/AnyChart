@@ -5056,6 +5056,17 @@ goog.provide('anychart.themes.defaultTheme');
         'enabled': true,
         'titleFormat': chartA11yTitleFormatter,
         'mode': 'chartElements'
+      },
+      'color': '#64b5f6',
+      'fill': function() {
+        return this['paletteFill'];
+      },
+      'hoverFill': function() {
+        return global['anychart']['color']['lighten'](this['paletteFill']);
+      },
+      'tooltip': {
+        'titleFormat': '{%X}',
+        'format': 'Value: {%Value}'
       }
     },
 
