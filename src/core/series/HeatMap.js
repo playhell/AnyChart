@@ -5,6 +5,7 @@ goog.require('anychart.core.drawers.HeatMap');
 goog.require('anychart.core.series.Cartesian');
 goog.require('anychart.enums');
 goog.require('anychart.format.Context');
+goog.require('anychart.math.Rect');
 goog.require('anychart.utils');
 
 
@@ -34,6 +35,34 @@ anychart.core.series.HeatMap = function(chart, plot, type, config, sortedMode) {
       ['stroke', 'hoverStroke', 'selectStroke'], anychart.enums.ColorType.STROKE));
 };
 goog.inherits(anychart.core.series.HeatMap, anychart.core.series.Cartesian);
+
+
+/** @inheritDoc */
+anychart.core.series.HeatMap.prototype.labels = function(opt_value) {
+  var res = (/** @type {anychart.charts.HeatMap} */(this.chart)).labels(opt_value);
+  return goog.isDef(opt_value) ? this : /** @type {!anychart.core.ui.LabelsFactory} */(res);
+};
+
+
+/** @inheritDoc */
+anychart.core.series.HeatMap.prototype.hoverLabels = function(opt_value) {
+  var res = (/** @type {anychart.charts.HeatMap} */(this.chart)).hoverLabels(opt_value);
+  return goog.isDef(opt_value) ? this : /** @type {!anychart.core.ui.LabelsFactory} */(res);
+};
+
+
+/** @inheritDoc */
+anychart.core.series.HeatMap.prototype.selectLabels = function(opt_value) {
+  var res = (/** @type {anychart.charts.HeatMap} */(this.chart)).selectLabels(opt_value);
+  return goog.isDef(opt_value) ? this : /** @type {!anychart.core.ui.LabelsFactory} */(res);
+};
+
+
+/** @inheritDoc */
+anychart.core.series.HeatMap.prototype.tooltip = function(opt_value) {
+  var res = (/** @type {anychart.charts.HeatMap} */(this.chart)).tooltip(opt_value);
+  return goog.isDef(opt_value) ? this : /** @type {!anychart.core.ui.Tooltip} */(res);
+};
 
 
 /**
@@ -158,8 +187,6 @@ anychart.core.series.HeatMap.prototype.makeHeatMapMeta = function(rowInfo, yName
   var right = /** @type {number} */(rowInfo.meta('right'));
   var top = /** @type {number} */(rowInfo.meta('top'));
   var bottom = /** @type {number} */(rowInfo.meta('bottom'));
-  var isLastRow = /** @type {boolean} */(rowInfo.meta('lastRow'));
-  var isLastCol = /** @type {boolean} */(rowInfo.meta('lastCol'));
 
   var stroke = this.strokeResolver_(this, anychart.PointState.NORMAL);
   var hoverStroke = this.strokeResolver_(this, anychart.PointState.HOVER);
@@ -168,32 +195,23 @@ anychart.core.series.HeatMap.prototype.makeHeatMapMeta = function(rowInfo, yName
   var hoverStrokeThicknessHalf = acgraph.vector.getThickness(hoverStroke) / 2;
   var selectStrokeThicknessHalf = acgraph.vector.getThickness(selectStroke) / 2;
 
-  var vPadding = 0;//this.verticalGridThickness % 2 / 2 + this.verticalGridThickness / 2;
-  //if (isLastCol) vPadding -= this.verticalGridThickness % 2;
-  var hPadding = 0;//-this.horizontalGridThickness % 2 / 2 + this.horizontalGridThickness / 2;
-  // if (isLastRow) hPadding += this.horizontalGridThickness % 2;
+  var width = right - left;
+  var height = bottom - top;
 
-  var x = Math.floor(left + vPadding);
-  var y = Math.floor(top + hPadding);
-  var width = right - left - this.verticalGridThickness;
-  if (isLastCol) width -= this.verticalGridThickness % 2;
-  var height = bottom - top - this.horizontalGridThickness;
-  if (isLastRow) height -= this.horizontalGridThickness % 2;
+  rowInfo.meta('normalX', left + strokeThicknessHalf);
+  rowInfo.meta('normalY', top + strokeThicknessHalf);
+  rowInfo.meta('normalWidth', width - strokeThicknessHalf - strokeThicknessHalf);
+  rowInfo.meta('normalHeight', height - strokeThicknessHalf - strokeThicknessHalf);
 
-  rowInfo.meta('normalX', x + strokeThicknessHalf);
-  rowInfo.meta('normalY', y + strokeThicknessHalf);
-  rowInfo.meta('normalWidth', width + strokeThicknessHalf + strokeThicknessHalf);
-  rowInfo.meta('normalHeight', height + strokeThicknessHalf + strokeThicknessHalf);
+  rowInfo.meta('hoverX', left + hoverStrokeThicknessHalf);
+  rowInfo.meta('hoverY', top + hoverStrokeThicknessHalf);
+  rowInfo.meta('hoverWidth', width - hoverStrokeThicknessHalf - hoverStrokeThicknessHalf);
+  rowInfo.meta('hoverHeight', height - hoverStrokeThicknessHalf - hoverStrokeThicknessHalf);
 
-  rowInfo.meta('hoverX', x + hoverStrokeThicknessHalf);
-  rowInfo.meta('hoverY', y + hoverStrokeThicknessHalf);
-  rowInfo.meta('hoverWidth', width + hoverStrokeThicknessHalf + hoverStrokeThicknessHalf);
-  rowInfo.meta('hoverHeight', height + hoverStrokeThicknessHalf + hoverStrokeThicknessHalf);
-
-  rowInfo.meta('selectX', x + selectStrokeThicknessHalf);
-  rowInfo.meta('selectY', y + selectStrokeThicknessHalf);
-  rowInfo.meta('selectWidth', width + selectStrokeThicknessHalf + selectStrokeThicknessHalf);
-  rowInfo.meta('selectHeight', height + selectStrokeThicknessHalf + selectStrokeThicknessHalf);
+  rowInfo.meta('selectX', left + selectStrokeThicknessHalf);
+  rowInfo.meta('selectY', top + selectStrokeThicknessHalf);
+  rowInfo.meta('selectWidth', width - selectStrokeThicknessHalf - selectStrokeThicknessHalf);
+  rowInfo.meta('selectHeight', height - selectStrokeThicknessHalf - selectStrokeThicknessHalf);
 
   return pointMissing;
 };
@@ -217,17 +235,29 @@ anychart.core.series.HeatMap.prototype.isPointVisible = function(point) {
       topRatio > 1 && bottomRatio > 1)
     return false;
 
-  var left = this.applyRatioToBounds(leftRatio, true);
-  var right = this.applyRatioToBounds(rightRatio, true);
-  var top = this.applyRatioToBounds(topRatio, false);
-  var bottom = this.applyRatioToBounds(bottomRatio, false);
+  var l = Math.round(this.applyRatioToBounds(leftRatio, true));
+  var t = Math.round(this.applyRatioToBounds(topRatio, false));
+  var r = Math.round(this.applyRatioToBounds(rightRatio, true));
+  var b = Math.round(this.applyRatioToBounds(bottomRatio, false));
+  var vPadding = this.verticalGridThickness / 2;
+  var hPadding = this.horizontalGridThickness / 2;
 
-  point.meta('left', Math.min(left, right));
-  point.meta('right', Math.max(left, right));
-  point.meta('top', Math.min(top, bottom));
-  point.meta('bottom', Math.max(top, bottom));
-  point.meta('lastCol', rightRatio == 1);
-  point.meta('lastRow', bottomRatio == 1);
+  var left = Math.min(l, r);
+  var right = Math.max(l, r);
+  var top = Math.min(t, b);
+  var bottom = Math.max(t, b);
+
+  // that's how grids.Linear aligns its lines
+  left += Math.ceil(vPadding);
+  top += Math.floor(hPadding);
+  right -= (rightRatio == 1) ? Math.ceil(vPadding) : Math.floor(vPadding);
+  bottom -= (bottomRatio == 1) ? Math.floor(hPadding) : Math.ceil(hPadding);
+
+  point.meta('left', left);
+  point.meta('top', top);
+  point.meta('right', right);
+  point.meta('bottom', bottom);
+  point.meta('x', xScale.transform(x, 0.5));
   return true;
 };
 
@@ -242,6 +272,18 @@ anychart.core.series.HeatMap.prototype.prepareMetaMakers = function(yNames, yCol
     this.makePointMeta(iterator, yNames, yColumns);
   }
   this.metaMakers.length = 0;
+};
+
+
+/** @inheritDoc */
+anychart.core.series.HeatMap.prototype.createPositionProviderByGeometry = function(anchor) {
+  var iterator = this.getIterator();
+  var left = /** @type {number} */(iterator.meta('left'));
+  var top = /** @type {number} */(iterator.meta('top'));
+  var right = /** @type {number} */(iterator.meta('right'));
+  var bottom = /** @type {number} */(iterator.meta('bottom'));
+  var bounds = new anychart.math.Rect(left, top, right - left, bottom - top);
+  return anychart.utils.getCoordinateByAnchor(bounds, /** @type {anychart.enums.Anchor} */(anchor));
 };
 
 
@@ -387,5 +429,11 @@ anychart.core.series.HeatMap.prototype.getColorResolutionContext = function(opt_
 };
 
 
-
-
+//exports
+(function() {
+  var proto = anychart.core.series.HeatMap.prototype;
+  proto['tooltip'] = proto.tooltip;
+  proto['labels'] = proto.labels;
+  proto['hoverLabels'] = proto.hoverLabels;
+  proto['selectLabels'] = proto.selectLabels;
+})();

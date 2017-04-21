@@ -1,5 +1,6 @@
 goog.provide('anychart.core.drawers.HeatMap');
 goog.require('anychart.core.drawers.Base');
+goog.require('anychart.math.Rect');
 
 
 
@@ -90,14 +91,7 @@ anychart.core.drawers.HeatMap.prototype.drawPoint_ = function(point, state, shap
   var y = /** @type {number} */(point.meta(prefix + 'Y'));
   var width = /** @type {number} */(point.meta(prefix + 'Width'));
   var height = /** @type {number} */(point.meta(prefix + 'Height'));
-  shapes['rect']
-      .setX(x)
-      .setY(y)
-      .setWidth(width)
-      .setHeight(height);
-  shapes['hatchRect']
-      .setX(x)
-      .setY(y)
-      .setWidth(width)
-      .setHeight(height);
+  var rect = new anychart.math.Rect(x, y, width, height);
+  shapes['rect'].setBounds(rect);
+  shapes['hatchRect'].setBounds(rect);
 };

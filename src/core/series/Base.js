@@ -289,9 +289,9 @@ anychart.core.series.Base.prototype.meta_;
 /**
  * Series tooltip.
  * @type {anychart.core.ui.Tooltip}
- * @private
+ * @protected
  */
-anychart.core.series.Base.prototype.tooltip_;
+anychart.core.series.Base.prototype.tooltipInternal;
 
 
 /**
@@ -305,25 +305,25 @@ anychart.core.series.Base.prototype.error_;
 /**
  * Series labels object.
  * @type {anychart.core.ui.LabelsFactory}
- * @private
+ * @protected
  */
-anychart.core.series.Base.prototype.labels_;
+anychart.core.series.Base.prototype.labelsInternal;
 
 
 /**
  * Series hover labels object.
  * @type {anychart.core.ui.LabelsFactory}
- * @private
+ * @protected
  */
-anychart.core.series.Base.prototype.hoverLabels_;
+anychart.core.series.Base.prototype.hoverLabelsInternal;
 
 
 /**
  * Series select labels object.
  * @type {anychart.core.ui.LabelsFactory}
- * @private
+ * @protected
  */
-anychart.core.series.Base.prototype.selectLabels_;
+anychart.core.series.Base.prototype.selectLabelsInternal;
 
 
 /**
@@ -1654,20 +1654,20 @@ anychart.core.series.Base.prototype.getLegendItemText = function(context) {
  * @return {!(anychart.core.series.Base|anychart.core.ui.Tooltip)} Tooltip instance or itself for chaining call.
  */
 anychart.core.series.Base.prototype.tooltip = function(opt_value) {
-  if (!this.tooltip_) {
-    this.tooltip_ = new anychart.core.ui.Tooltip(0);
+  if (!this.tooltipInternal) {
+    this.tooltipInternal = new anychart.core.ui.Tooltip(0);
     if (this.chart.supportsTooltip()) {
       var chart = /** @type {anychart.core.Chart} */ (this.chart);
       var parent = /** @type {anychart.core.ui.Tooltip} */ (chart.tooltip());
-      this.tooltip_.parent(parent);
-      this.tooltip_.chart(chart);
+      this.tooltipInternal.parent(parent);
+      this.tooltipInternal.chart(chart);
     }
   }
   if (goog.isDef(opt_value)) {
-    this.tooltip_.setup(opt_value);
+    this.tooltipInternal.setup(opt_value);
     return this;
   } else {
-    return this.tooltip_;
+    return this.tooltipInternal;
   }
 };
 
@@ -2248,19 +2248,19 @@ anychart.core.series.Base.prototype.drawSingleFactoryElement = function(factory,
  * @return {!(anychart.core.ui.LabelsFactory|anychart.core.series.Base)} Labels instance or itself for chaining call.
  */
 anychart.core.series.Base.prototype.labels = function(opt_value) {
-  if (!this.labels_) {
-    this.labels_ = new anychart.core.ui.LabelsFactory();
-    this.labels_.setParentEventTarget(this);
-    this.labels_.listenSignals(this.labelsInvalidated_, this);
+  if (!this.labelsInternal) {
+    this.labelsInternal = new anychart.core.ui.LabelsFactory();
+    this.labelsInternal.setParentEventTarget(this);
+    this.labelsInternal.listenSignals(this.labelsInvalidated_, this);
   }
 
   if (goog.isDef(opt_value)) {
     if (goog.isObject(opt_value) && !('enabled' in opt_value))
       opt_value['enabled'] = true;
-    this.labels_.setup(opt_value);
+    this.labelsInternal.setup(opt_value);
     return this;
   }
-  return this.labels_;
+  return this.labelsInternal;
 };
 
 
@@ -2270,18 +2270,18 @@ anychart.core.series.Base.prototype.labels = function(opt_value) {
  * @return {!(anychart.core.ui.LabelsFactory|anychart.core.series.Base)} Labels instance or itself for chaining call.
  */
 anychart.core.series.Base.prototype.hoverLabels = function(opt_value) {
-  if (!this.hoverLabels_) {
-    this.hoverLabels_ = new anychart.core.ui.LabelsFactory();
-    this.hoverLabels_.markConsistent(anychart.ConsistencyState.ALL);
+  if (!this.hoverLabelsInternal) {
+    this.hoverLabelsInternal = new anychart.core.ui.LabelsFactory();
+    this.hoverLabelsInternal.markConsistent(anychart.ConsistencyState.ALL);
   }
 
   if (goog.isDef(opt_value)) {
     if (goog.isObject(opt_value) && !('enabled' in opt_value))
       opt_value['enabled'] = true;
-    this.hoverLabels_.setup(opt_value);
+    this.hoverLabelsInternal.setup(opt_value);
     return this;
   }
-  return this.hoverLabels_;
+  return this.hoverLabelsInternal;
 };
 
 
@@ -2291,18 +2291,18 @@ anychart.core.series.Base.prototype.hoverLabels = function(opt_value) {
  * @return {!(anychart.core.ui.LabelsFactory|anychart.core.series.Base)} Labels instance or itself for chaining call.
  */
 anychart.core.series.Base.prototype.selectLabels = function(opt_value) {
-  if (!this.selectLabels_) {
-    this.selectLabels_ = new anychart.core.ui.LabelsFactory();
-    this.selectLabels_.markConsistent(anychart.ConsistencyState.ALL);
+  if (!this.selectLabelsInternal) {
+    this.selectLabelsInternal = new anychart.core.ui.LabelsFactory();
+    this.selectLabelsInternal.markConsistent(anychart.ConsistencyState.ALL);
   }
 
   if (goog.isDef(opt_value)) {
     if (goog.isObject(opt_value) && !('enabled' in opt_value))
       opt_value['enabled'] = true;
-    this.selectLabels_.setup(opt_value);
+    this.selectLabelsInternal.setup(opt_value);
     return this;
   }
-  return this.selectLabels_;
+  return this.selectLabelsInternal;
 };
 
 
@@ -2696,9 +2696,9 @@ anychart.core.series.Base.prototype.remove = function() {
   }
 
   // just a remove should be here, but the lablesFactory's remove() is very odd
-  if (this.labels_ && this.labels_.getDomElement()) {
-    this.labels_.getDomElement().remove();
-    this.labels_.invalidate(anychart.ConsistencyState.CONTAINER);
+  if (this.labelsInternal && this.labelsInternal.getDomElement()) {
+    this.labelsInternal.getDomElement().remove();
+    this.labelsInternal.invalidate(anychart.ConsistencyState.CONTAINER);
   }
 
   if (this.markers_) {
@@ -3116,8 +3116,8 @@ anychart.core.series.Base.prototype.applyClip = function(opt_customClip) {
   } else {
     this.rootLayer.clip(clipElement);
   }
-  if (this.labels_) {
-    var labelDOM = this.labels_.getDomElement();
+  if (this.labelsInternal) {
+    var labelDOM = this.labelsInternal.getDomElement();
     if (labelDOM) labelDOM.clip(clipElement);
   }
   if (this.markers_) {
@@ -4504,13 +4504,13 @@ anychart.core.series.Base.prototype.disposeInternal = function() {
       this.markers_,
       this.hoverMarkers_,
       this.selectMarkers_,
-      this.labels_,
-      this.hoverLabels_,
-      this.selectLabels_,
+      this.labelsInternal,
+      this.hoverLabelsInternal,
+      this.selectLabelsInternal,
       this.outlierMarkers_,
       this.hoverOutlierMarkers_,
       this.selectOutlierMarkers_,
-      this.tooltip_,
+      this.tooltipInternal,
       this.legendItem_,
       this.error_
   );
@@ -4528,13 +4528,13 @@ anychart.core.series.Base.prototype.disposeInternal = function() {
   delete this.markers_;
   delete this.hoverMarkers_;
   delete this.selectMarkers_;
-  delete this.labels_;
-  delete this.hoverLabels_;
-  delete this.selectLabels_;
+  delete this.labelsInternal;
+  delete this.hoverLabelsInternal;
+  delete this.selectLabelsInternal;
   delete this.outlierMarkers_;
   delete this.hoverOutlierMarkers_;
   delete this.selectOutlierMarkers_;
-  delete this.tooltip_;
+  delete this.tooltipInternal;
   delete this.legendItem_;
   delete this.error_;
   anychart.core.series.Base.base(this, 'disposeInternal');

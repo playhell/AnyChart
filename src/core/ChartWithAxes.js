@@ -343,18 +343,18 @@ anychart.core.ChartWithAxes.prototype.calculateGridsThickness = function() {
   var maxVerticalThickness = 0;
   var maxHorizontalThickness = 0;
   for (var i = 0, len = grids.length; i < len; i++) {
-    var grid = grids[i];
-    if (!grid) continue;
+    var grid = /** @type {anychart.core.grids.Linear} */(grids[i]);
+    if (grid && grid.enabled()) {
+      var thickness = acgraph.vector.getThickness(/** @type {acgraph.vector.Stroke} */(grid.stroke()));
 
-    var thickness = acgraph.vector.getThickness(/** @type {acgraph.vector.Stroke} */(grid.stroke()));
-
-    if (grid.isHorizontal()) {
-      if (thickness > maxHorizontalThickness) {
-        maxHorizontalThickness = thickness;
-      }
-    } else {
-      if (thickness > maxVerticalThickness) {
-        maxVerticalThickness = thickness;
+      if (grid.isHorizontal()) {
+        if (thickness > maxHorizontalThickness) {
+          maxHorizontalThickness = thickness;
+        }
+      } else {
+        if (thickness > maxVerticalThickness) {
+          maxVerticalThickness = thickness;
+        }
       }
     }
   }

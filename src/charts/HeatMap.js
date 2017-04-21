@@ -98,7 +98,7 @@ anychart.charts.HeatMap.prototype.seriesConfig = (function() {
 //
 //----------------------------------------------------------------------------------------------------------------------
 /**
- * Methods that are proxied from the series.
+ * Methods that are proxied to the series.
  * @const {Array.<string>}
  */
 anychart.charts.HeatMap.PROXY_METHODS = ([
@@ -111,13 +111,22 @@ anychart.charts.HeatMap.PROXY_METHODS = ([
   'hatchFill',
   'hoverHatchFill',
   'selectHatchFill',
-  // it seems that default chart labels method should work ok
-  'labels',
-  'hoverLabels',
-  'selectLabels',
   'markers',
   'hoverMarkers',
   'selectMarkers'
+]);
+
+
+/**
+ * Methods that are proxied from the series.
+ * @const {Array.<string>}
+ */
+anychart.charts.HeatMap.REVERSE_PROXY_METHODS = ([
+  'data',
+  'labels',
+  'hoverLabels',
+  'selectLabels',
+  'tooltip'
 ]);
 
 
@@ -529,6 +538,15 @@ anychart.charts.HeatMap.prototype.useUnionTooltipAsSingle = function() {
 };
 
 
+/**
+ * Creates tooltip context provider.
+ * @return {anychart.format.Context}
+ */
+anychart.charts.HeatMap.prototype.createTooltipContextProvider = function() {
+  return this.series_.createTooltipContextProvider();
+};
+
+
 /** @inheritDoc */
 anychart.charts.HeatMap.prototype.getBoundsWithoutAxes = function(contentAreaBounds, opt_scrollerSize) {
   var yScroller = /** @type {anychart.core.ui.ChartScroller} */(this.yScroller());
@@ -759,13 +777,18 @@ anychart.charts.HeatMap.prototype.serializeWithScales = function(json, scales, s
 anychart.charts.HeatMap.prototype.setupSeriesByJSON = function(config, scalesInstances, opt_default) {
   var seriesConfig = {};
   var methods = anychart.charts.HeatMap.PROXY_METHODS;
-  for (var i = 0; i < methods.length; i++) {
-    var method = methods[i];
+  var i, method;
+  for (i = 0; i < methods.length; i++) {
+    method = methods[i];
     if (goog.isDef(config[method]))
       seriesConfig[method] = config[method];
   }
-  if (goog.isDef(config['data']))
-    seriesConfig['data'] = config['data'];
+  methods = anychart.charts.HeatMap.REVERSE_PROXY_METHODS;
+  for (i = 0; i < methods.length; i++) {
+    method = methods[i];
+    if (goog.isDef(config[method]))
+      seriesConfig[method] = config[method];
+  }
   this.series_.setupByJSON(seriesConfig, opt_default);
 };
 
@@ -774,13 +797,18 @@ anychart.charts.HeatMap.prototype.setupSeriesByJSON = function(config, scalesIns
 anychart.charts.HeatMap.prototype.serializeSeries = function(json, scales, scaleIds) {
   var config = this.series_.serialize();
   var methods = anychart.charts.HeatMap.PROXY_METHODS;
-  for (var i = 0; i < methods.length; i++) {
-    var method = methods[i];
+  var i, method;
+  for (i = 0; i < methods.length; i++) {
+    method = methods[i];
     if (goog.isDef(config[method]))
       json[method] = config[method];
   }
-  if (goog.isDef(config['data']))
-    json['data'] = config['data'];
+  methods = anychart.charts.HeatMap.REVERSE_PROXY_METHODS;
+  for (i = 0; i < methods.length; i++) {
+    method = methods[i];
+    if (goog.isDef(config[method]))
+      json[method] = config[method];
+  }
 };
 
 
