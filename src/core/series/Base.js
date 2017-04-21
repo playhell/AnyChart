@@ -2862,6 +2862,7 @@ anychart.core.series.Base.prototype.draw = function() {
       if (this.check(anychart.core.series.Capabilities.SUPPORTS_LABELS))
         elementsDrawers.push(this.drawLabel);
       factoriesToFinalize.push(factory);
+      labelsAreToBeRedrawn = true;
     }
     this.markConsistent(anychart.ConsistencyState.SERIES_LABELS);
   }

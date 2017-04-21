@@ -3397,7 +3397,7 @@ goog.provide('anychart.themes.defaultTheme');
       'selectFill': defaultSelectColor,
       'labels': {
         'enabled': true,
-        // 'fontSize': 11,
+        'fontSize': 11,
         'adjustFontSize': {
           'width': true,
           'height': true

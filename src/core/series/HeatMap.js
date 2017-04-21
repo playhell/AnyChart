@@ -374,10 +374,11 @@ anychart.core.series.HeatMap.prototype.setupLabelDrawingPlan = function(label, c
   label.state('seriesNormal', seriesNormalFactory, 3);
   // label.state('chartNormal', chartNormalFactory);
   label.state('autoOverride', label.ownSettings, 4);
-  label.state('seriesStateTheme', seriesStateFactory ? seriesStateFactory.themeSettings : null, 5);
+  label.state('autoFont', seriesStateFactory ? seriesStateFactory.autoSettings : seriesNormalFactory.autoSettings, 5);
+  label.state('seriesStateTheme', seriesStateFactory ? seriesStateFactory.themeSettings : null, 6);
   // label.state('chartStateTheme', chartStateFactory ? chartStateFactory.themeSettings : null);
-  label.state('auto', label.autoSettings, 6);
-  label.state('seriesNormalTheme', seriesNormalFactory.themeSettings, 7);
+  label.state('auto', label.autoSettings, 7);
+  label.state('seriesNormalTheme', seriesNormalFactory.themeSettings, 8);
   // label.state('chartNormalTheme', chartNormalFactory ? chartNormalFactory.themeSettings : null);
 };
 
