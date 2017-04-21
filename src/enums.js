@@ -5787,10 +5787,10 @@ anychart.enums.normalizeMilestoneShape = function(value) {
  * @enum {string}
  */
 anychart.enums.Quarter = {
-  RIGHT_TOP: 'righttop',
-  LEFT_TOP: 'lefttop',
-  LEFT_BOTTOM: 'leftbottom',
-  RIGHT_BOTTOM: 'rightbottom'
+  RIGHT_TOP: 'rightTop',
+  LEFT_TOP: 'leftTop',
+  LEFT_BOTTOM: 'leftBottom',
+  RIGHT_BOTTOM: 'rightBottom'
 };
 
 

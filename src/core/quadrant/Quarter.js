@@ -11,17 +11,9 @@ goog.require('anychart.core.utils.Padding');
  * Quarter settings representation class.
  * @constructor
  * @extends {anychart.core.ui.Background}
- * @param {anychart.enums.Quarter} quarter Quarter.
  */
-anychart.core.quadrant.Quarter = function(quarter) {
+anychart.core.quadrant.Quarter = function() {
   anychart.core.quadrant.Quarter.base(this, 'constructor');
-
-  /**
-   * Quarter.
-   * @type {anychart.enums.Quarter}
-   * @private
-   */
-  this.quarter_ = quarter;
 
   /**
    * Quarter title.
@@ -79,15 +71,6 @@ anychart.core.quadrant.Quarter.prototype.LABEL_ZINDEX = 20;
 
 //endregion
 //region --- own api
-/**
- * Returns quarter.
- * @return {anychart.enums.Quarter} Quarter.
- */
-anychart.core.quadrant.Quarter.prototype.getQuarter = function() {
-  return this.quarter_;
-};
-
-
 /**
  * Getter/setter for title.
  * @param {(null|boolean|Object|string)=} opt_value .
@@ -319,7 +302,6 @@ anychart.core.quadrant.Quarter.prototype.draw = function() {
 /** @inheritDoc */
 anychart.core.quadrant.Quarter.prototype.serialize = function() {
   var json = anychart.core.quadrant.Quarter.base(this, 'serialize');
-  json['quarter'] = this.quarter_;
   json['title'] = this.title().serialize();
   json['margin'] = this.margin().serialize();
   json['padding'] = this.padding().serialize();

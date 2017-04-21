@@ -2377,14 +2377,20 @@ goog.provide('anychart.themes.defaultTheme');
       'defaultXAxisSettings': {
         'ticks': false,
         'labels': false,
-        'title': false,
-        'align': 'left'
+        'title': {
+          'enabled': false,
+          'align': 'left'
+        },
+        'stroke': '3 #bbdefb'
       },
       'defaultYAxisSettings': {
         'ticks': false,
         'labels': false,
-        'title': false,
-        'align': 'left'
+        'title': {
+          'enabled': false,
+          'align': 'left'
+        },
+        'stroke': '3 #bbdefb'
       },
       'defaultQuarterSettings': {
         'enabled': true,
@@ -2399,8 +2405,8 @@ goog.provide('anychart.themes.defaultTheme');
           'text': 'Quarter label',
           'width': null,
           'height': null,
-          'anchor': 'leftTop',
-          'position': 'leftTop',
+          'anchor': 'center',
+          'position': 'center',
           'offsetX': 0,
           'offsetY': 0,
           'minFontSize': 8,
@@ -2427,6 +2433,30 @@ goog.provide('anychart.themes.defaultTheme');
       ],
       'crossing': {
         'stroke': '#bbdefb'
+      },
+      'quarters': {
+        'righttop': {
+          fill: '#e3f2fd',
+          title: {
+            orientation: 'top'
+          }
+        },
+        'lefttop': {
+          title: {
+            orientation: 'top'
+          }
+        },
+        'leftbottom': {
+          fill: '#e3f2fd',
+          title: {
+            orientation: 'bottom'
+          }
+        },
+        'rightbottom': {
+          title: {
+            orientation: 'bottom'
+          }
+        }
       }
     },
 

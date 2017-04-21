@@ -22,8 +22,7 @@
         {"$ref": "#/definitions/anychart.charts.Sparkline"},
         {"$ref": "#/definitions/anychart.charts.HeatMap"},
         {"$ref": "#/definitions/anychart.charts.TreeMap"},
-        {"$ref": "#/definitions/anychart.charts.Pert"},
-        {"$ref": "#/definitions/anychart.charts.Quadrant"}
+        {"$ref": "#/definitions/anychart.charts.Pert"}
       ],
       "properties": {
         "container": {
@@ -1080,7 +1079,7 @@
         {"$ref": "#/definitions/anychart.core.SeparateChart"}
       ],
       "properties": {
-        "type": {"enum": ["scatter"]},
+        "type": {"enum": ["scatter", "quadrant"]},
         "grids": {
           "type": "array",
           "items": {
@@ -1266,24 +1265,15 @@
             "number",
             "string"
           ]
-        }
-      },
-      "required": ["type"]
-    },
-    "anychart.charts.Quadrant": {
-      "type": "object",
-      "allOf": [
-        {"$ref": "#/definitions/anychart.charts.Scatter"}
-      ],
-      "properties": {
-        "type": {"enum": ["quadrant"]},
-        "crosslinesStroke": {"$ref": "#/definitions/stroke"},
+        },
+        "crossing": {"$ref": "#/definitions/anychart.core.utils.Crossing"},
         "quarters": {
-          "type": "array",
-          "items": {
-            "anyOf": [
-              {"$ref": "#/definitions/anychart.core.quadrant.Quarter"}
-            ]
+          "type": "object",
+          "properties": {
+            "rightTop": {"$ref": "#/definitions/anychart.core.quadrant.Quarter"},
+            "leftTop": {"$ref": "#/definitions/anychart.core.quadrant.Quarter"},
+            "leftBottom": {"$ref": "#/definitions/anychart.core.quadrant.Quarter"},
+            "rightBottom": {"$ref": "#/definitions/anychart.core.quadrant.Quarter"}
           }
         }
       },
@@ -3017,7 +3007,7 @@
               {"$ref": "#/definitions/anychart.core.ui.Label"}
             ]
           }
-        },
+        }
       }
     },
 
@@ -5812,6 +5802,12 @@
         "drag": {
           "type": "boolean"
         }
+      }
+    },
+    "anychart.core.utils.Crossing" : {
+      "type": "object",
+      "properties": {
+        "stroke": {"$ref": "#/definitions/stroke"}
       }
     },
 

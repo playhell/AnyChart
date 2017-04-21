@@ -16,6 +16,7 @@ anychart.charts.Scatter = function() {
   anychart.charts.Scatter.base(this, 'constructor', false);
 
   this.defaultSeriesType(anychart.enums.ScatterSeriesType.MARKER);
+  this.setType(anychart.enums.ChartTypes.SCATTER);
 };
 goog.inherits(anychart.charts.Scatter, anychart.core.ChartWithAxes);
 
@@ -26,9 +27,18 @@ goog.inherits(anychart.charts.Scatter, anychart.core.ChartWithAxes);
 //  Infrastucture
 //
 //----------------------------------------------------------------------------------------------------------------------
+/**
+ * Sets chart type. Needed for proper serialization and theme demerging.
+ * @param {anychart.enums.ChartTypes} value
+ */
+anychart.charts.Scatter.prototype.setType = function(value) {
+  this.type_ = value;
+};
+
+
 /** @inheritDoc */
 anychart.charts.Scatter.prototype.getType = function() {
-  return anychart.enums.ChartTypes.SCATTER;
+  return this.type_;
 };
 
 
@@ -155,7 +165,7 @@ anychart.charts.Scatter.prototype.normalizeSeriesType = function(type) {
  */
 anychart.charts.Scatter.prototype.serialize = function() {
   var json = anychart.charts.Scatter.base(this, 'serialize');
-  json['type'] = anychart.enums.ChartTypes.SCATTER;
+  json['type'] = this.type_;
   return {'chart': json};
 };
 

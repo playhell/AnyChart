@@ -1168,7 +1168,7 @@ anychart.core.ChartWithAxes.prototype.quarter = function(quarter, opt_value) {
   var instance = this.quarters_[quarter];
 
   if (!instance) {
-    instance = new anychart.core.quadrant.Quarter(quarter);
+    instance = new anychart.core.quadrant.Quarter();
     instance.zIndex(1);
     instance.setup(this.defaultQuarterSettings());
     this.quarters_[quarter] = instance;

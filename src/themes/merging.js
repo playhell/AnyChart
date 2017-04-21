@@ -1345,6 +1345,15 @@ anychart.themes.merging.mergingMap_ = [
       'resource.resourceList.descriptions',
       'resource.resourceList.tags'
     ]
+  },
+  {
+    defaultObj: 'quadrant.defaultQuarterSettings',
+    targets: [
+      'quadrant.quarters.righttop',
+      'quadrant.quarters.lefttop',
+      'quadrant.quarters.leftbottom',
+      'quadrant.quarters.rightbottom'
+    ]
   }
 ];
 
@@ -1564,11 +1573,10 @@ anychart.themes.merging.multipleEntities_ = {
   'gauge.scaleBars': 'gauge.defaultScaleBarSettings',
   'map.callouts': 'map.defaultCalloutSettings',
   // Quadrant chart
-  'chart.quarters': 'chart.defaultQuarterSettings',
-  'chart.quarters.0.labels': 'chart.defaultQuarterSettings.defaultLabelSettings',
-  'chart.quarters.1.labels': 'chart.defaultQuarterSettings.defaultLabelSettings',
-  'chart.quarters.2.labels': 'chart.defaultQuarterSettings.defaultLabelSettings',
-  'chart.quarters.3.labels': 'chart.defaultQuarterSettings.defaultLabelSettings'
+  'chart.quarters.righttop.labels': 'chart.defaultQuarterSettings.defaultLabelSettings',
+  'chart.quarters.lefttop.labels': 'chart.defaultQuarterSettings.defaultLabelSettings',
+  'chart.quarters.leftbottom.labels': 'chart.defaultQuarterSettings.defaultLabelSettings',
+  'chart.quarters.rightbottom.labels': 'chart.defaultQuarterSettings.defaultLabelSettings'
 };
 
 
