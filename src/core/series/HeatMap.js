@@ -24,6 +24,7 @@ anychart.core.series.HeatMap = function(chart, plot, type, config, sortedMode) {
   anychart.core.series.HeatMap.base(this, 'constructor', chart, plot, type, config, sortedMode);
 
   this.labels().adjustFontSizeMode('same');
+  this.labels().setParentEventTarget(this);
 
   /**
    * Stroke resolver.
@@ -290,8 +291,7 @@ anychart.core.series.HeatMap.prototype.createPositionProviderByGeometry = functi
 /** @inheritDoc */
 anychart.core.series.HeatMap.prototype.drawLabel = function(point, pointState, pointStateChanged) {
   var displayMode = (/** @type {anychart.charts.HeatMap} */(this.chart)).labelsDisplayMode();
-  var needsMoreWork = displayMode != anychart.enums.LabelsDisplayMode.ALWAYS_SHOW;
-  point.meta('label', this.drawFactoryElement(
+  var label = this.drawFactoryElement(
       [this.labels, this.hoverLabels, this.selectLabels],
       null,
       ['label', 'hoverLabel', 'selectLabel'],
@@ -300,51 +300,64 @@ anychart.core.series.HeatMap.prototype.drawLabel = function(point, pointState, p
       null,
       point,
       pointState,
-      needsMoreWork ? false : pointStateChanged));
-  if (needsMoreWork) {
-    var iterator = this.getIterator();
-    var label = /** @type {anychart.core.ui.LabelsFactory.Label} */(iterator.meta('label'));
-    if (label) {
+      false);
+  if (label) {
+    var prefix;
+    if (pointState == anychart.PointState.NORMAL) {
+      prefix = 'normal';
+    } else if (pointState == anychart.PointState.HOVER) {
+      prefix = 'hover';
+    } else {
+      prefix = 'select';
+    }
+    var x = /** @type {number} */(point.meta(prefix + 'X'));
+    var y = /** @type {number} */(point.meta(prefix + 'Y'));
+    var width = /** @type {number} */(point.meta(prefix + 'Width'));
+    var height = /** @type {number} */(point.meta(prefix + 'Height'));
+    var cellBounds = anychart.math.rect(x, y, width, height);
+
+    if (displayMode == anychart.enums.LabelsDisplayMode.DROP) {
       var mergedSettings = label.getMergedSettings();
-      var padding = mergedSettings['padding'];
-
-      var prefix;
-      if (pointState == anychart.PointState.NORMAL) {
-        prefix = 'normal';
-      } else if (pointState == anychart.PointState.HOVER) {
-        prefix = 'hover';
-      } else {
-        prefix = 'select';
-      }
-      var x = /** @type {number} */(point.meta(prefix + 'X'));
-      var y = /** @type {number} */(point.meta(prefix + 'Y'));
-      var width = /** @type {number} */(point.meta(prefix + 'Width'));
-      var height = /** @type {number} */(point.meta(prefix + 'Height'));
-      var cellBounds = anychart.math.rect(x, y, width, height);
-
       mergedSettings['width'] = null;
       mergedSettings['height'] = null;
       if (mergedSettings['adjustByWidth'] || mergedSettings['adjustByHeight'])
         mergedSettings['fontSize'] = label.parentLabelsFactory().autoSettings['fontSize'];
 
       var bounds = this.labels().measure(label.formatProvider(), label.positionProvider(), mergedSettings);
-
-      var outOfBounds = !(cellBounds.left <= bounds.left &&
-          cellBounds.getRight() >= bounds.getRight() &&
-          cellBounds.top <= bounds.top &&
-          cellBounds.getBottom() >= bounds.getBottom());
-
+      if (cellBounds.left > bounds.left ||
+          cellBounds.getRight() < bounds.getRight() ||
+          cellBounds.top > bounds.top ||
+          cellBounds.getBottom() < bounds.getBottom()) {
+        this.labels().clear(label.getIndex());
+        label = null;
+      }
+    }
+    if (label) {
       label['clip'](cellBounds);
       label['width'](cellBounds.width);
       label['height'](cellBounds.height);
-      if (outOfBounds && displayMode == anychart.enums.LabelsDisplayMode.DROP) {
-        this.labels().clear(label.getIndex());
-        point.meta('label', null);
-      } else if (pointStateChanged) {
+      if (pointStateChanged)
         label.draw();
-      }
     }
   }
+  point.meta('label', label);
+};
+
+
+/** @inheritDoc */
+anychart.core.series.HeatMap.prototype.setupLabelDrawingPlan = function(label, chartNormalFactory, seriesNormalFactory, chartStateFactory, seriesStateFactory, pointOverride, statePointOverride) {
+  label.state('pointState', goog.isObject(statePointOverride) ? statePointOverride : null, 0);
+  label.state('seriesState', seriesStateFactory, 1);
+  // label.state('chartState', chartStateFactory);
+  label.state('pointNormal', goog.isObject(pointOverride) ? pointOverride : null, 2);
+  label.state('seriesNormal', seriesNormalFactory, 3);
+  // label.state('chartNormal', chartNormalFactory);
+  label.state('autoOverride', label.ownSettings, 4);
+  label.state('seriesStateTheme', seriesStateFactory ? seriesStateFactory.themeSettings : null, 5);
+  // label.state('chartStateTheme', chartStateFactory ? chartStateFactory.themeSettings : null);
+  label.state('auto', label.autoSettings, 6);
+  label.state('seriesNormalTheme', seriesNormalFactory.themeSettings, 7);
+  // label.state('chartNormalTheme', chartNormalFactory ? chartNormalFactory.themeSettings : null);
 };
 
 

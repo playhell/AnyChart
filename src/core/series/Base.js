@@ -2175,6 +2175,31 @@ anychart.core.series.Base.prototype.checkBoundsCollision = function(factory, lab
 
 
 /**
+ * Setups label drawing plan.
+ * @param {anychart.core.ui.LabelsFactory.Label} label
+ * @param {anychart.core.ui.LabelsFactory} chartNormalFactory
+ * @param {anychart.core.ui.LabelsFactory} seriesNormalFactory
+ * @param {anychart.core.ui.LabelsFactory} chartStateFactory
+ * @param {anychart.core.ui.LabelsFactory} seriesStateFactory
+ * @param {*} pointOverride
+ * @param {*} statePointOverride
+ */
+anychart.core.series.Base.prototype.setupLabelDrawingPlan = function(label, chartNormalFactory, seriesNormalFactory, chartStateFactory, seriesStateFactory, pointOverride, statePointOverride) {
+  label.state('pointState', goog.isObject(statePointOverride) ? statePointOverride : null);
+  label.state('seriesState', seriesStateFactory);
+  label.state('chartState', chartStateFactory);
+  label.state('pointNormal', goog.isObject(pointOverride) ? pointOverride : null);
+  label.state('seriesNormal', seriesNormalFactory);
+  label.state('chartNormal', chartNormalFactory);
+  label.state('seriesStateTheme', seriesStateFactory ? seriesStateFactory.themeSettings : null);
+  label.state('chartStateTheme', chartStateFactory ? chartStateFactory.themeSettings : null);
+  label.state('auto', label.autoSettings);
+  label.state('seriesNormalTheme', seriesNormalFactory.themeSettings);
+  label.state('chartNormalTheme', chartNormalFactory ? chartNormalFactory.themeSettings : null);
+};
+
+
+/**
  * Draws one factory element.
  * @param {anychart.core.ui.MarkersFactory|anychart.core.ui.LabelsFactory} factory
  * @param {number|undefined} index
@@ -2206,17 +2231,7 @@ anychart.core.series.Base.prototype.drawSingleFactoryElement = function(factory,
   element.resetSettings();
   if (formatProvider) {
     var label = /** @type {anychart.core.ui.LabelsFactory.Label} */(element);
-    label.state('pointState', goog.isObject(statePointOverride) ? statePointOverride : null);
-    label.state('seriesState', seriesStateFactory);
-    label.state('chartState', chartStateFactory);
-    label.state('pointNormal', goog.isObject(pointOverride) ? pointOverride : null);
-    label.state('seriesNormal', factory);
-    label.state('chartNormal', chartNormalFactory);
-    label.state('seriesStateTheme', seriesStateFactory ? seriesStateFactory.themeSettings : null);
-    label.state('chartStateTheme', chartStateFactory ? chartStateFactory.themeSettings : null);
-    label.state('auto', label.autoSettings);
-    label.state('seriesNormalTheme', factory.themeSettings);
-    label.state('chartNormalTheme', chartNormalFactory ? chartNormalFactory.themeSettings : null);
+    this.setupLabelDrawingPlan(label, chartNormalFactory, factory, chartStateFactory, seriesStateFactory, pointOverride, statePointOverride);
 
     var anchor = label.getFinalSettings('anchor');
     label.autoVertical(/** @type {boolean} */ (this.getOption('isVertical')));

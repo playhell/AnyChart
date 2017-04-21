@@ -632,6 +632,10 @@ goog.provide('anychart.themes.defaultTheme');
     },
 
     'defaultOrdinalColorScale': {
+      'inverted': false,
+      'ticks': {
+        'maxCount': 100
+      },
       'autoColors': function(rangesCount) {
         return global['anychart']['color']['blendedHueProgression']('#90caf9', '#01579b', rangesCount);
         //return global['anychart']['color']['blendedHueProgression']('#ffd54f', '#ef6c00', rangesCount); //todo: delete after final choice
@@ -3293,6 +3297,7 @@ goog.provide('anychart.themes.defaultTheme');
 
     // merge with chart
     'heatMap': {
+      'isVertical': false,
       'scales': [
         {
           'type': 'ordinal'
@@ -3359,7 +3364,8 @@ goog.provide('anychart.themes.defaultTheme');
         'ticks': {'enabled': false},
         'title': {
           'text': 'X-Axis'
-        }
+        },
+        'scale': 0
       },
       'defaultYAxisSettings': {
         'enabled': true,
@@ -3367,7 +3373,8 @@ goog.provide('anychart.themes.defaultTheme');
         'ticks': {'enabled': false},
         'title': {
           'text': 'Y-Axis'
-        }
+        },
+        'scale': 1
       },
       /**
        * @this {*}
@@ -3390,7 +3397,7 @@ goog.provide('anychart.themes.defaultTheme');
       'selectFill': defaultSelectColor,
       'labels': {
         'enabled': true,
-        'fontSize': 11,
+        // 'fontSize': 11,
         'adjustFontSize': {
           'width': true,
           'height': true
@@ -3461,6 +3468,8 @@ goog.provide('anychart.themes.defaultTheme');
       },
       'labelsDisplayMode': 'drop',
       'hatchFill': false,
+      'hoverHatchFill': null,
+      'selectHatchFill': null,
       'clip': true,
       'xZoom': {
         'continuous': true,
