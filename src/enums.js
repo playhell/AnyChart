@@ -6864,6 +6864,7 @@ goog.exportSymbol('anychart.enums.VAlign.BOTTOM', anychart.enums.VAlign.BOTTOM);
 
 goog.exportSymbol('anychart.enums.TextWrap.NO_WRAP', anychart.enums.TextWrap.NO_WRAP);
 goog.exportSymbol('anychart.enums.TextWrap.BY_LETTER', anychart.enums.TextWrap.BY_LETTER);
+goog.exportSymbol('anychart.enums.TextWrap.BY_WORD', anychart.enums.TextWrap.BY_WORD);
 
 
 
