@@ -212,6 +212,15 @@ anychart.charts.Mekko.prototype.categoriesScaleInvalidated = function(event) {
 
 
 /** @inheritDoc */
+anychart.charts.Mekko.prototype.checkXScaleType = function(scale) {
+  var res = (scale instanceof anychart.scales.Ordinal);
+  if (!res)
+    anychart.core.reporting.error(anychart.enums.ErrorCode.INCORRECT_SCALE_TYPE, undefined, ['Mekko chart X scale', 'ordinal']);
+  return res;
+};
+
+
+/** @inheritDoc */
 anychart.charts.Mekko.prototype.allowLegendCategoriesMode = function() {
   return true;
 };
@@ -324,7 +333,7 @@ anychart.charts.Mekko.prototype.calculate = function() {
       }
     }
 
-    this.xScale().weights(weights, true);
+    this.xScale().setAutoWeights(weights);
   }
 
   if (this.hasInvalidationState(anychart.ConsistencyState.MEKKO_CATEGORY_SCALE)) {
@@ -352,14 +361,14 @@ anychart.charts.Mekko.prototype.calculateCategoriesScales = function() {
     var scale = this.firstCategoriesScale();
     scale.startAutoCalc();
     scale.extendDataRange.apply(/** @type {anychart.scales.Ordinal} */(scale), values);
-    scale.weights(leftWeights, true);
     scale.finishAutoCalc();
+    scale.setAutoWeights(leftWeights);
 
     scale = this.lastCategoriesScale();
     scale.startAutoCalc();
     scale.extendDataRange.apply(/** @type {anychart.scales.Ordinal} */(scale), values);
-    scale.weights(rightWeights, true);
     scale.finishAutoCalc();
+    scale.setAutoWeights(rightWeights);
   }
 };
 
@@ -438,13 +447,9 @@ anychart.charts.Mekko.prototype.setupByJSON = function(config, opt_default) {
 //exports
 (function() {
   var proto = anychart.charts.Mekko.prototype;
-  // proto['firstCategoriesScale'] = proto.firstCategoriesScale;
-  // proto['lastCategoriesScale'] = proto.lastCategoriesScale;
   proto['pointsPadding'] = proto.pointsPadding;
   proto['xScale'] = proto.xScale;
   proto['yScale'] = proto.yScale;
-  proto['barsPadding'] = proto.barsPadding;
-  proto['barGroupsPadding'] = proto.barGroupsPadding;
   proto['crosshair'] = proto.crosshair;
   proto['xAxis'] = proto.xAxis;
   proto['getXAxesCount'] = proto.getXAxesCount;

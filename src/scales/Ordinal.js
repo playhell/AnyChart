@@ -207,10 +207,9 @@ anychart.scales.Ordinal.prototype.checkWeights = function() {
 /**
  * Getter/setter for weights.
  * @param {Array.<number>=} opt_value Array of weights.
- * @param {boolean=} opt_asAuto
  * @return {(Array.<number>|anychart.scales.Ordinal)} Scale weights or self for chaining.
  */
-anychart.scales.Ordinal.prototype.weights = function(opt_value, opt_asAuto) {
+anychart.scales.Ordinal.prototype.weights = function(opt_value) {
   if (goog.isDef(opt_value)) {
     if (goog.isNull(opt_value)) {
       this.weights_.length = 0;
@@ -218,7 +217,7 @@ anychart.scales.Ordinal.prototype.weights = function(opt_value, opt_asAuto) {
 
     } else if (goog.isArray(opt_value)) {
       this.weights_ = goog.array.clone(opt_value);
-      this.autoWeights_ = !!opt_asAuto;
+      this.autoWeights_ = false;
     }
 
     if (!this.checkWeights())
@@ -261,6 +260,18 @@ anychart.scales.Ordinal.prototype.weights = function(opt_value, opt_asAuto) {
   }
 
   return this.resultWeights_;
+};
+
+
+/**
+ * Wrapper for weights() method. Sets weights as auto calculated and does not affect serialization.
+ * @param {Array.<number>=} values Array of weights.
+ * @return {(Array.<number>|anychart.scales.Ordinal)} Scale weights or self for chaining.
+ */
+anychart.scales.Ordinal.prototype.setAutoWeights = function(values) {
+  var result = this.weights(values);
+  this.autoWeights_ = true;
+  return result;
 };
 
 
