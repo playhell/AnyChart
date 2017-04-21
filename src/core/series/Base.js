@@ -2231,7 +2231,14 @@ anychart.core.series.Base.prototype.drawSingleFactoryElement = function(factory,
   element.resetSettings();
   if (formatProvider) {
     var label = /** @type {anychart.core.ui.LabelsFactory.Label} */(element);
-    this.setupLabelDrawingPlan(label, chartNormalFactory, factory, chartStateFactory, seriesStateFactory, pointOverride, statePointOverride);
+    this.setupLabelDrawingPlan(
+        label,
+        /** @type {anychart.core.ui.LabelsFactory} */(chartNormalFactory),
+        /** @type {anychart.core.ui.LabelsFactory} */(factory),
+        /** @type {anychart.core.ui.LabelsFactory} */(chartStateFactory),
+        /** @type {anychart.core.ui.LabelsFactory} */(seriesStateFactory),
+        pointOverride,
+        statePointOverride);
 
     var anchor = label.getFinalSettings('anchor');
     label.autoVertical(/** @type {boolean} */ (this.getOption('isVertical')));
