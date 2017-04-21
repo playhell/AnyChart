@@ -47,7 +47,7 @@ anychart.charts.HeatMap = function(opt_data, opt_csvSettings) {
    * @type {anychart.core.series.HeatMap}
    * @private
    */
-  this.series_ = this.createSeriesByType('', opt_data || null, opt_csvSettings);
+  this.series_ = /** @type {anychart.core.series.HeatMap} */(this.createSeriesByType('', opt_data || null, opt_csvSettings));
 };
 goog.inherits(anychart.charts.HeatMap, anychart.core.CartesianBase);
 
@@ -723,7 +723,7 @@ anychart.charts.HeatMap.prototype.setupByJSONWithScales = function(config, scale
     scale = null;
   }
   if (scale)
-    this.colorScale(scale);
+    this.colorScale(/** @type {anychart.scales.OrdinalColor} */(scale));
 
   anychart.charts.HeatMap.base(this, 'setupByJSONWithScales', config, scalesInstances, opt_default);
 
@@ -751,7 +751,7 @@ anychart.charts.HeatMap.prototype.serializeWithScales = function(json, scales, s
   json['yZoom'] = this.yZoom().serialize();
   json['labelsDisplayMode'] = this.labelsDisplayMode();
 
-  this.serializeScale(json, 'colorScale', /** @type {anychart.scales.Base} */(this.colorScale), scales, scaleIds);
+  this.serializeScale(json, 'colorScale', /** @type {anychart.scales.Base} */(this.colorScale()), scales, scaleIds);
 };
 
 

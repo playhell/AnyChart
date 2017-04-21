@@ -1789,7 +1789,7 @@ anychart.core.series.Base.getNullColor_ = function() {
  * @param {boolean=} opt_ignoreColorScale Whether should use color scale.
  * @return {Object}
  */
-anychart.core.series.Base.prototype.getColorResolutionContext = function(){}
+anychart.core.series.Base.prototype.getColorResolutionContext = goog.abstractMethod;
 
 
 /**
