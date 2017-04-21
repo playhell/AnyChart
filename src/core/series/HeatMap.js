@@ -3,6 +3,7 @@ goog.require('acgraph');
 goog.require('anychart.color');
 goog.require('anychart.core.drawers.HeatMap');
 goog.require('anychart.core.series.Cartesian');
+goog.require('anychart.core.settings');
 goog.require('anychart.enums');
 goog.require('anychart.format.Context');
 goog.require('anychart.math.Rect');
@@ -36,6 +37,26 @@ anychart.core.series.HeatMap = function(chart, plot, type, config, sortedMode) {
       ['stroke', 'hoverStroke', 'selectStroke'], anychart.enums.ColorType.STROKE));
 };
 goog.inherits(anychart.core.series.HeatMap, anychart.core.series.Cartesian);
+
+
+/**
+ * Properties that should be defined in series.Base prototype.
+ * @type {!Object.<string, anychart.core.settings.PropertyDescriptor>}
+ */
+anychart.core.series.HeatMap.PROPERTY_DESCRIPTORS = (function() {
+  var map = {};
+  anychart.core.settings.createDescriptor(
+      map,
+      anychart.enums.PropertyHandlerType.MULTI_ARG,
+      'stroke',
+      anychart.core.settings.strokeOrFunctionNormalizer,
+      anychart.ConsistencyState.SERIES_POINTS,
+      anychart.Signal.NEEDS_REDRAW | anychart.Signal.NEED_UPDATE_LEGEND,
+      anychart.core.series.Capabilities.ANY);
+  return map;
+})();
+// populating series base prototype with properties
+anychart.core.settings.populate(anychart.core.series.HeatMap, anychart.core.series.HeatMap.PROPERTY_DESCRIPTORS);
 
 
 /** @inheritDoc */
@@ -439,6 +460,21 @@ anychart.core.series.HeatMap.prototype.getColorResolutionContext = function(opt_
   var result = anychart.core.series.HeatMap.base(this, 'getColorResolutionContext', opt_baseColor, opt_ignorePointSettings, opt_ignoreColorScale);
   result['colorScale'] = (/** @type {anychart.charts.HeatMap} */(this.getChart())).colorScale();
   return result;
+};
+
+
+/** @inheritDoc */
+anychart.core.series.HeatMap.prototype.serialize = function() {
+  var json = anychart.core.series.HeatMap.base(this, 'serialize');
+  anychart.core.settings.serialize(this, anychart.core.series.HeatMap.PROPERTY_DESCRIPTORS, json);
+  return json;
+};
+
+
+/** @inheritDoc */
+anychart.core.series.HeatMap.prototype.setupByJSON = function(config, opt_default) {
+  anychart.core.settings.deserialize(this, anychart.core.series.HeatMap.PROPERTY_DESCRIPTORS, config);
+  anychart.core.series.HeatMap.base(this, 'setupByJSON', config, opt_default);
 };
 
 
