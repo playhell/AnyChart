@@ -6765,6 +6765,8 @@ goog.exportSymbol('anychart.enums.PolarSeriesType.POLYLINE', anychart.enums.Pola
 goog.exportSymbol('anychart.enums.PolarSeriesType.COLUMN', anychart.enums.PolarSeriesType.COLUMN);
 goog.exportSymbol('anychart.enums.PolarSeriesType.RANGE_COLUMN', anychart.enums.PolarSeriesType.RANGE_COLUMN);
 
+goog.exportSymbol('anychart.enums.MekkoSeriesType.MEKKO', anychart.enums.MekkoSeriesType.MEKKO);
+
 goog.exportSymbol('anychart.enums.MilestoneShape.CIRCLE', anychart.enums.MilestoneShape.CIRCLE);
 goog.exportSymbol('anychart.enums.MilestoneShape.RHOMBUS', anychart.enums.MilestoneShape.RHOMBUS);
 goog.exportSymbol('anychart.enums.MilestoneShape.RECTANGLE', anychart.enums.MilestoneShape.RECTANGLE);
