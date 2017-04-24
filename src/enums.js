@@ -50,7 +50,8 @@ anychart.enums.ChartTypes = {
   RESOURCE: 'resource',
   JUMP_LINE: 'jumpLine',
   STICK: 'stick',
-  PARETO: 'pareto'
+  PARETO: 'pareto',
+  CLOUD: 'cloud'
 };
 
 

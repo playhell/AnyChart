@@ -5041,6 +5041,10 @@ goog.provide('anychart.themes.defaultTheme');
       }
     },
 
+    'cloud': {
+      'ignoreList': []
+    },
+
     // standalone components
     'standalones': {
       'background': {
