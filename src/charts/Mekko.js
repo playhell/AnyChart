@@ -469,6 +469,9 @@ anychart.charts.Mekko.prototype.setupByJSON = function(config, opt_default) {
   proto['removeAllSeries'] = proto.removeAllSeries;
   proto['getPlotBounds'] = proto.getPlotBounds;
   proto['annotations'] = proto.annotations;
+  proto['lineMarker'] = proto.lineMarker;
+  proto['rangeMarker'] = proto.rangeMarker;
+  proto['textMarker'] = proto.textMarker;
   // generated automatically
   // proto['mekko'] = proto.mekko;
 })();

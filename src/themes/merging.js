@@ -756,6 +756,7 @@ anychart.themes.merging.mergingMap_ = [
     targets: [
       'cartesianBase.defaultLineMarkerSettings',
       'scatter.defaultLineMarkerSettings',
+      'mekko.defaultLineMarkerSettings',
       'sparkline.defaultLineMarkerSettings',
       'standalones.lineAxisMarker',
       'defaultTimeline.defaultLineMarkerSettings'
@@ -766,6 +767,7 @@ anychart.themes.merging.mergingMap_ = [
     targets: [
       'cartesianBase.defaultTextMarkerSettings',
       'scatter.defaultTextMarkerSettings',
+      'mekko.defaultTextMarkerSettings',
       'sparkline.defaultTextMarkerSettings',
       'standalones.textAxisMarker',
       'defaultTimeline.defaultTextMarkerSettings'
@@ -776,6 +778,7 @@ anychart.themes.merging.mergingMap_ = [
     targets: [
       'cartesianBase.defaultRangeMarkerSettings',
       'scatter.defaultRangeMarkerSettings',
+      'mekko.defaultRangeMarkerSettings',
       'sparkline.defaultRangeMarkerSettings',
       'standalones.rangeAxisMarker',
       'defaultTimeline.defaultRangeMarkerSettings'
