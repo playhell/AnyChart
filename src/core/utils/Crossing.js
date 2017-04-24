@@ -43,7 +43,7 @@ anychart.core.utils.Crossing.prototype.stroke = function(opt_strokeOrFill, opt_t
     var stroke = acgraph.vector.normalizeStroke.apply(null, arguments);
     if (stroke != this.stroke_) {
       this.stroke_ = stroke;
-      this.invalidate(anychart.Signal.NEEDS_REDRAW);
+      this.dispatchSignal(anychart.Signal.NEEDS_REDRAW);
     }
     return this;
   }

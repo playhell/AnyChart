@@ -335,7 +335,7 @@ anychart.ConsistencyState = {
   //---------------------------------- DATE TIME WITH CALENDAR -----------------------------
   DTWC_TS_GRID: 1 << 0,
   DTWC_TS_GRID_ZERO: 1 << 1,
-  //----------------------------- QUADRANT CHART (SCATTER=AXES_CHART) -----------------------------
+  //----------------------------- QUARTER (BACKGROUND) -----------------------------
   QUARTER_TITLE: 1 << 7,
   QUARTER_LABELS: 1 << 8,
   /**
