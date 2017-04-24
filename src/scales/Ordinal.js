@@ -248,6 +248,11 @@ anychart.scales.Ordinal.prototype.weights = function(opt_value) {
 };
 
 
+/**
+ * Updates weights container.
+ * @param {Array.<number>} value Array of weights.
+ * @private
+ */
 anychart.scales.Ordinal.prototype.updateWeights_ = function(value) {
   if (goog.isNull(value))
     this.weights_.length = 0;

@@ -1878,6 +1878,15 @@ anychart.core.ChartWithOrthogonalScales.prototype.onInteractivitySignal = functi
 //
 //----------------------------------------------------------------------------------------------------------------------
 /**
+ * Last index of default scales in scales array.
+ * @return {number}
+ */
+anychart.core.ChartWithOrthogonalScales.prototype.defaultScalesLastIndex = function() {
+  return 1;
+};
+
+
+/**
  * Setup with scale instances.
  * @param {!Object} config
  * @param {Object.<anychart.scales.Base>} scalesInstances
@@ -1904,8 +1913,8 @@ anychart.core.ChartWithOrthogonalScales.prototype.setupByJSONWithScales = functi
       if (seriesInst) {
         seriesInst.setup(json);
         if (goog.isObject(json)) {
-          if ('xScale' in json && json['xScale'] > 1) seriesInst.xScale(scalesInstances[json['xScale']]);
-          if ('yScale' in json && json['yScale'] > 1) seriesInst.yScale(scalesInstances[json['yScale']]);
+          if ('xScale' in json && json['xScale'] > this.defaultScalesLastIndex()) seriesInst.xScale(scalesInstances[json['xScale']]);
+          if ('yScale' in json && json['yScale'] > this.defaultScalesLastIndex()) seriesInst.yScale(scalesInstances[json['yScale']]);
         }
       }
     }
@@ -1997,7 +2006,7 @@ anychart.core.ChartWithOrthogonalScales.prototype.setupElementsWithScales = func
       var json = items[i];
       var element = itemConstructor.call(this, i);
       element.setup(json);
-      if (goog.isObject(json) && 'scale' in json && json['scale'] > 1)
+      if (goog.isObject(json) && 'scale' in json && json['scale'] > this.defaultScalesLastIndex())
         element.scale(scaleInstances[json['scale']]);
     }
   }

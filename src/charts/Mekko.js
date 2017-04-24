@@ -416,6 +416,12 @@ anychart.charts.Mekko.prototype.normalizeSeriesType = function(type) {
 //
 //----------------------------------------------------------------------------------------------------------------------
 /** @inheritDoc */
+anychart.charts.Mekko.prototype.defaultScalesLastIndex = function() {
+  return 3;
+};
+
+
+/** @inheritDoc */
 anychart.charts.Mekko.prototype.serialize = function() {
   var json = anychart.charts.Mekko.base(this, 'serialize');
   json['type'] = this.getType();
@@ -430,6 +436,17 @@ anychart.charts.Mekko.prototype.serializeWithScales = function(json, scales, sca
   this.serializeScale(json, 'lastCategoriesScale', /** @type {anychart.scales.Base} */(this.lastCategoriesScale()), scales, scaleIds);
 
   anychart.charts.Mekko.base(this, 'serializeWithScales', json, scales, scaleIds);
+};
+
+
+/** @inheritDoc */
+anychart.charts.Mekko.prototype.serializeAxis = function(item, scales, scaleIds, axesIds) {
+  var config = item.serialize();
+  if ((item.scale() == this.firstCategoriesScale() && item.orientation() != anychart.enums.Orientation.LEFT) ||
+      (item.scale() == this.lastCategoriesScale() && item.orientation() != anychart.enums.Orientation.RIGHT))
+    this.serializeScale(config, 'scale', /** @type {anychart.scales.Base} */(item.scale()), scales, scaleIds);
+  axesIds.push(goog.getUid(item));
+  return config;
 };
 
 
