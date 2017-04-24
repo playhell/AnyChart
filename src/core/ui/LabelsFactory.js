@@ -2220,7 +2220,7 @@ anychart.core.ui.LabelsFactory.Label.prototype.calculateFontSize = function(orig
     return res;
   };
 
-  var fonts = goog.array.range(minFontSize, maxFontSize);
+  var fonts = goog.array.range(minFontSize, maxFontSize + 1);
   var res = goog.array.binarySelect(fonts, evaluator);
   if (res < 0) {
     res = ~res - 1;
