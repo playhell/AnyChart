@@ -211,23 +211,8 @@ anychart.scales.Ordinal.prototype.checkWeights = function() {
  */
 anychart.scales.Ordinal.prototype.weights = function(opt_value) {
   if (goog.isDef(opt_value)) {
-    if (goog.isNull(opt_value)) {
-      this.weights_.length = 0;
-      this.autoWeights_ = true;
-
-    } else if (goog.isArray(opt_value)) {
-      this.weights_ = goog.array.clone(opt_value);
-      this.autoWeights_ = false;
-    }
-
-    if (!this.checkWeights())
-      this.weights_.length = 0;
-
-    this.resultWeights_.length = 0;
-    this.weightRatios_.length = 0;
-    this.ticks().markInvalid();
-    this.dispatchSignal(anychart.Signal.NEEDS_REAPPLICATION);
-
+    this.updateWeights_(opt_value);
+    this.autoWeights_ = !this.weights_.length;
     return this;
   }
 
@@ -263,15 +248,30 @@ anychart.scales.Ordinal.prototype.weights = function(opt_value) {
 };
 
 
+anychart.scales.Ordinal.prototype.updateWeights_ = function(value) {
+  if (goog.isNull(value))
+    this.weights_.length = 0;
+  else if (goog.isArray(value))
+    this.weights_ = goog.array.clone(value);
+
+  if (!this.checkWeights())
+    this.weights_.length = 0;
+
+  this.resultWeights_.length = 0;
+  this.weightRatios_.length = 0;
+  this.ticks().markInvalid();
+  this.dispatchSignal(anychart.Signal.NEEDS_REAPPLICATION);
+};
+
+
 /**
  * Wrapper for weights() method. Sets weights as auto calculated and does not affect serialization.
  * @param {Array.<number>} values Array of weights.
  * @return {anychart.scales.Ordinal} Self for chaining.
  */
 anychart.scales.Ordinal.prototype.setAutoWeights = function(values) {
-  if (this.autoWeights_) {
-    this.weights(values);
-  }
+  if (this.autoWeights_)
+    this.updateWeights_(values);
 
   return this;
 };
