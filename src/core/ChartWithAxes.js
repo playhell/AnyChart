@@ -1085,14 +1085,18 @@ anychart.core.ChartWithAxes.prototype.drawContent = function(bounds) {
   if (this.hasInvalidationState(anychart.ConsistencyState.BOUNDS)) {
     var lineBounds = this.dataBounds.clone();
     var thickness = acgraph.vector.getThickness(/** @type {acgraph.vector.Stroke} */ (this.crossing().stroke()));
-    var middleX = anychart.utils.applyPixelShift(lineBounds.left + lineBounds.width / 2, thickness);
-    var middleY = anychart.utils.applyPixelShift(lineBounds.top + lineBounds.height / 2, thickness);
+    var top = lineBounds.top + thickness / 2;
+    var bottom = top + lineBounds.height - thickness;
+    var left = lineBounds.left + thickness / 2;
+    var right = left + lineBounds.width - thickness;
+    var middleX = anychart.utils.applyPixelShift((left + right) / 2, thickness);
+    var middleY = anychart.utils.applyPixelShift((top + bottom) / 2, thickness);
     this.crosslines_
         .clear()
-        .moveTo(middleX, lineBounds.top)
-        .lineTo(middleX, lineBounds.top + lineBounds.height)
-        .moveTo(lineBounds.left, middleY)
-        .lineTo(lineBounds.left + lineBounds.width, middleY);
+        .moveTo(middleX, top)
+        .lineTo(middleX, bottom)
+        .moveTo(left, middleY)
+        .lineTo(right, middleY);
     this.calculateQuarterBounds();
     this.invalidate(anychart.ConsistencyState.AXES_CHART_QUARTER);
   }
