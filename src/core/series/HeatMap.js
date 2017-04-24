@@ -98,7 +98,7 @@ anychart.core.series.HeatMap.prototype.tooltip = function(opt_value) {
 anychart.core.series.HeatMap.prototype.calcMinFontSize_ = function(point, pointState, prefix, minFontSize) {
   var label = this.drawFactoryElement(
       [this.labels, this.hoverLabels, this.selectLabels],
-      [this.getChart().labels, this.getChart().hoverLabels, this.getChart().selectLabels],
+      null,
       ['label', 'hoverLabel', 'selectLabel'],
       this.planHasPointLabels(),
       true,
@@ -111,14 +111,11 @@ anychart.core.series.HeatMap.prototype.calcMinFontSize_ = function(point, pointS
     var mergedSettings = label.getMergedSettings();
     var needAdjust = (mergedSettings['adjustByHeight'] || mergedSettings['adjustByHeight']);
     if (needAdjust) {
-      var x = /** @type {number} */(point.meta(prefix + 'X'));
-      var y = /** @type {number} */(point.meta(prefix + 'Y'));
       var width = /** @type {number} */(point.meta(prefix + 'Width'));
       var height = /** @type {number} */(point.meta(prefix + 'Height'));
-      var cellBounds = anychart.math.rect(x, y, width, height);
       var padding = mergedSettings['padding'];
-      width = cellBounds.width - padding.getOption('left') - padding.getOption('right');
-      height = cellBounds.height - padding.getOption('top') - padding.getOption('bottom');
+      width -= padding.getOption('left') + padding.getOption('right');
+      height -= padding.getOption('top') + padding.getOption('bottom');
       var fontSize = label.calculateFontSize(
           width,
           height,
@@ -127,11 +124,7 @@ anychart.core.series.HeatMap.prototype.calcMinFontSize_ = function(point, pointS
           mergedSettings['adjustByWidth'],
           mergedSettings['adjustByHeight']);
 
-      if (isNaN(minFontSize)) {
-        minFontSize = fontSize;
-      } else if (fontSize < minFontSize) {
-        minFontSize = fontSize;
-      }
+      minFontSize = Math.min(minFontSize || Infinity, fontSize);
     }
   }
   return minFontSize;
@@ -155,6 +148,9 @@ anychart.core.series.HeatMap.prototype.additionalLabelsInitialize = function() {
 
   var minFontSize, hoverMinFontSize, selectMinFontSize;
   minFontSize = hoverMinFontSize = selectMinFontSize = NaN;
+  labels.setAdjustFontSize(null);
+  hoverLabels.setAdjustFontSize(null);
+  selectLabels.setAdjustFontSize(null);
 
   if (normalAdjust || hoverAdjust || selectAdjust) {
     var iterator = this.getIterator();
@@ -305,7 +301,10 @@ anychart.core.series.HeatMap.prototype.createPositionProviderByGeometry = functi
   var right = /** @type {number} */(iterator.meta('right'));
   var bottom = /** @type {number} */(iterator.meta('bottom'));
   var bounds = new anychart.math.Rect(left, top, right - left, bottom - top);
-  return anychart.utils.getCoordinateByAnchor(bounds, /** @type {anychart.enums.Anchor} */(anchor));
+  var res = anychart.utils.getCoordinateByAnchor(bounds, /** @type {anychart.enums.Anchor} */(anchor));
+  res['x'] = Math.floor(res['x']);
+  res['y'] = Math.floor(res['y']);
+  return res;
 };
 
 
@@ -341,14 +340,12 @@ anychart.core.series.HeatMap.prototype.drawLabel = function(point, pointState, p
       var mergedSettings = label.getMergedSettings();
       mergedSettings['width'] = null;
       mergedSettings['height'] = null;
-      if (mergedSettings['adjustByWidth'] || mergedSettings['adjustByHeight'])
-        mergedSettings['fontSize'] = label.parentLabelsFactory().autoSettings['fontSize'];
-
       var bounds = this.labels().measure(label.formatProvider(), label.positionProvider(), mergedSettings);
-      if (cellBounds.left > bounds.left ||
-          cellBounds.getRight() < bounds.getRight() ||
-          cellBounds.top > bounds.top ||
-          cellBounds.getBottom() < bounds.getBottom()) {
+      // we allow 0.5 pixel bounds overlap to allow better labels positioning
+      if (cellBounds.left > bounds.left + .5 ||
+          cellBounds.getRight() < bounds.getRight() - .5 ||
+          cellBounds.top > bounds.top + .5 ||
+          cellBounds.getBottom() < bounds.getBottom() - .5) {
         this.labels().clear(label.getIndex());
         label = null;
       }

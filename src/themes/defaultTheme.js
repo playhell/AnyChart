@@ -3391,7 +3391,7 @@ goog.provide('anychart.themes.defaultTheme');
         return color;
       },
       'stroke': '1 #ffffff',
-      'hoverStroke': '1.5 #ffffff',
+      'hoverStroke': '2 #ffffff',
       'hoverFill': defaultHoverColor,
       'selectStroke': '2 #ffffff',
       'selectFill': defaultSelectColor,
@@ -3454,7 +3454,8 @@ goog.provide('anychart.themes.defaultTheme');
         'size': 4,
         'positionFormatter': returnValue,
         'fill': '#dd2c00',
-        'type': 'circle'
+        'type': 'circle',
+        'stroke': 'none'
       },
       'hoverMarkers': {
         'enabled': null,
