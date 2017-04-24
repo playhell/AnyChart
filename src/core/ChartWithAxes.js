@@ -1152,7 +1152,7 @@ anychart.core.ChartWithAxes.prototype.calculateQuarterBounds = function() {
  * @private
  */
 anychart.core.ChartWithAxes.prototype.quarterInvalidated_ = function(event) {
-  this.invalidate(0, 0);
+  this.invalidate(anychart.ConsistencyState.AXES_CHART_QUARTER, anychart.Signal.NEEDS_REDRAW);
 };
 
 
