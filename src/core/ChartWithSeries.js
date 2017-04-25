@@ -879,7 +879,7 @@ anychart.core.ChartWithSeries.seriesReferenceValues = {
 
 
 /**
- * @param {(anychart.data.Set|anychart.data.TableData|Array)=} opt_value
+ * @param {(anychart.data.Set|anychart.data.DataSettings|Array)=} opt_value
  * @return {anychart.data.View|anychart.core.ChartWithSeries}
  */
 anychart.core.ChartWithSeries.prototype.data = function(opt_value) {

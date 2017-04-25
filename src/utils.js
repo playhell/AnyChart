@@ -882,6 +882,20 @@ anychart.utils.recursiveClone = function(obj) {
 
 
 /**
+ * Returns an array containing the property keys and values of the specified object (an associative array).
+ * @param {Object.<K,V>} obj
+ * @return {Array.<{key: K, value: V}>}
+ */
+anychart.utils.entries = function(obj) {
+  var result = [];
+  goog.object.forEach(obj, function(value, key) {
+    result.push({key: key, value: value});
+  });
+  return result;
+};
+
+
+/**
  * Define if passed value fit to the none definition.
  * @param {*} value Value to define.
  * @return {boolean} Is passed value fit to the none definition.

@@ -32,6 +32,35 @@ goog.require('anychart.enums');
 
 
 /**
+ * @typedef {{
+ *  mode: (anychart.enums.TextParsingMode|undefined),
+ *  rowsSeparator: (string|undefined),
+ *  columnsSeparator: (string|undefined),
+ *  ignoreTrailingSpaces: (boolean|undefined),
+ *  ignoreFirstRow: (boolean|undefined),
+ *  minLength: (number|undefined),
+ *  maxLength: (number|undefined),
+ *  cutLength: (number|undefined),
+ *  ignoreItems: (Array.<string>|undefined),
+ *  maxItems: (number|undefined)
+ * }}
+ */
+anychart.data.TextParsingSettings;
+
+
+/**
+ * @typedef {{
+ *  title: (string|undefined),
+ *  header: (Array.<string>|undefined),
+ *  rows: (Array|undefined),
+ *  text: (string|undefined),
+ *  textSettings: (anychart.enums.TextParsingMode|anychart.data.TextParsingSettings|undefined)
+ * }}
+ */
+anychart.data.DataSettings;
+
+
+/**
  * Maps passed data as an array of mappings. Data is expected to be a table, e.g. an array of arrays of values.
  * The function treats the table as a source for several series of points, that have the same X value.
  * Each row of the table is treated as a bunch of points, one for each series. Column number 0 is treated as an X value.
@@ -151,13 +180,14 @@ anychart.data.buildMapping = function(dataSet, fromIndex, toIndex, names, opt_ke
 
 
 /**
- * @typedef {{
- *  title: (string|undefined),
- *  header: (Array.<string>|undefined),
- *  rows: (Array|undefined)
- * }}
+ * Text parsing.
+ * @param {string} text .
+ * @param {(anychart.enums.TextParsingMode|anychart.data.TextParsingSettings)=} opt_settings .
+ * @return {Array.<Array.<string|number>>} .
  */
-anychart.data.TableData;
+anychart.data.parseText = function(text, opt_settings) {
+  return
+};
 
 
 //exports

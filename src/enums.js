@@ -3423,6 +3423,17 @@ anychart.enums.normalizeErrorMode = function(value, opt_default) {
 };
 
 
+/**
+ * Text parsing mode.
+ * @enum {string}
+ */
+anychart.enums.TextParsingMode = {
+  CSV: 'csv',
+  BY_WORD: 'byWord',
+  BY_CHAR: 'byChart'
+};
+
+
 //----------------------------------------------------------------------------------------------------------------------
 //
 //  Text hAlign/vAlign
@@ -6846,6 +6857,10 @@ goog.exportSymbol('anychart.enums.FontStyle.OBLIQUE', anychart.enums.FontStyle.O
 
 goog.exportSymbol('anychart.enums.FontVariant.NORMAL', anychart.enums.FontVariant.NORMAL);
 goog.exportSymbol('anychart.enums.FontVariant.SMALL_CAP', anychart.enums.FontVariant.SMALL_CAP);
+
+goog.exportSymbol('anychart.enums.TextParsingMode.CSV', anychart.enums.TextParsingMode.CSV);
+goog.exportSymbol('anychart.enums.TextParsingMode.BY_WORD', anychart.enums.TextParsingMode.BY_WORD);
+goog.exportSymbol('anychart.enums.TextParsingMode.BY_CHAR', anychart.enums.TextParsingMode.BY_CHAR);
 
 goog.exportSymbol('anychart.enums.HAlign.LEFT', anychart.enums.HAlign.LEFT);
 goog.exportSymbol('anychart.enums.HAlign.START', anychart.enums.HAlign.START);
