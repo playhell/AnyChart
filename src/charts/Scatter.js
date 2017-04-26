@@ -207,6 +207,6 @@ anychart.charts.Scatter.prototype.serialize = function() {
   proto['getPlotBounds'] = proto.getPlotBounds;
   proto['annotations'] = proto.annotations;
   // quadrant
-  proto['quarter'] = proto.quarter;
+  proto['quarters'] = proto.quarters;
   proto['crossing'] = proto.crossing;
 })();

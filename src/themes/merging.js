@@ -568,8 +568,7 @@ anychart.themes.merging.mergingMap_ = [
       'defaultTooltip.contentInternal',
       'defaultLegend',
       'defaultLegend.paginator',
-      'chart.defaultLabelSettings',
-      'quadrant.defaultQuarterSettings.defaultLabelSettings',
+      'defaultLabelSettings',
       'cartesianBase.defaultTextMarkerSettings',
       'scatter.defaultTextMarkerSettings',
       'standalones.label',
@@ -577,6 +576,13 @@ anychart.themes.merging.mergingMap_ = [
       'standalones.textAxisMarker',
       'standalones.resourceList.baseSettings',
       'resource.resourceList.baseSettings'
+    ]
+  },
+  {
+    defaultObj: 'defaultLabelSettings',
+    targets: [
+      'chart.defaultLabelSettings',
+      'chart.defaultQuarterSettings.defaultLabelSettings'
     ]
   },
   {
@@ -591,8 +597,8 @@ anychart.themes.merging.mergingMap_ = [
       'defaultLegend.background',
       'defaultLegend.paginator.background',
       'chart.defaultLabelSettings.background',
-      'quadrant.defaultQuarterSettings',
-      'quadrant.defaultQuarterSettings.defaultLabelSettings.background',
+      'chart.defaultQuarterSettings',
+      'chart.defaultQuarterSettings.defaultLabelSettings.background',
       'stock.defaultPlotSettings.xAxis.background',
       'stock.scroller.xAxis.background',
       'resource.grid.background',
@@ -671,7 +677,7 @@ anychart.themes.merging.mergingMap_ = [
       'defaultDataGrid.defaultColumnSettings.title',
       'standalones.title',
       'map.axesSettings.title',
-      'quadrant.defaultQuarterSettings.title'
+      'chart.defaultQuarterSettings.title'
     ]
   },
   {
@@ -1347,12 +1353,12 @@ anychart.themes.merging.mergingMap_ = [
     ]
   },
   {
-    defaultObj: 'quadrant.defaultQuarterSettings',
+    defaultObj: 'chart.defaultQuarterSettings',
     targets: [
-      'quadrant.quarters.righttop',
-      'quadrant.quarters.lefttop',
-      'quadrant.quarters.leftbottom',
-      'quadrant.quarters.rightbottom'
+      'chart.quarters.rightTop',
+      'chart.quarters.leftTop',
+      'chart.quarters.leftBottom',
+      'chart.quarters.rightBottom'
     ]
   }
 ];
@@ -1573,10 +1579,10 @@ anychart.themes.merging.multipleEntities_ = {
   'gauge.scaleBars': 'gauge.defaultScaleBarSettings',
   'map.callouts': 'map.defaultCalloutSettings',
   // Quadrant chart
-  'chart.quarters.righttop.labels': 'chart.defaultQuarterSettings.defaultLabelSettings',
-  'chart.quarters.lefttop.labels': 'chart.defaultQuarterSettings.defaultLabelSettings',
-  'chart.quarters.leftbottom.labels': 'chart.defaultQuarterSettings.defaultLabelSettings',
-  'chart.quarters.rightbottom.labels': 'chart.defaultQuarterSettings.defaultLabelSettings'
+  'chart.quarters.rightTop.labels': 'chart.defaultQuarterSettings.defaultLabelSettings',
+  'chart.quarters.leftTop.labels': 'chart.defaultQuarterSettings.defaultLabelSettings',
+  'chart.quarters.leftBottom.labels': 'chart.defaultQuarterSettings.defaultLabelSettings',
+  'chart.quarters.rightBottom.labels': 'chart.defaultQuarterSettings.defaultLabelSettings'
 };
 
 

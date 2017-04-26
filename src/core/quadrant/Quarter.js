@@ -129,7 +129,7 @@ anychart.core.quadrant.Quarter.prototype.margin = function(opt_spaceOrTopOrTopAn
   }
 
   if (goog.isDef(opt_spaceOrTopOrTopAndBottom)) {
-    this.margin_.setup.apply(this.margin_, arguments);
+    this.margin_.setup(opt_spaceOrTopOrTopAndBottom, opt_rightOrRightAndLeft, opt_bottom, opt_left);
     return this;
   } else {
     return this.margin_;
@@ -165,7 +165,7 @@ anychart.core.quadrant.Quarter.prototype.padding = function(opt_spaceOrTopOrTopA
   }
 
   if (goog.isDef(opt_spaceOrTopOrTopAndBottom)) {
-    this.padding_.setup.apply(this.padding_, arguments);
+    this.padding_.setup(opt_spaceOrTopOrTopAndBottom, opt_rightOrRightAndLeft, opt_bottom, opt_left);
     return this;
   } else {
     return this.padding_;
@@ -192,10 +192,7 @@ anychart.core.quadrant.Quarter.prototype.paddingInvalidated_ = function(event) {
  */
 anychart.core.quadrant.Quarter.prototype.defaultLabelSettings = function(opt_value) {
   if (goog.isDef(opt_value)) {
-    if (!this.defaultLabelSettings_)
-      this.defaultLabelSettings_ = goog.object.clone(opt_value);
-    else
-      goog.object.extend(this.defaultLabelSettings_, opt_value);
+    this.defaultLabelSettings_ = opt_value;
     return this;
   }
   return this.defaultLabelSettings_ || {};
@@ -266,10 +263,10 @@ anychart.core.quadrant.Quarter.prototype.draw = function() {
   // draw background
   anychart.core.quadrant.Quarter.base(this, 'draw');
 
-  var title = this.title();
   if (this.hasInvalidationState(anychart.ConsistencyState.QUARTER_TITLE)) {
+    var title = this.title();
     title.suspendSignalsDispatching();
-    if (!title.container()) title.container(this.rootElement);
+    title.container(this.rootElement);
     title.zIndex(this.TITLE_ZINDEX);
     title.parentBounds(this.getPixelBounds());
     title.resumeSignalsDispatching(false);
@@ -283,7 +280,7 @@ anychart.core.quadrant.Quarter.prototype.draw = function() {
       var label = this.labels_[i];
       if (label) {
         label.suspendSignalsDispatching();
-        if (!label.container() && label.enabled()) label.container(this.rootElement);
+        label.container(this.rootElement);
         label.parentBounds(this.padding().tightenBounds(bounds));
         label.zIndex(this.LABEL_ZINDEX);
         label.resumeSignalsDispatching(false);
@@ -318,19 +315,19 @@ anychart.core.quadrant.Quarter.prototype.serialize = function() {
 
 /** @inheritDoc */
 anychart.core.quadrant.Quarter.prototype.setupByJSON = function(config, opt_default) {
-  anychart.core.quadrant.Quarter.base(this, 'setupByJSON', config);
+  anychart.core.quadrant.Quarter.base(this, 'setupByJSON', config, opt_default);
 
   if ('defaultLabelSettings' in config)
     this.defaultLabelSettings(config['defaultLabelSettings']);
 
   if ('title' in config)
-    this.title(config['title']);
+    this.title().setupByJSON(config['title'], opt_default);
 
   if ('padding' in config)
-    this.padding(config['padding']);
+    this.padding().setupByJSON(config['padding'], opt_default);
 
   if ('margin' in config)
-    this.margin(config['margin']);
+    this.margin().setupByJSON(config['margin'], opt_default);
 
   var labels = config['labels'];
   if (goog.isArray(labels)) {

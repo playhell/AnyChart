@@ -9,7 +9,7 @@ goog.require('anychart.core.axisMarkers.Line');
 goog.require('anychart.core.axisMarkers.Range');
 goog.require('anychart.core.axisMarkers.Text');
 goog.require('anychart.core.grids.Linear');
-goog.require('anychart.core.quadrant.Quarter');
+goog.require('anychart.core.quadrant.QuarterSettings');
 goog.require('anychart.core.ui.Crosshair');
 goog.require('anychart.core.utils.Crossing');
 goog.require('anychart.enums');
@@ -74,13 +74,6 @@ anychart.core.ChartWithAxes = function(joinData) {
    * @private
    */
   this.minorGrids_ = [];
-
-  /**
-   * Quarters hash map.
-   * @type {Object.<string, anychart.core.quadrant.Quarter>}
-   * @private
-   */
-  this.quarters_ = {};
 
   /**
    * Crosslines element.
@@ -1077,41 +1070,50 @@ anychart.core.ChartWithAxes.prototype.drawContent = function(bounds) {
     this.markConsistent(anychart.ConsistencyState.AXES_CHART_ANNOTATIONS);
   }
 
-  if (!this.crosslines_) {
-    this.crosslines_ = this.rootElement.path();
-    this.crosslines_.zIndex(2);
-  }
+  if (this.hasInvalidationState(anychart.ConsistencyState.AXES_CHART_CROSSLINES | anychart.ConsistencyState.BOUNDS)) {
+    var stroke = /** @type {acgraph.vector.Stroke} */ (this.crossing().stroke());
+    var strokeIsNone = anychart.utils.isNone(stroke);
+    if (!strokeIsNone) {
+      if (!this.crosslines_) {
+        this.crosslines_ = this.rootElement.path();
+        this.crosslines_.zIndex(2);
+      }
 
-  if (this.hasInvalidationState(anychart.ConsistencyState.BOUNDS)) {
-    var lineBounds = this.dataBounds.clone();
-    var thickness = acgraph.vector.getThickness(/** @type {acgraph.vector.Stroke} */ (this.crossing().stroke()));
-    var top = lineBounds.top + thickness / 2;
-    var bottom = top + lineBounds.height - thickness;
-    var left = lineBounds.left + thickness / 2;
-    var right = left + lineBounds.width - thickness;
-    var middleX = anychart.utils.applyPixelShift((left + right) / 2, thickness);
-    var middleY = anychart.utils.applyPixelShift((top + bottom) / 2, thickness);
-    this.crosslines_
-        .clear()
-        .moveTo(middleX, top)
-        .lineTo(middleX, bottom)
-        .moveTo(left, middleY)
-        .lineTo(right, middleY);
-    this.calculateQuarterBounds();
-    this.invalidate(anychart.ConsistencyState.AXES_CHART_QUARTER);
-  }
+      if (this.hasInvalidationState(anychart.ConsistencyState.BOUNDS)) {
+        var thickness = acgraph.vector.getThickness(stroke);
+        var lineBounds = this.dataBounds.clone();
+        var top = lineBounds.top;
+        var bottom = top + lineBounds.height;
+        var left = lineBounds.left;
+        var right = left + lineBounds.width;
+        var middleX = anychart.utils.applyPixelShift((left + right) / 2, thickness);
+        var middleY = anychart.utils.applyPixelShift((top + bottom) / 2, thickness);
 
-  if (this.hasInvalidationState(anychart.ConsistencyState.AXES_CHART_CROSSLINES)) {
-    this.crosslines_.stroke(/** @type {acgraph.vector.Stroke} */ (this.crossing().stroke()));
+        this.crosslines_
+            .clear()
+            .moveTo(middleX, top)
+            .lineTo(middleX, bottom)
+            .moveTo(left, middleY)
+            .lineTo(right, middleY);
+        this.calculateQuarterBounds(thickness);
+        this.invalidate(anychart.ConsistencyState.AXES_CHART_QUARTER);
+      }
+    }
+
+    if (this.crosslines_)
+      this.crosslines_.stroke(stroke);
+
     this.markConsistent(anychart.ConsistencyState.AXES_CHART_CROSSLINES);
   }
 
   if (this.hasInvalidationState(anychart.ConsistencyState.AXES_CHART_QUARTER)) {
-    for (var quarter in this.quarters_) {
-      var quarterInstance = this.quarters_[quarter];
-      if (!quarterInstance.container())
-        quarterInstance.container(this.rootElement);
-      quarterInstance.parentBounds(this.quarterBounds_[quarter]);
+    var quarters = this.quarters().getItems();
+    for (i = 0; i < quarters.length; i++) {
+      var quarterInstance = quarters[i];
+      if (!quarterInstance)
+        continue;
+      quarterInstance.container(this.rootElement);
+      quarterInstance.parentBounds(this.quarterBounds_[i]);
       quarterInstance.draw();
     }
     this.markConsistent(anychart.ConsistencyState.AXES_CHART_QUARTER);
@@ -1125,67 +1127,64 @@ anychart.core.ChartWithAxes.prototype.drawContent = function(bounds) {
 //region --- Quadrant
 /**
  * Calculates bounds for all quarters.
+ * @param {number} thickness Thickness of crosslines
  */
-anychart.core.ChartWithAxes.prototype.calculateQuarterBounds = function() {
+anychart.core.ChartWithAxes.prototype.calculateQuarterBounds = function(thickness) {
   /**
-   * @type {Object.<string, anychart.math.Rect>}
+   * @type {Array.<anychart.math.Rect>}
    * @private
    */
-  this.quarterBounds_ = {};
+  this.quarterBounds_ = [];
+
   var w = this.dataBounds.width / 2;
   var h = this.dataBounds.height / 2;
 
-  this.quarterBounds_[anychart.enums.Quarter.RIGHT_TOP] = anychart.math.rect(
-      this.dataBounds.left + w,
-      this.dataBounds.top, w, h);
-  this.quarterBounds_[anychart.enums.Quarter.LEFT_TOP] = anychart.math.rect(
+  // right top quarter
+  this.quarterBounds_[0] = anychart.math.rect(
+      this.dataBounds.left + w + thickness / 2,
+      this.dataBounds.top, w - thickness / 2, h - thickness / 2);
+
+  // left top quarter
+  this.quarterBounds_[1] = anychart.math.rect(
       this.dataBounds.left,
-      this.dataBounds.top, w, h);
-  this.quarterBounds_[anychart.enums.Quarter.LEFT_BOTTOM] = anychart.math.rect(
+      this.dataBounds.top, w - thickness / 2, h - thickness / 2);
+
+  // left bottom quarter
+  this.quarterBounds_[2] = anychart.math.rect(
       this.dataBounds.left,
-      this.dataBounds.top + h, w, h);
-  this.quarterBounds_[anychart.enums.Quarter.RIGHT_BOTTOM] = anychart.math.rect(
-      this.dataBounds.left + w,
-      this.dataBounds.top + h, w, h);
+      this.dataBounds.top + h + thickness / 2, w - thickness / 2, h - thickness / 2);
+
+  // right bottom quarter
+  this.quarterBounds_[3] = anychart.math.rect(
+      this.dataBounds.left + w + thickness / 2,
+      this.dataBounds.top + h + thickness / 2, w - thickness / 2, h - thickness / 2);
 };
 
 
 /**
  * Quarter invalidation handler.
  * @param {anychart.SignalEvent} event Signal event.
- * @private
  */
-anychart.core.ChartWithAxes.prototype.quarterInvalidated_ = function(event) {
+anychart.core.ChartWithAxes.prototype.quarterInvalidated = function(event) {
   this.invalidate(anychart.ConsistencyState.AXES_CHART_QUARTER, anychart.Signal.NEEDS_REDRAW);
 };
 
 
 /**
- * Set settings for quarter.
- * @param {string} quarter
+ * Getter/setter for quarter settings.
  * @param {Object=} opt_value
- * @return {anychart.core.ChartWithAxes|anychart.core.quadrant.Quarter} Quadrant or quarter.
+ * @return {anychart.core.ChartWithAxes|anychart.core.quadrant.QuarterSettings} Quadrant or quarter settings.
  */
-anychart.core.ChartWithAxes.prototype.quarter = function(quarter, opt_value) {
-  quarter = anychart.enums.normalizeQuarter(quarter);
-
-  var instance = this.quarters_[quarter];
-
-  if (!instance) {
-    instance = new anychart.core.quadrant.Quarter();
-    instance.zIndex(1);
-    instance.setup(this.defaultQuarterSettings());
-    this.quarters_[quarter] = instance;
-    instance.listenSignals(this.quarterInvalidated_, this);
-    this.invalidate(anychart.ConsistencyState.AXES_CHART_QUARTER, anychart.Signal.NEEDS_REDRAW);
+anychart.core.ChartWithAxes.prototype.quarters = function(opt_value) {
+  if (!this.quarterSettings_) {
+    this.quarterSettings_ = new anychart.core.quadrant.QuarterSettings(this);
   }
 
   if (goog.isDef(opt_value)) {
-    instance.setup(opt_value);
+    this.quarterSettings_.setup(opt_value);
     return this;
-  } else {
-    return instance;
   }
+  return this.quarterSettings_;
 };
 
 
@@ -1195,7 +1194,7 @@ anychart.core.ChartWithAxes.prototype.quarter = function(quarter, opt_value) {
  * @private
  */
 anychart.core.ChartWithAxes.prototype.crossingInvalidated_ = function(event) {
-  this.invalidate(anychart.ConsistencyState.AXES_CHART_CROSSLINES, anychart.Signal.NEEDS_REDRAW);
+  this.invalidate(anychart.ConsistencyState.AXES_CHART_CROSSLINES | anychart.ConsistencyState.BOUNDS, anychart.Signal.NEEDS_REDRAW);
 };
 
 
@@ -1225,10 +1224,7 @@ anychart.core.ChartWithAxes.prototype.crossing = function(opt_value) {
  */
 anychart.core.ChartWithAxes.prototype.defaultQuarterSettings = function(opt_value) {
   if (goog.isDef(opt_value)) {
-    if (!this.defaultQuarterSettings_)
-      this.defaultQuarterSettings_ = goog.object.clone(opt_value);
-    else
-      goog.object.extend(this.defaultQuarterSettings_, opt_value);
+    this.defaultQuarterSettings_ = opt_value;
     return this;
   }
   return this.defaultQuarterSettings_ || {};
@@ -1248,12 +1244,7 @@ anychart.core.ChartWithAxes.prototype.setupByJSON = function(config, opt_default
   if ('defaultQuarterSettings' in config)
     this.defaultQuarterSettings(config['defaultQuarterSettings']);
   this.crossing(config['crossing']);
-  if ('quarters' in config) {
-    var quartersJson = config['quarters'];
-    for (var quarter in quartersJson) {
-      this.quarter(quarter, quartersJson[quarter]);
-    }
-  }
+  this.quarters(config['quarters']);
 };
 
 
@@ -1296,13 +1287,7 @@ anychart.core.ChartWithAxes.prototype.setupByJSONWithScales = function(config, s
 anychart.core.ChartWithAxes.prototype.serialize = function() {
   var json = anychart.core.ChartWithAxes.base(this, 'serialize');
   json['crossing'] = this.crossing().serialize();
-  if (goog.object.getCount(this.quarters_)) {
-    var quartersJson = {};
-    for (var quarter in this.quarters_) {
-      quartersJson[quarter] = this.quarters_[quarter].serialize();
-    }
-    json['quarters'] = quartersJson;
-  }
+  json['quarters'] = this.quarters().serialize();
   return json;
 };
 
@@ -1431,7 +1416,9 @@ anychart.core.ChartWithAxes.prototype.disposeInternal = function() {
       this.rangeAxesMarkers_,
       this.textAxesMarkers_,
       this.grids_,
-      this.minorGrids_);
+      this.minorGrids_,
+      this.quarterSettings_,
+      this.crossing_);
 
   delete this.xAxes_;
   delete this.yAxes_;
@@ -1440,12 +1427,7 @@ anychart.core.ChartWithAxes.prototype.disposeInternal = function() {
   this.textAxesMarkers_ = null;
   this.grids_ = null;
   this.minorGrids_ = null;
-  
-  for (var quarter in this.quarters_) {
-    goog.dispose(this.quarters_[quarter]);
-  }
-  goog.dispose(this.crossing_);
-  this.quarters_ = null;
+  this.quarterSettings_ = null;
   this.crossing_ = null;
 
   anychart.core.ChartWithAxes.base(this, 'disposeInternal');

@@ -2989,7 +2989,6 @@
         {"$ref": "#/definitions/anychart.core.ui.Background"}
       ],
       "properties": {
-        "quarter": {"type": "string"},
         "margin": {"$ref": "#/definitions/anychart.core.utils.Space"},
         "padding": {"$ref": "#/definitions/anychart.core.utils.Space"},
         "title": {

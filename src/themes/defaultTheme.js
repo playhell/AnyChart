@@ -1135,6 +1135,25 @@ goog.provide('anychart.themes.defaultTheme');
       'minPixPerPoint': NaN
     },
 
+    'defaultLabelSettings': {
+      'enabled': true,
+      'text': 'Chart label',
+      'width': null,
+      'height': null,
+      'anchor': 'leftTop',
+      'position': 'leftTop',
+      'offsetX': 0,
+      'offsetY': 0,
+      'minFontSize': 8,
+      'maxFontSize': 72,
+      'adjustFontSize': {
+        'width': false,
+        'height': false
+      },
+      'rotation': 0,
+      'zIndex': 50
+    },
+
     'stageCredits': {
       'text': 'AnyChart',
       'url': 'http://www.anychart.com/?utm_source=registered',
@@ -1489,24 +1508,6 @@ goog.provide('anychart.themes.defaultTheme');
           'pointWidth': '100%'
         }
       },
-      'defaultLabelSettings': {
-        'enabled': true,
-        'text': 'Chart label',
-        'width': null,
-        'height': null,
-        'anchor': 'leftTop',
-        'position': 'leftTop',
-        'offsetX': 0,
-        'offsetY': 0,
-        'minFontSize': 8,
-        'maxFontSize': 72,
-        'adjustFontSize': {
-          'width': false,
-          'height': false
-        },
-        'rotation': 0,
-        'zIndex': 50
-      },
       'chartLabels': [],
       'maxBubbleSize': '20%',
       'minBubbleSize': '5%',
@@ -1671,7 +1672,50 @@ goog.provide('anychart.themes.defaultTheme');
       },
       'labels': {'enabled': false},
       'hoverLabels': {'enabled': null},
-      'selectLabels': {'enabled': null}
+      'selectLabels': {'enabled': null},
+
+      'defaultQuarterSettings': {
+        'enabled': true,
+        'zIndex': 1,
+        'fill': 'none',
+        'stroke': 'none',
+        'title': {
+          'enabled': false,
+          'padding': 5
+        },
+        'defaultLabelSettings': {
+          'text': 'Quarter label',
+          'anchor': 'center',
+          'position': 'center'
+        },
+        'margin': {},
+        'padding': {}
+      },
+
+      'quarters': {
+        'rightTop': {
+          'fill': '#e3f2fd',
+          'title': {
+            'orientation': 'top'
+          }
+        },
+        'leftTop': {
+          'title': {
+            'orientation': 'top'
+          }
+        },
+        'leftBottom': {
+          'fill': '#e3f2fd',
+          'title': {
+            'orientation': 'bottom'
+          }
+        },
+        'rightBottom': {
+          'title': {
+            'orientation': 'bottom'
+          }
+        }
+      }
     },
 
     'cartesianBase': {
@@ -2364,16 +2408,18 @@ goog.provide('anychart.themes.defaultTheme');
     'bubble': {},
 
     'quadrant': {
-      'xScale': {
-        'type': 'linear',
-        'minimum': 0,
-        'maximum': 100
-      },
-      'yScale': {
-        'type': 'linear',
-        'minimum': 0,
-        'maximum': 100
-      },
+      'scales': [
+        {
+          'type': 'linear',
+          'minimum': 0,
+          'maximum': 100
+        }, {
+          'type': 'linear',
+          'minimum': 0,
+          'maximum': 100
+        }],
+      'xScale': 0,
+      'yScale': 1,
       'defaultXAxisSettings': {
         'ticks': false,
         'labels': false,
@@ -2392,71 +2438,20 @@ goog.provide('anychart.themes.defaultTheme');
         },
         'stroke': '3 #bbdefb'
       },
-      'defaultQuarterSettings': {
-        'enabled': true,
-        'fill': 'none',
-        'stroke': 'none',
-        'title': {
-          'enabled': false,
-          'padding': 5
-        },
-        'defaultLabelSettings': {
-          'enabled': true,
-          'text': 'Quarter label',
-          'width': null,
-          'height': null,
-          'anchor': 'center',
-          'position': 'center',
-          'offsetX': 0,
-          'offsetY': 0,
-          'minFontSize': 8,
-          'maxFontSize': 72,
-          'adjustFontSize': {
-            'width': false,
-            'height': false
-          },
-          'rotation': 0,
-          'zIndex': 50
-        }
-      },
       'xAxes': [
-        {},
-        {
-          'orientation': 'right'
-        }
-      ],
-      'yAxes': [
         {},
         {
           'orientation': 'top'
         }
       ],
+      'yAxes': [
+        {},
+        {
+          'orientation': 'right'
+        }
+      ],
       'crossing': {
         'stroke': '#bbdefb'
-      },
-      'quarters': {
-        'righttop': {
-          fill: '#e3f2fd',
-          title: {
-            orientation: 'top'
-          }
-        },
-        'lefttop': {
-          title: {
-            orientation: 'top'
-          }
-        },
-        'leftbottom': {
-          fill: '#e3f2fd',
-          title: {
-            orientation: 'bottom'
-          }
-        },
-        'rightbottom': {
-          title: {
-            orientation: 'bottom'
-          }
-        }
       }
     },
 
