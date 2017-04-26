@@ -2383,7 +2383,9 @@ goog.provide('anychart.themes.defaultTheme');
           'tooltip': {
             'anchor': 'leftTop'
           },
-          'stroke': returnStrokeSourceColor1
+          'stroke': returnStrokeSourceColor1,
+          'hoverStroke': returnLightenSourceColor,
+          'selectStroke': returnDarkenSourceColor
         },
         'mekko': {}
       },

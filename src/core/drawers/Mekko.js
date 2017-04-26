@@ -85,12 +85,19 @@ anychart.core.drawers.Mekko.prototype.drawPoint_ = function(point, shapes) {
   var zero = /** @type {number} */(point.meta('zero'));
   var y = /** @type {number} */(point.meta('value'));
 
+  var pointWidth = point.meta('pointWidth');
+  if (!goog.isDef(pointWidth)) {
+    pointWidth = this.pointWidth;
+    point.meta('pointWidth', pointWidth);
+  }
+
   var pointsPadding = Math.abs(anychart.math.round(anychart.utils.normalizeSize((/** @type {anychart.charts.Mekko} */(this.series.chart)).pointsPadding(), this.pointWidth)));
-  var width = this.pointWidth - pointsPadding * 2;
+  var width = pointWidth - pointsPadding * 2;
   var leftX = (x - width / 2);
   var rightX = leftX + width;
 
-  var thickness = acgraph.vector.getThickness(/** @type {acgraph.vector.Stroke} */(shapes['path'].stroke()));
+  var stroke = point.meta('stroke') ? point.meta('stroke') : shapes['path'].stroke();
+  var thickness = acgraph.vector.getThickness(/** @type {acgraph.vector.Stroke} */(stroke));
   var halfThickness = thickness / 2;
   leftX += halfThickness;
   rightX -= halfThickness;
@@ -118,4 +125,10 @@ anychart.core.drawers.Mekko.prototype.drawPoint_ = function(point, shapes) {
   anychart.core.drawers.move(path, this.isVertical, leftX, y);
   anychart.core.drawers.line(path, this.isVertical, rightX, y, rightX, zero, leftX, zero);
   path.close();
+};
+
+
+/** @inheritDoc */
+anychart.core.drawers.Mekko.prototype.updatePointInternal = function(point, state) {
+  this.updatePointOnAnimate(point);
 };
