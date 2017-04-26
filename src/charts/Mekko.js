@@ -52,7 +52,7 @@ anychart.charts.Mekko = function(opt_useCategoryScale, opt_barmekkoMode) {
   this.barmekkoMode_ = !!opt_barmekkoMode;
 
   /**
-   * @type {number}
+   * @type {(number|string)}
    * @private
    */
   this.pointsPadding_ = 0;
@@ -382,8 +382,8 @@ anychart.charts.Mekko.prototype.calculateCategoriesScales = function() {
 //----------------------------------------------------------------------------------------------------------------------
 /**
  * Getter/setter for points padding.
- * @param {number=} opt_value
- * @return {(number|!anychart.charts.Mekko)}
+ * @param {(number|string)=} opt_value
+ * @return {(number|string|!anychart.charts.Mekko)}
  */
 anychart.charts.Mekko.prototype.pointsPadding = function(opt_value) {
   if (goog.isDef(opt_value)) {
