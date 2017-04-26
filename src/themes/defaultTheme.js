@@ -197,6 +197,7 @@ goog.provide('anychart.themes.defaultTheme');
    * @return {*}
    */
   var returnSourceColor85 = function() {
+    console.log(global['anychart']['color']['setOpacity'](this['sourceColor'], 0.85, true));
     return global['anychart']['color']['setOpacity'](this['sourceColor'], 0.85, true);
   };
 
@@ -2377,8 +2378,14 @@ goog.provide('anychart.themes.defaultTheme');
           },
           'isVertical': false,
           'labels': {
-            'offsetY': 3,
-            'format': VALUE_TOKEN_DECIMALS_COUNT_2
+            'format': VALUE_TOKEN_DECIMALS_COUNT_2,
+            'position': 'center',
+            'anchor': 'center',
+            'offsetY': 0
+          },
+          'markers': {
+            'position': 'center',
+            'anchor': 'center'
           },
           'tooltip': {
             'anchor': 'leftTop'
@@ -2485,14 +2492,17 @@ goog.provide('anychart.themes.defaultTheme');
            */
           'fill': function() {
             var color = this['chart'].getSeriesCount() > 1 ? this['sourceColor'] : this['chart'].palette().itemAt(this['iterator'].currentIndex);
+            color = color ? color : this['sourceColor'];
             return global['anychart']['color']['setOpacity'](color, 0.85, true);
           },
+          //'fill': returnSourceColor85,
           /**
            * @this {*}
            * @return {*}
            */
           'hoverFill': function() {
             var color = this['chart'].getSeriesCount() > 1 ? this['sourceColor'] : this['chart'].palette().itemAt(this['iterator'].currentIndex);
+            color = color ? color : this['sourceColor'];
             return global['anychart']['color']['setOpacity'](color, 0.65, true);
           },
           /**
@@ -2501,6 +2511,7 @@ goog.provide('anychart.themes.defaultTheme');
            */
           'stroke': function() {
             var color = this['chart'].getSeriesCount() > 1 ? this['sourceColor'] : this['chart'].palette().itemAt(this['iterator'].currentIndex);
+            color = color ? color : this['sourceColor'];
             return global['anychart']['color']['setThickness'](color, 1);
           }
         }
