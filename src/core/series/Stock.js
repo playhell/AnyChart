@@ -153,7 +153,7 @@ anychart.core.series.Stock.prototype.updateComparisonZero = function() {
   /** @type {?anychart.data.TableSelectable.RowProxy} */
   var row;
   var scale = this.yScale();
-  if (this.supportsComparison() && (scale instanceof anychart.scales.Linear)) {
+  if (this.supportsComparison() && !this.planIsStacked() && (scale instanceof anychart.scales.Linear)) {
     var mode = /** @type {anychart.enums.ScaleComparisonMode} */(scale.comparisonMode());
     if (mode != anychart.enums.ScaleComparisonMode.NONE) {
       var changesFrom = /** @type {anychart.enums.ScaleCompareWithMode|number} */(scale.compareWith());
@@ -369,6 +369,12 @@ anychart.core.series.Stock.prototype.getScaleReferenceValues = function() {
 anychart.core.series.Stock.prototype.planHasPointMarkers = function() {
   var column = this.data_.getFieldColumn('marker');
   return (goog.isString(column) || !isNaN(column));
+};
+
+
+/** @inheritDoc */
+anychart.core.series.Stock.prototype.planIsStacked = function() {
+  return this.supportsStack() && this.yScale().stackMode() != anychart.enums.ScaleStackMode.NONE;
 };
 
 
