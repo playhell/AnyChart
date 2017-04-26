@@ -32,3 +32,16 @@ goog.inherits(anychart.core.series.Mekko, anychart.core.series.Cartesian);
 anychart.core.series.Mekko.prototype.normalizeYValue = function(value) {
   return !this.barmekkoMode_ && value < 0 ? 0 : value;
 };
+
+/** @inheritDoc */
+anychart.core.series.Mekko.prototype.drawMarker = function(point, pointState) {
+  if (this.barmekkoMode_ || point.get('value') > 0)
+    anychart.core.series.Mekko.base(this, 'drawMarker', point, pointState);
+};
+
+
+/** @inheritDoc */
+anychart.core.series.Mekko.prototype.drawLabel = function(point, pointState) {
+  if (this.barmekkoMode_ || point.get('value') > 0)
+    anychart.core.series.Mekko.base(this, 'drawLabel', point, pointState);
+};

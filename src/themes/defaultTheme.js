@@ -197,7 +197,6 @@ goog.provide('anychart.themes.defaultTheme');
    * @return {*}
    */
   var returnSourceColor85 = function() {
-    console.log(global['anychart']['color']['setOpacity'](this['sourceColor'], 0.85, true));
     return global['anychart']['color']['setOpacity'](this['sourceColor'], 0.85, true);
   };
 
@@ -2495,7 +2494,6 @@ goog.provide('anychart.themes.defaultTheme');
             color = color ? color : this['sourceColor'];
             return global['anychart']['color']['setOpacity'](color, 0.85, true);
           },
-          //'fill': returnSourceColor85,
           /**
            * @this {*}
            * @return {*}
@@ -2513,6 +2511,15 @@ goog.provide('anychart.themes.defaultTheme');
             var color = this['chart'].getSeriesCount() > 1 ? this['sourceColor'] : this['chart'].palette().itemAt(this['iterator'].currentIndex);
             color = color ? color : this['sourceColor'];
             return global['anychart']['color']['setThickness'](color, 1);
+          },
+          'labels': {
+            'format': VALUE_TOKEN_DECIMALS_COUNT_2,
+            'anchor': 'auto',
+            'position': 'value'
+          },
+          'markers': {
+            'position': 'value',
+            'positionFormatter': returnValue
           }
         }
       }

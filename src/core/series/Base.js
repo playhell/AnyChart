@@ -2312,7 +2312,7 @@ anychart.core.series.Base.prototype.labelsInvalidated_ = function(event) {
  * @protected
  */
 anychart.core.series.Base.prototype.drawLabel = function(point, pointState) {
-  if (this.check(anychart.core.series.Capabilities.SUPPORTS_LABELS))
+  if (this.supportsLabels())
     point.meta('label', this.drawFactoryElement(
         [this.labels, this.hoverLabels, this.selectLabels],
         [this.getChart().labels, this.getChart().hoverLabels, this.getChart().selectLabels],
@@ -2432,7 +2432,7 @@ anychart.core.series.Base.prototype.markersInvalidated_ = function(event) {
  * @protected
  */
 anychart.core.series.Base.prototype.drawMarker = function(point, pointState) {
-  if (this.check(anychart.core.series.Capabilities.SUPPORTS_MARKERS))
+  if (this.supportsMarkers())
     point.meta('marker', this.drawFactoryElement(
         [this.markers, this.hoverMarkers, this.selectMarkers],
         null,
