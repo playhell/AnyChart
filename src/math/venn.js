@@ -145,7 +145,6 @@ anychart.math.venn.zeros = function(len) {
  * @return {Array.<Array.<number>>}
  */
 anychart.math.venn.zerosM = function(x, y) {
-  //TODO (A.Kudryavtsev): Probably should rewrite it nahui.
   return goog.array.map(anychart.math.venn.zeros(x), function() {
     return anychart.math.venn.zeros(y);
   });
@@ -522,7 +521,7 @@ anychart.math.venn.nelderMead = function(f, x0, parameters) {
     if (parameters.history) {
       // copy the simplex (since later iterations will mutate) and
       // sort it to have a consistent order between iterations
-      var sortedSimplex = simplex.map(function(x) {
+      var sortedSimplex = goog.array.map(simplex, function(x) {
         var state = x.slice();
         state.fx = x.fx;
         state.id = x.id;
@@ -636,9 +635,12 @@ anychart.math.venn.intersectionArea = function(circles, opt_stats) {
   var intersectionPoints = anychart.math.venn.getIntersectionPoints(circles);
 
   // filter out points that aren't included in all the circles
-  var innerPoints = intersectionPoints.filter(function(p) {
+  var innerPoints = goog.array.filter(intersectionPoints, function(p) {
     return anychart.math.venn.containedInCircles(p, circles);
   });
+  // var innerPoints = intersectionPoints.filter(function(p) {
+  //   return anychart.math.venn.containedInCircles(p, circles);
+  // });
 
   var arcArea = 0, polygonArea = 0, arcs = [], i;
 
@@ -1042,29 +1044,49 @@ anychart.math.venn.getDistanceMatrices = function(areas, sets, setids) {
   var distances = anychart.math.venn.zerosM(sets.length, sets.length),
       constraints = anychart.math.venn.zerosM(sets.length, sets.length);
 
-  // compute required distances between all the sets such that
-  // the areas match
-  areas.filter(function(x) {
+  // compute required distances between all the sets such that the areas match
+  areas = goog.array.filter(areas, function(x) {
     return x.sets.length == 2;
-  })
-      .map(function(current) {
-        var left = setids[current.sets[0]],
-            right = setids[current.sets[1]],
-            r1 = Math.sqrt(sets[left].size / Math.PI),
-            r2 = Math.sqrt(sets[right].size / Math.PI),
-            distance = anychart.math.venn.distanceFromIntersectArea(r1, r2, current.size);
+  });
+  goog.array.map(areas, function(current) {
+    var left = setids[current.sets[0]],
+        right = setids[current.sets[1]],
+        r1 = Math.sqrt(sets[left].size / Math.PI),
+        r2 = Math.sqrt(sets[right].size / Math.PI),
+        distance = anychart.math.venn.distanceFromIntersectArea(r1, r2, current.size);
 
-        distances[left][right] = distances[right][left] = distance;
+    distances[left][right] = distances[right][left] = distance;
 
-        // also update constraints to indicate if its a subset or disjoint relationship
-        var c = 0;
-        if (current.size + anychart.math.venn.SMALL >= Math.min(sets[left].size, sets[right].size)) {
-          c = 1;
-        } else if (current.size <= anychart.math.venn.SMALL) {
-          c = -1;
-        }
-        constraints[left][right] = constraints[right][left] = c;
-      });
+    // also update constraints to indicate if its a subset or disjoint relationship
+    var c = 0;
+    if (current.size + anychart.math.venn.SMALL >= Math.min(sets[left].size, sets[right].size)) {
+      c = 1;
+    } else if (current.size <= anychart.math.venn.SMALL) {
+      c = -1;
+    }
+    constraints[left][right] = constraints[right][left] = c;
+  });
+  // areas.filter(function(x) {
+  //   return x.sets.length == 2;
+  // })
+  //     .map(function(current) {
+  //       var left = setids[current.sets[0]],
+  //           right = setids[current.sets[1]],
+  //           r1 = Math.sqrt(sets[left].size / Math.PI),
+  //           r2 = Math.sqrt(sets[right].size / Math.PI),
+  //           distance = anychart.math.venn.distanceFromIntersectArea(r1, r2, current.size);
+  //
+  //       distances[left][right] = distances[right][left] = distance;
+  //
+  //       // also update constraints to indicate if its a subset or disjoint relationship
+  //       var c = 0;
+  //       if (current.size + anychart.math.venn.SMALL >= Math.min(sets[left].size, sets[right].size)) {
+  //         c = 1;
+  //       } else if (current.size <= anychart.math.venn.SMALL) {
+  //         c = -1;
+  //       }
+  //       constraints[left][right] = constraints[right][left] = c;
+  //     });
 
   return {distances: distances, constraints: constraints};
 };
@@ -1167,9 +1189,15 @@ anychart.math.venn.constrainedMDSLayout = function(areas, params) {
 
   // keep distances bounded, things get messed up otherwise.
   // TODO: proper preconditioner?
-  var norm = anychart.math.venn.norm2(distances.map(anychart.math.venn.norm2)) / (distances.length);
-  distances = distances.map(function(row) {
-    return row.map(function(value) {
+  // var norm = anychart.math.venn.norm2(distances.map(anychart.math.venn.norm2)) / (distances.length);
+  var norm = anychart.math.venn.norm2(goog.array.map(distances, anychart.math.venn.norm2)) / (distances.length);
+  // distances = distances.map(function(row) {
+  //   return row.map(function(value) {
+  //     return value / norm;
+  //   });
+  // });
+  distances = goog.array.map(distances, function(row) {
+    return goog.array.map(row, function(value) {
       return value / norm;
     });
   });
@@ -1180,7 +1208,6 @@ anychart.math.venn.constrainedMDSLayout = function(areas, params) {
 
   var best, current;
   for (i = 0; i < restarts; ++i) {
-    // var initial = anychart.math.venn.zeros(distances.length * 2).map(Math.random);
     var initial = anychart.math.venn.zeros(distances.length * 2);
 
     current = anychart.math.venn.conjugateGradient(obj, initial, params);
@@ -1234,7 +1261,7 @@ anychart.math.venn.greedyLayout = function(areas) {
       setOverlaps[set] = [];
     }
   }
-  areas = areas.filter(function(a) {
+  areas = goog.array.filter(areas, function(a) {
     return a.sets.length == 2;
   });
 
@@ -1293,8 +1320,8 @@ anychart.math.venn.greedyLayout = function(areas) {
   // answer: probably not
   // var distances = venn.getDistanceMatrices(circles, areas).distances;
   for (i = 1; i < mostOverlapped.length; ++i) {
-    var setIndex = mostOverlapped[i].set,
-        overlap = setOverlaps[setIndex].filter(isPositioned);
+    var setIndex = mostOverlapped[i].set;
+    var overlap = goog.array.filter(setOverlaps[setIndex], isPositioned);
     set = circles[setIndex];
     overlap.sort(sortOrder);
 
@@ -1365,7 +1392,10 @@ anychart.math.venn.lossFunction = function(sets, overlaps) {
   var output = 0;
 
   function getCircles(indices) {
-    return indices.map(function(i) {
+    // return indices.map(function(i) {
+    //   return sets[i];
+    // });
+    return goog.array.map(indices, function(i) {
       return sets[i];
     });
   }
@@ -1462,9 +1492,13 @@ anychart.math.venn.orientateCircles = function(circles, orientation, orientation
  */
 anychart.math.venn.disjointCluster = function(circles) {
   // union-find clustering to get disjoint sets
-  circles.map(function(circle) {
+  circles = goog.array.map(circles, /** @type {function(anychart.math.venn.Circle)} */ (function(circle) {
     circle.parent = circle;
-  });
+    return circle;
+  }));
+  // circles.map(function(circle) {
+  //   circle.parent = circle;
+  // });
 
   // path compression step in union find
   function find(circle) {
@@ -1500,9 +1534,12 @@ anychart.math.venn.disjointCluster = function(circles) {
   }
 
   // cleanup bookkeeping
-  circles.map(function(circle) {
+  goog.array.map(circles, function(circle) {
     delete circle.parent;
   });
+  // circles.map(function(circle) {
+  //   delete circle.parent;
+  // });
 
   // return in more usable form
   var ret = [];
@@ -1522,14 +1559,22 @@ anychart.math.venn.disjointCluster = function(circles) {
  */
 anychart.math.venn.getBoundingBox = function(circles) {
   var minMax = function(d) {
-    var hi = Math.max.apply(null, circles.map(
-        function(c) {
-          return c[d] + c.radius;
-        })),
-        lo = Math.min.apply(null, circles.map(
-            function(c) {
-              return c[d] - c.radius;
-            }));
+    // var hi = Math.max.apply(null, circles.map(
+    //     function(c) {
+    //       return c[d] + c.radius;
+    //     }));
+    //
+    // var lo = Math.min.apply(null, circles.map(
+    //     function(c) {
+    //       return c[d] - c.radius;
+    //     }));
+    var hi = Math.max.apply(null, goog.array.map(circles, function(c) {
+      return c[d] + c.radius;
+    }));
+
+    var lo = Math.min.apply(null, goog.array.map(circles, function(c) {
+      return c[d] - c.radius;
+    }));
     return {max: hi, min: lo};
   };
 
@@ -1817,9 +1862,13 @@ anychart.math.venn.computeTextCentre = function(interior, exterior) {
         // polygon. this should basically never happen
         // and has some issues:
         // https://github.com/benfred/venn.js/issues/48#issuecomment-146069777
-        ret = anychart.math.venn.getCenter(areaStats.arcs.map(function(a) {
+        ret = anychart.math.venn.getCenter(goog.array.map(areaStats.arcs, function(a) {
           return a.p1;
         }));
+
+        // ret = anychart.math.venn.getCenter(areaStats.arcs.map(function(a) {
+        //   return a.p1;
+        // }));
       }
     }
   }
