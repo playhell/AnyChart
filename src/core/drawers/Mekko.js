@@ -76,24 +76,22 @@ anychart.core.drawers.Mekko.prototype.updatePointOnAnimate = function(point) {
  * Actually draws the point.
  * @param {anychart.data.IRowInfo} point
  * @param {Object.<acgraph.vector.Shape>} shapes
+ * @param {boolean=} opt_useMetaWidth
  * @private
  */
-anychart.core.drawers.Mekko.prototype.drawPoint_ = function(point, shapes) {
+anychart.core.drawers.Mekko.prototype.drawPoint_ = function(point, shapes, opt_useMetaWidth) {
   if (point.get('value') == 0) return;
 
   var x = /** @type {number} */(point.meta('x'));
   var zero = /** @type {number} */(point.meta('zero'));
   var y = /** @type {number} */(point.meta('value'));
 
-  var pointWidth = point.meta('pointWidth');
-  if (!goog.isDef(pointWidth)) {
-    pointWidth = this.pointWidth;
-    point.meta('pointWidth', pointWidth);
-  }
+  var pointWidth = opt_useMetaWidth ? /** @type {number} */(point.meta('pointWidth')) : this.pointWidth;
+  point.meta('pointWidth', pointWidth);
 
   var pointsPadding = Math.abs(anychart.math.round(anychart.utils.normalizeSize(
       /** @type {number|string} */((/** @type {anychart.charts.Mekko} */(this.series.chart)).pointsPadding()),
-      this.pointWidth)));
+      pointWidth)));
   var width = pointWidth - pointsPadding * 2;
   var leftX = (x - width / 2);
   var rightX = leftX + width;
@@ -132,5 +130,8 @@ anychart.core.drawers.Mekko.prototype.drawPoint_ = function(point, shapes) {
 
 /** @inheritDoc */
 anychart.core.drawers.Mekko.prototype.updatePointInternal = function(point, state) {
-  this.updatePointOnAnimate(point);
+  var shapes = /** @type {Object.<acgraph.vector.Path>} */(point.meta('shapes'));
+  for (var i in shapes)
+    shapes[i].clear();
+  this.drawPoint_(point, shapes, true);
 };
