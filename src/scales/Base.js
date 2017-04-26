@@ -248,9 +248,9 @@ anychart.scales.Base.prototype.getPointWidthRatio = function() {
   // TODO(Anton Saukh): non-Ordinal scales must have min distance between points calculation algorithm.
   return 0;
 };
+
+
 //endregion
-
-
 //region --- Section Stacking ---
 //----------------------------------------------------------------------------------------------------------------------
 //
@@ -445,9 +445,9 @@ anychart.scales.Base.prototype.applyModePercent_ = function(value) {
   var max = value < 0 ? -this.stackMin_ : this.stackMax_;
   return this.applyModeValue_(goog.math.clamp(value * 100 / max, -100, 100));
 };
+
+
 //endregion
-
-
 /**
  * Returns scale type.
  * @return {string}

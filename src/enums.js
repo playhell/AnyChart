@@ -5558,9 +5558,9 @@ anychart.enums.PropertyHandlerType = {
   SINGLE_ARG_DEPRECATED: 2,
   MULTI_ARG_DEPRECATED: 3
 };
+
+
 //endregion
-
-
 /**
  * Accessibility mode.
  * @enum {string}
@@ -5684,9 +5684,9 @@ anychart.enums.normalizeAnnotationType = function(value) {
   }
   return anychart.enums.AnnotationTypes.LINE;
 };
+
+
 //endregion
-
-
 /**
  * Paper sizes.
  * @enum {string}
@@ -5957,9 +5957,9 @@ anychart.enums.normalizeTimeTrackingMode = function(value) {
 };
 
 
+
+
 //endregion
-
-
 //exports
 goog.exportSymbol('anychart.enums.RadialGridLayout.CIRCUIT', anychart.enums.RadialGridLayout.CIRCUIT);
 goog.exportSymbol('anychart.enums.RadialGridLayout.RADIAL', anychart.enums.RadialGridLayout.RADIAL);

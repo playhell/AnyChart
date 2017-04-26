@@ -2834,9 +2834,9 @@ anychart.core.ui.LabelsFactory.Label.prototype.disposeInternal = function() {
 
   anychart.core.ui.LabelsFactory.Label.base(this, 'disposeInternal');
 };
+
+
 //endregion
-
-
 //region --- Exports
 //exports
 (function() {

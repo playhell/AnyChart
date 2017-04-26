@@ -160,9 +160,9 @@ anychart.charts.Scatter.prototype.serialize = function() {
 };
 
 
+
+
 //endregion
-
-
 //exports
 (function() {
   var proto = anychart.charts.Scatter.prototype;

@@ -1175,9 +1175,9 @@ anychart.core.stock.Scroller.prototype.invalidateSeries_ = function() {
         anychart.ConsistencyState.SERIES_HATCH_FILL |
         anychart.ConsistencyState.BOUNDS);
 };
+
+
 //endregion
-
-
 //region Infrastructure
 //----------------------------------------------------------------------------------------------------------------------
 //
@@ -1273,9 +1273,9 @@ anychart.core.stock.Scroller.prototype.grouping = function() {
 anychart.core.stock.Scroller.prototype.isVertical = function() {
   return false;
 };
+
+
 //endregion
-
-
 //region Public methods
 //----------------------------------------------------------------------------------------------------------------------
 //
@@ -1332,9 +1332,9 @@ anychart.core.stock.Scroller.prototype.xAxis = function(opt_value) {
     return this.xAxis_;
   }
 };
+
+
 //endregion
-
-
 //region Invalidation handlers
 //----------------------------------------------------------------------------------------------------------------------
 //
@@ -1365,9 +1365,9 @@ anychart.core.stock.Scroller.prototype.invalidateScaleDependend = function() {
     this.xAxis_.invalidate(anychart.ConsistencyState.APPEARANCE);
   this.invalidate(anychart.ConsistencyState.STOCK_SCROLLER_SERIES | anychart.ConsistencyState.STOCK_SCROLLER_AXIS);
 };
+
+
 //endregion
-
-
 //region Drawing
 //----------------------------------------------------------------------------------------------------------------------
 //
@@ -1423,9 +1423,9 @@ anychart.core.stock.Scroller.prototype.draw = function() {
 
   return this;
 };
+
+
 //endregion
-
-
 //region --- Palettes
 //----------------------------------------------------------------------------------------------------------------------
 //
@@ -1543,9 +1543,9 @@ anychart.core.stock.Scroller.prototype.getKeyByIndex = function(index) {
 anychart.core.stock.Scroller.prototype.getIndexByKey = function(key) {
   return this.chart_.getScrollerIndexByKey(key);
 };
+
+
 //endregion
-
-
 //region Events
 //----------------------------------------------------------------------------------------------------------------------
 //
@@ -1563,9 +1563,9 @@ anychart.core.stock.Scroller.prototype.makeRangeChangeEvent = function(type, sta
     'source': source
   };
 };
+
+
 //endregion
-
-
 //region Serialization / Deserialization / Disposing
 //----------------------------------------------------------------------------------------------------------------------
 //
@@ -1683,9 +1683,9 @@ anychart.core.stock.Scroller.prototype.setupByJSON = function(config, opt_defaul
   this.palette(config['palette']);
   this.hatchFillPalette(config['hatchFillPalette']);
 };
+
+
 //endregion
-
-
 //exports
 (function() {
   var proto = anychart.core.stock.Scroller.prototype;

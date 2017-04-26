@@ -436,9 +436,9 @@ anychart.charts.Stock.prototype.getConfigByType = function(type) {
 anychart.charts.Stock.prototype.isVertical = function() {
   return false;
 };
+
+
 //endregion
-
-
 //region Public getter/setters and methods
 //----------------------------------------------------------------------------------------------------------------------
 //
@@ -745,9 +745,9 @@ anychart.charts.Stock.prototype.scrollerGrouping = function(opt_value) {
   }
   return /** @type {anychart.core.stock.Grouping} */(this.dataController_.scrollerGrouping());
 };
+
+
 //endregion
-
-
 //region Infrastructure methods
 //----------------------------------------------------------------------------------------------------------------------
 //
@@ -870,9 +870,9 @@ anychart.charts.Stock.prototype.getCurrentScrollerMinDistance = function() {
 anychart.charts.Stock.prototype.getPlotsCount = function() {
   return this.plots_.length;
 };
+
+
 //endregion
-
-
 //region Drawing
 //----------------------------------------------------------------------------------------------------------------------
 //
@@ -1166,9 +1166,9 @@ anychart.charts.Stock.prototype.distributeBoundsLocal_ = function(boundsArray, t
     current += size;
   }
 };
+
+
 //endregion
-
-
 //region Signals handlers
 /**
  * Plot signals handler.
@@ -1232,9 +1232,9 @@ anychart.charts.Stock.prototype.invalidateRedrawable = function() {
       anychart.ConsistencyState.STOCK_SCROLLER,
       anychart.Signal.NEEDS_REDRAW);
 };
+
+
 //endregion
-
-
 //region Data
 /**
  * Registers selectable as a chart data source.
@@ -1267,9 +1267,9 @@ anychart.charts.Stock.prototype.deregisterSource = function(source) {
   if (!isUsed)
     this.dataController_.deregisterSource(source);
 };
+
+
 //endregion
-
-
 //region IKeyIndexTransformation
 //----------------------------------------------------------------------------------------------------------------------
 //
@@ -1314,9 +1314,9 @@ anychart.charts.Stock.prototype.getKeyByScrollerIndex = function(index) {
 anychart.charts.Stock.prototype.getScrollerIndexByKey = function(key) {
   return this.dataController_.getScrollerIndexByKey(key);
 };
+
+
 //endregion
-
-
 //region Annotations
 //----------------------------------------------------------------------------------------------------------------------
 //
@@ -1352,9 +1352,9 @@ anychart.charts.Stock.prototype.defaultAnnotationSettings = function(opt_value) 
   }
   return this.defaultAnnotationSettings_;
 };
+
+
 //endregion
-
-
 //region Interactivity
 /**
  * Highlights points on all charts by ratio of current selected range. Used by plots.
@@ -1494,9 +1494,9 @@ anychart.charts.Stock.prototype.unhighlight_ = function() {
     this.tooltip().hide();
   }
 };
+
+
 //endregion
-
-
 //region Scroller change
 //----------------------------------------------------------------------------------------------------------------------
 //
@@ -1569,9 +1569,9 @@ anychart.charts.Stock.prototype.scrollerChangeFinishHandler_ = function(e) {
       this.transformScrollerSource_(e['source']));
   this.allowHighlight();
 };
+
+
 //endregion
-
-
 //region Drag
 //----------------------------------------------------------------------------------------------------------------------
 //
@@ -1707,9 +1707,9 @@ anychart.charts.Stock.prototype.dragEnd = function() {
       anychart.enums.StockRangeChangeSource.PLOT_DRAG);
   this.allowHighlight();
 };
+
+
 //endregion
-
-
 //region Serialization / deserialization / disposing
 //----------------------------------------------------------------------------------------------------------------------
 //
@@ -1772,9 +1772,9 @@ anychart.charts.Stock.prototype.setupByJSON = function(config, opt_default) {
     this.selectRange(json['start'], json['end']);
   }
 };
+
+
 //endregion
-
-
 /**
  * Stock chart constructor function.
  * @param {boolean=} opt_allowPointSettings Allows to set point settings from data.

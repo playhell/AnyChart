@@ -391,9 +391,9 @@ anychart.core.ui.Tooltip.prototype.TOOLTIP_SIMPLE_DESCRIPTORS = (function() {
   return map;
 })();
 anychart.core.settings.populate(anychart.core.ui.Tooltip, anychart.core.ui.Tooltip.prototype.TOOLTIP_SIMPLE_DESCRIPTORS);
+
+
 //endregion
-
-
 //region -- API out of descriptors.
 //----------------------------------------------------------------------------------------------------------------------
 //
@@ -616,9 +616,9 @@ anychart.core.ui.Tooltip.prototype.onSeparatorSignal_ = function(event) {
     this.invalidate(anychart.ConsistencyState.TOOLTIP_SEPARATOR, anychart.Signal.NEEDS_REDRAW);
   }
 };
+
+
 //endregion
-
-
 //region -- Internal public API (not exported).
 //----------------------------------------------------------------------------------------------------------------------
 //
@@ -1391,9 +1391,9 @@ anychart.core.ui.Tooltip.prototype.invalidate = function(state, opt_signal) {
     this.dispatchSignal(opt_signal || 0);
   return effective;
 };
+
+
 //endregion
-
-
 //region -- Private methods.
 //----------------------------------------------------------------------------------------------------------------------
 //
@@ -1988,9 +1988,9 @@ anychart.core.ui.Tooltip.prototype.hideSelectable_ = function(event) {
     if (!this.delay_.isActive()) this.delay_.start();
   }
 };
+
+
 //endregion
-
-
 //region -- Parental relations.
 //----------------------------------------------------------------------------------------------------------------------
 //
@@ -2059,9 +2059,9 @@ anychart.core.ui.Tooltip.prototype.parentInvalidated_ = function(e) {
   this.resolutionChainCache_ = null;
   this.invalidate(state, signal);
 };
+
+
 //endregion
-
-
 //region -- IObjectWithSettings impl
 //----------------------------------------------------------------------------------------------------------------------
 //
@@ -2123,9 +2123,9 @@ anychart.core.ui.Tooltip.prototype.check = function(flags) {
   }
   return true;
 };
+
+
 //endregion
-
-
 //region -- IResolvable implementation
 /** @inheritDoc */
 anychart.core.ui.Tooltip.prototype.resolutionChainCache = function(opt_value) {
@@ -2158,9 +2158,9 @@ anychart.core.ui.Tooltip.prototype.getHighPriorityResolutionChain = function() {
   }
   return sett;
 };
+
+
 //endregion
-
-
 //region -- Deprecated methods
 /**
  * Enabled 'float' position mode for all tooltips.
@@ -2179,9 +2179,8 @@ anychart.core.ui.Tooltip.prototype.isFloating = function(opt_value) {
   return currValue == anychart.enums.TooltipPositionMode.FLOAT;
 };
 
+
 //endregion
-
-
 //region -- Serialization / Deserialization / Disposing
 //----------------------------------------------------------------------------------------------------------------------
 //

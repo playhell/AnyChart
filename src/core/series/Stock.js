@@ -171,9 +171,9 @@ anychart.core.series.Stock.prototype.updateComparisonZero = function() {
   // if anything went wrong - we get 0 value and fail to make a comparison, which is a good result
   this.comparisonZero = Number(row && row.get('value')) || 0;
 };
+
+
 //endregion
-
-
 //region Working with data
 //----------------------------------------------------------------------------------------------------------------------
 //
@@ -281,9 +281,9 @@ anychart.core.series.Stock.prototype.getDetachedIterator = function() {
 anychart.core.series.Stock.prototype.considerMetaEmpty = function() {
   return true;
 };
+
+
 //endregion
-
-
 //region Path manager interface methods
 //----------------------------------------------------------------------------------------------------------------------
 //
@@ -304,9 +304,9 @@ anychart.core.series.Stock.prototype.getHatchFillResolutionContext = function(op
     'sourceHatchFill': this.getAutoHatchFill()
   };
 };
+
+
 //endregion
-
-
 //region Drawing points
 //----------------------------------------------------------------------------------------------------------------------
 //
@@ -370,9 +370,9 @@ anychart.core.series.Stock.prototype.planHasPointMarkers = function() {
   var column = this.data_.getFieldColumn('marker');
   return (goog.isString(column) || !isNaN(column));
 };
+
+
 //endregion
-
-
 //region Interactivity
 //----------------------------------------------------------------------------------------------------------------------
 //
@@ -454,9 +454,9 @@ anychart.core.series.Stock.prototype.unhover = function() {
 anychart.core.series.Stock.prototype.getPointState = function(index) {
   return this.getSeriesState();
 };
+
+
 //endregion
-
-
 //region Format/position formatters generation
 //----------------------------------------------------------------------------------------------------------------------
 //
@@ -491,9 +491,9 @@ anychart.core.series.Stock.prototype.createLegendContextProvider = function() {
 anychart.core.series.Stock.prototype.getCurrentPoint = function() {
   return this.inHighlight_ ? this.highlightedRow_ : this.lastRow_;
 };
+
+
 //endregion
-
-
 //region Legend
 //----------------------------------------------------------------------------------------------------------------------
 //
@@ -582,9 +582,9 @@ anychart.core.series.Stock.prototype.getLegendItemText = function(context) {
   }
   return this.name() + (missing ? '' : result);
 };
+
+
 //endregion
-
-
 //region Serialization/Deserialization/Disposing
 //----------------------------------------------------------------------------------------------------------------------
 //
@@ -622,9 +622,9 @@ anychart.core.series.Stock.prototype.disposeInternal = function() {
 
   anychart.core.series.Stock.base(this, 'disposeInternal');
 };
+
+
 //endregion
-
-
 //exports
 (function() {
   var proto = anychart.core.series.Stock.prototype;

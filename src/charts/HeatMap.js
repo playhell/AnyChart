@@ -204,9 +204,9 @@ anychart.charts.HeatMap.prototype.ensureScalesReadyForZoom = function() {
       this.calculate();
   }
 };
+
+
 //endregion
-
-
 /**
  * X Zoom settings getter/setter.
  * @param {(number|boolean|null|Object)=} opt_value

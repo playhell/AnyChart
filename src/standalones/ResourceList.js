@@ -49,9 +49,9 @@ anychart.standalones.ResourceList.PROPERTY_DESCRIPTORS = (function() {
   return map;
 })();
 anychart.core.settings.populate(anychart.standalones.ResourceList, anychart.standalones.ResourceList.PROPERTY_DESCRIPTORS);
+
+
 //endregion
-
-
 /**
  * Raw data holder.
  * @type {?(anychart.data.View|anychart.data.Set|Array|string)}

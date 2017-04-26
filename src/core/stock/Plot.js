@@ -923,9 +923,9 @@ anychart.core.stock.Plot.prototype.createSeriesByType = function(type, opt_data,
 
   return series;
 };
+
+
 //endregion
-
-
 //region Infrastructure
 //----------------------------------------------------------------------------------------------------------------------
 //
@@ -1047,9 +1047,9 @@ anychart.core.stock.Plot.prototype.getDrawingWidth = function() {
   this.ensureBoundsDistributed_();
   return this.seriesBounds_.width;
 };
+
+
 //endregion
-
-
 //region Public getters, setters and methods
 //----------------------------------------------------------------------------------------------------------------------
 //
@@ -1329,9 +1329,9 @@ anychart.core.stock.Plot.prototype.dateTimeHighlighter = function(opt_strokeOrFi
     return this.dateTimeHighlighterStroke_;
   }
 };
+
+
 //endregion
-
-
 //region Drawing
 //----------------------------------------------------------------------------------------------------------------------
 //
@@ -1594,9 +1594,9 @@ anychart.core.stock.Plot.prototype.ensureBoundsDistributed_ = function() {
     this.markConsistent(anychart.ConsistencyState.BOUNDS | anychart.ConsistencyState.STOCK_PLOT_LEGEND);
   }
 };
+
+
 //endregion
-
-
 //region Legend
 //----------------------------------------------------------------------------------------------------------------------
 //
@@ -1770,9 +1770,9 @@ anychart.core.stock.Plot.prototype.legendItemOut = function(item, event) {
 anychart.core.stock.Plot.prototype.needsInteractiveLegendUpdate = function() {
   return true;
 };
+
+
 //endregion
-
-
 //region Interactivity
 //----------------------------------------------------------------------------------------------------------------------
 //
@@ -1858,9 +1858,9 @@ anychart.core.stock.Plot.prototype.unhighlight = function() {
   }
   this.dispatchSignal(anychart.Signal.NEED_UPDATE_LEGEND);
 };
+
+
 //endregion
-
-
 //region Drag
 //----------------------------------------------------------------------------------------------------------------------
 //
@@ -1921,9 +1921,9 @@ anychart.core.stock.Plot.prototype.handlePlotMouseOut_ = function(e) {
 anychart.core.stock.Plot.prototype.handlePlotMouseDown_ = function(e) {
   this.annotations().unselect();
 };
+
+
 //endregion
-
-
 //region Annotations
 //----------------------------------------------------------------------------------------------------------------------
 //
@@ -1948,9 +1948,9 @@ anychart.core.stock.Plot.prototype.annotations = function(opt_value) {
   }
   return this.annotations_;
 };
+
+
 //endregion
-
-
 //region Invalidation handlers
 /**
  * Background invalidation handler.
@@ -2023,9 +2023,9 @@ anychart.core.stock.Plot.prototype.xAxisInvalidated_ = function(e) {
 anychart.core.stock.Plot.prototype.onGridSignal_ = function(e) {
   this.invalidate(anychart.ConsistencyState.STOCK_PLOT_GRIDS, anychart.Signal.NEEDS_REDRAW);
 };
+
+
 //endregion
-
-
 //region Palettes
 //----------------------------------------------------------------------------------------------------------------------
 //
@@ -2132,9 +2132,9 @@ anychart.core.stock.Plot.prototype.paletteInvalidated_ = function(event) {
     this.invalidate(anychart.ConsistencyState.STOCK_PLOT_PALETTE, anychart.Signal.NEEDS_REDRAW);
   }
 };
+
+
 //endregion
-
-
 //region Serialization / deserialization / disposing
 //----------------------------------------------------------------------------------------------------------------------
 //
@@ -2571,9 +2571,9 @@ anychart.core.stock.Plot.Dragger.prototype.limitX = function(x) {
 anychart.core.stock.Plot.Dragger.prototype.limitY = function(y) {
   return 0;
 };
+
+
 //endregion
-
-
 //exports
 (function() {
   var proto = anychart.core.stock.Plot.prototype;

@@ -235,9 +235,9 @@ anychart.core.settings.createTextPropertiesDescriptors = function(invalidateBoun
 
   return map;
 };
+
+
 //endregion
-
-
 //region Functions to work with settings
 //----------------------------------------------------------------------------------------------------------------------
 //
@@ -356,9 +356,9 @@ anychart.core.settings.copy = function(target, descriptors, config) {
       target[name] = val;
   }
 };
+
+
 //endregion
-
-
 //region Handlers
 //----------------------------------------------------------------------------------------------------------------------
 //
@@ -468,9 +468,9 @@ anychart.core.settings.multiArgsDeprecatedHandler = function(fieldName, deprecat
   anychart.core.reporting.warning(anychart.enums.WarningCode.DEPRECATED, null, [deprecatedFieldName + '()', fieldName + '()'], true);
   return anychart.core.settings.multiArgsHandler(fieldName, arrayNormalizer, supportCheck, consistencyState, signal, opt_value, var_args);
 };
+
+
 //endregion
-
-
 //region Normalizers
 //----------------------------------------------------------------------------------------------------------------------
 //

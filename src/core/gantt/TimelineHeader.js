@@ -867,9 +867,9 @@ anychart.core.gantt.TimelineHeader.Level.prototype.setupByJSON = function(config
   this.labels().setupByVal(config['labels']);
 
 };
+
+
 //endregion
-
-
 //exports
 (function() {
   var proto = anychart.core.gantt.TimelineHeader.prototype;
