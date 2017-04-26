@@ -186,7 +186,57 @@ anychart.data.buildMapping = function(dataSet, fromIndex, toIndex, names, opt_ke
  * @return {Array.<Array.<string|number>>} .
  */
 anychart.data.parseText = function(text, opt_settings) {
-  return
+  var isCsv = goog.isString(anychart.enums.TextParsingMode) ?
+      anychart.enums.TextParsingMode == 'csv' :
+      !anychart.enums.TextParsingMode || !anychart.enums.TextParsingMode.mode || !anychart.enums.TextParsingMode.mode == 'csv';
+
+  var result;
+  if (isCsv) {
+    try {
+      var parser = new anychart.data.csv.Parser();
+      if (goog.isObject(opt_settings)) {
+        parser.rowsSeparator(/** @type {string|undefined} */(opt_settings['rowsSeparator'])); // if it is undefined, it will not be set.
+        parser.columnsSeparator(/** @type {string|undefined} */(opt_settings['columnsSeparator'])); // if it is undefined, it will not be set.
+        parser.ignoreTrailingSpaces(/** @type {boolean|undefined} */(opt_settings['ignoreTrailingSpaces'])); // if it is undefined, it will not be set.
+        parser.ignoreFirstRow(/** @type {boolean|undefined} */(opt_settings['ignoreFirstRow'])); // if it is undefined, it will not be set.
+      }
+      result = parser.parse(text);
+    } catch (e) {
+      if (e instanceof Error) {
+        try {
+          goog.global['console']['log'](e.message);
+        } catch (ignored) {
+        }
+      }
+      result = null;
+    }
+  } else {
+    var tags = {};
+    var e = {};
+
+    text.split(anychart.charts.TagCloud.WORD_SEPARATORS).forEach(function(t) {
+      if (!anychart.charts.TagCloud.DROP_TEXTS.test(t)) {
+        t = t.replace(anychart.charts.TagCloud.PUNCTUATION, '');
+        if (!this.ignoreList_.test(t.toLowerCase())) {
+          t = t.substr(0, this.maxLength_);
+          e[t.toLowerCase()] = t;
+          tags[t = t.toLowerCase()] = (tags[t] || 0) + 1;
+        }
+      }
+    });
+
+    tags = anychart.utils.entries(tags).sort(function(t, e) {
+      return e.value - t.value;
+    });
+
+    goog.array.forEach(tags, function(t) {
+      t.key = e[t.key];
+    });
+
+    result = tags;
+  }
+
+  return result;
 };
 
 

@@ -118,11 +118,11 @@ anychart.charts.TagCloud.prototype.data_;
 //------------------------------------------------------------------------------
 /**
  * Getter/setter for chart data.
- * @param {?(anychart.data.View|anychart.data.Set|Array|string)=} opt_value Value to set.
- * @param {Object.<string, (string|boolean)>=} opt_csvSettings If CSV string is passed, you can pass CSV parser settings here as a hash map.
+ * @param {?(anychart.data.View|anychart.data.Set|Array|anychart.data.DataSettings|string)=} opt_value Value to set.
+ * @param {(anychart.enums.TextParsingMode|anychart.data.TextParsingSettings)=} opt_settings If CSV string is passed, you can pass CSV parser settings here as a hash map.
  * @return {(!anychart.charts.TagCloud|!anychart.data.View)} Returns itself if used as a setter or the mapping if used as a getter.
  */
-anychart.charts.TagCloud.prototype.data = function(opt_value, opt_csvSettings) {
+anychart.charts.TagCloud.prototype.data = function(opt_value, opt_settings) {
   if (goog.isDef(opt_value)) {
     if (this.rawData_ !== opt_value) {
       this.rawData_ = opt_value;
@@ -133,7 +133,7 @@ anychart.charts.TagCloud.prototype.data = function(opt_value, opt_csvSettings) {
         this.data_ = this.parentViewToDispose_ = opt_value.mapAs();
       else {
         this.data_ = (this.parentViewToDispose_ = new anychart.data.Set(
-            (goog.isArray(opt_value) || goog.isString(opt_value)) ? opt_value : null, opt_csvSettings)).mapAs();
+            (goog.isArray(opt_value) || goog.isString(opt_value)) ? opt_value : null, opt_settings)).mapAs();
       }
       this.data_.listenSignals(this.dataInvalidated_, this);
       this.invalidate(anychart.ConsistencyState.RESOURCE_DATA, anychart.Signal.NEEDS_REDRAW);
