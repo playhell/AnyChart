@@ -117,6 +117,8 @@
             <xsd:element minOccurs="0" maxOccurs="1" name="milestones" type="core.Milestones"/>
             <xsd:element minOccurs="0" maxOccurs="1" name="tasks" type="core.Tasks"/>
             <xsd:element minOccurs="0" maxOccurs="1" name="critical_path" type="core.CriticalPath"/>
+            <!-- chart.Venn elements -->
+            <xsd:element minOccurs="0" maxOccurs="1" name="data_separator" type="xsd:string"/>
 
         </xsd:all>
         <!-- core.Chart attrs -->
@@ -235,6 +237,8 @@
         <!-- Pert attributes -->
         <xsd:attribute name="vertical_spacing" type="simple.NumberOrPercent"/>
         <xsd:attribute name="horizontal_spacing" type="simple.NumberOrPercent"/>
+        <!-- Venn attributes -->
+        <xsd:attribute name="data_separator" type="xsd:string"/>
     </xsd:complexType>
 
     <xsd:complexType name="Gauge">
@@ -1309,7 +1313,8 @@
             <xsd:element minOccurs="0" maxOccurs="1" name="value_prefix" type="simple.Text"/>
             <xsd:element minOccurs="0" maxOccurs="1" name="value_postfix" type="simple.Text"/>
             <xsd:element minOccurs="0" maxOccurs="1" name="content" type="core.Label"/>
-            <xsd:element minOccurs="0" maxOccurs="1" name="text_formatter" type="simple.Text"/>
+            <xsd:element minOccurs="0" maxOccurs="1" name="format" type="simple.Text"/>
+            <xsd:element minOccurs="0" maxOccurs="1" name="title_format" type="simple.Text"/>
         </xsd:all>
         <xsd:attribute name="display_mode" type="enums.TooltipDisplayMode" default="single"/>
         <xsd:attribute name="position" type="enums.AnchorAndPosition" default="leftTop"/>
@@ -1336,7 +1341,7 @@
         <xsd:attribute name="width" type="simple.NumberOrPercentOrNull" default="null"/>
         <xsd:attribute name="height" type="simple.NumberOrPercentOrNull" default="null"/>
         <xsd:attribute name="z_index" type="simple.NumberOrNull" default="null"/>
-        <xsd:attribute name="text_formatter" type="xsd:string"/>
+        <xsd:attribute name="title_format" type="xsd:string"/>
         <xsd:attributeGroup ref="attrs.TextSettings"/>
     </xsd:complexType>
 
@@ -2853,6 +2858,7 @@
             <xsd:enumeration value="jumpLine"/>
             <xsd:enumeration value="stick"/>
             <xsd:enumeration value="pareto"/>
+            <xsd:enumeration value="venn"/>
         </xsd:restriction>
     </xsd:simpleType>
 

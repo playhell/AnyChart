@@ -155,8 +155,8 @@ anychart.math.venn.zerosM = function(x, y) {
 
 /**
  * TODO (A.Kudryavtsev): Descr.
- * @param a
- * @param b
+ * @param {Array.<number>} a - .
+ * @param {Array.<number>} b - .
  * @return {number}
  */
 anychart.math.venn.dot = function(a, b) {
@@ -170,7 +170,7 @@ anychart.math.venn.dot = function(a, b) {
 
 /**
  * TODO (A.Kudryavtsev): Descr.
- * @param a
+ * @param {Array.<number>} a - .
  * @return {number}
  */
 anychart.math.venn.norm2 = function(a) {
@@ -180,9 +180,9 @@ anychart.math.venn.norm2 = function(a) {
 
 /**
  * TODO (A.Kudryavtsev): Descr.
- * @param ret
- * @param value
- * @param c
+ * @param {Array.<number>} ret - Return value.
+ * @param {Array.<number>} value - Value.
+ * @param {number} c - Coefficient.
  */
 anychart.math.venn.scale = function(ret, value, c) {
   for (var i = 0; i < value.length; ++i) {
@@ -211,14 +211,14 @@ anychart.math.venn.weightedSum = function(ret, w1, v1, w2, v2) {
 ////////////////////////////////////////////////////////////////////
 /**
  * TODO (A.Kudryavtsev): Descr.
- * @param f
- * @param pk
- * @param current
- * @param next
- * @param a
+ * @param {Function} f - .
+ * @param {Array.<number>} pk - .
+ * @param {Object} current - .
+ * @param {Object} next - .
+ * @param {number} a - .
  * @param {number=} opt_c1
  * @param {number=} opt_c2
- * @return {*}
+ * @return {number}
  */
 anychart.math.venn.wolfeLineSearch = function(f, pk, current, next, a, opt_c1, opt_c2) {
   /*
@@ -296,12 +296,12 @@ anychart.math.venn.wolfeLineSearch = function(f, pk, current, next, a, opt_c1, o
 ////////////////////////////////////////////////////////////////////
 /**
  * TODO (A.Kudryavtsev): Descr.
- * @param f
- * @param initial
- * @param params
+ * @param {Function} f - .
+ * @param {Array.<number>} initial - .
+ * @param {Object=} opt_params - .
  * @return {Object}
  */
-anychart.math.venn.conjugateGradient = function(f, initial, params) {
+anychart.math.venn.conjugateGradient = function(f, initial, opt_params) {
   // allocate all memory up front here, keep out of the loop for perfomance
   // reasons
   var current = {x: initial.slice(), fx: 0, fxprime: initial.slice()},
@@ -311,8 +311,8 @@ anychart.math.venn.conjugateGradient = function(f, initial, params) {
       a = 1,
       maxIterations;
 
-  params = params || {};
-  maxIterations = params.maxIterations || initial.length * 20;
+  opt_params = opt_params || {};
+  maxIterations = opt_params.maxIterations || initial.length * 20;
 
   current.fx = f(current.x, current.fxprime);
   pk = current.fxprime.slice();
@@ -322,8 +322,8 @@ anychart.math.venn.conjugateGradient = function(f, initial, params) {
     a = anychart.math.venn.wolfeLineSearch(f, pk, current, next, a);
 
     // todo: history in wrong spot?
-    if (params.history) {
-      params.history.push({
+    if (opt_params.history) {
+      opt_params.history.push({
         x: current.x.slice(),
         fx: current.fx,
         fxprime: current.fxprime.slice(),
@@ -354,8 +354,8 @@ anychart.math.venn.conjugateGradient = function(f, initial, params) {
     }
   }
 
-  if (params.history) {
-    params.history.push({
+  if (opt_params.history) {
+    opt_params.history.push({
       x: current.x.slice(),
       fx: current.fx,
       fxprime: current.fxprime.slice(),
@@ -370,93 +370,94 @@ anychart.math.venn.conjugateGradient = function(f, initial, params) {
 ////////////////////////////////////////////////////////////////////
 // fmin/gradientDescent.js
 ////////////////////////////////////////////////////////////////////
-/**
- * TODO (A.Kudryavtsev): Descr.
- * @param f
- * @param initial
- * @param params
- * @return {Object}
- */
-anychart.math.venn.gradientDescent = function(f, initial, params) {
-  params = params || {};
-  var maxIterations = params.maxIterations || initial.length * 100,
-      learnRate = params.learnRate || 0.001,
-      current = {x: initial.slice(), fx: 0, fxprime: initial.slice()};
-
-  for (var i = 0; i < maxIterations; ++i) {
-    current.fx = f(current.x, current.fxprime);
-    if (params.history) {
-      params.history.push({
-        x: current.x.slice(),
-        fx: current.fx,
-        fxprime: current.fxprime.slice()
-      });
-    }
-
-    anychart.math.venn.weightedSum(current.x, 1, current.x, -learnRate, current.fxprime);
-    if (anychart.math.venn.norm2(current.fxprime) <= 1e-5) {
-      break;
-    }
-  }
-
-  return current;
-};
-
-
-/**
- * TODO (A.Kudryavtsev): Descr.
- * @param f
- * @param initial
- * @param params
- * @return {Object}
- */
-anychart.math.venn.gradientDescentLineSearch = function(f, initial, params) {
-  params = params || {};
-  var current = {x: initial.slice(), fx: 0, fxprime: initial.slice()},
-      next = {x: initial.slice(), fx: 0, fxprime: initial.slice()},
-      maxIterations = params.maxIterations || initial.length * 100,
-      learnRate = params.learnRate || 1,
-      pk = initial.slice(),
-      c1 = params.c1 || 1e-3,
-      c2 = params.c2 || 0.1,
-      temp,
-      functionCalls = [];
-
-  if (params.history) {
-    // wrap the function call to track linesearch samples
-    var inner = f;
-    f = function(x, fxprime) {
-      functionCalls.push(x.slice());
-      return inner(x, fxprime);
-    };
-  }
-
-  current.fx = f(current.x, current.fxprime);
-  for (var i = 0; i < maxIterations; ++i) {
-    anychart.math.venn.scale(pk, current.fxprime, -1);
-    learnRate = anychart.math.venn.wolfeLineSearch(f, pk, current, next, learnRate, c1, c2);
-
-    if (params.history) {
-      params.history.push({
-        x: current.x.slice(),
-        fx: current.fx,
-        fxprime: current.fxprime.slice(),
-        functionCalls: functionCalls,
-        learnRate: learnRate,
-        alpha: learnRate
-      });
-      functionCalls = [];
-    }
-
-    temp = current;
-    current = next;
-    next = temp;
-
-    if ((learnRate === 0) || (anychart.math.venn.norm2(current.fxprime) < 1e-5)) break;
-  }
-
-  return current;
-};
+// /**
+//  * TODO (A.Kudryavtsev): Descr.
+//  * @param f
+//  * @param initial
+//  * @param params
+//  * @return {Object}
+//  */
+// anychart.math.venn.gradientDescent = function(f, initial, params) {
+//   debugger;
+//   params = params || {};
+//   var maxIterations = params.maxIterations || initial.length * 100,
+//       learnRate = params.learnRate || 0.001,
+//       current = {x: initial.slice(), fx: 0, fxprime: initial.slice()};
+//
+//   for (var i = 0; i < maxIterations; ++i) {
+//     current.fx = f(current.x, current.fxprime);
+//     if (params.history) {
+//       params.history.push({
+//         x: current.x.slice(),
+//         fx: current.fx,
+//         fxprime: current.fxprime.slice()
+//       });
+//     }
+//
+//     anychart.math.venn.weightedSum(current.x, 1, current.x, -learnRate, current.fxprime);
+//     if (anychart.math.venn.norm2(current.fxprime) <= 1e-5) {
+//       break;
+//     }
+//   }
+//
+//   return current;
+// };
+//
+//
+// /**
+//  * TODO (A.Kudryavtsev): Descr.
+//  * @param f
+//  * @param initial
+//  * @param params
+//  * @return {Object}
+//  */
+// anychart.math.venn.gradientDescentLineSearch = function(f, initial, params) {
+//   params = params || {};
+//   var current = {x: initial.slice(), fx: 0, fxprime: initial.slice()},
+//       next = {x: initial.slice(), fx: 0, fxprime: initial.slice()},
+//       maxIterations = params.maxIterations || initial.length * 100,
+//       learnRate = params.learnRate || 1,
+//       pk = initial.slice(),
+//       c1 = params.c1 || 1e-3,
+//       c2 = params.c2 || 0.1,
+//       temp,
+//       functionCalls = [];
+//
+//   if (params.history) {
+//     // wrap the function call to track linesearch samples
+//     var inner = f;
+//     f = function(x, fxprime) {
+//       functionCalls.push(x.slice());
+//       return inner(x, fxprime);
+//     };
+//   }
+//
+//   current.fx = f(current.x, current.fxprime);
+//   for (var i = 0; i < maxIterations; ++i) {
+//     anychart.math.venn.scale(pk, current.fxprime, -1);
+//     learnRate = anychart.math.venn.wolfeLineSearch(f, pk, current, next, learnRate, c1, c2);
+//
+//     if (params.history) {
+//       params.history.push({
+//         x: current.x.slice(),
+//         fx: current.fx,
+//         fxprime: current.fxprime.slice(),
+//         functionCalls: functionCalls,
+//         learnRate: learnRate,
+//         alpha: learnRate
+//       });
+//       functionCalls = [];
+//     }
+//
+//     temp = current;
+//     current = next;
+//     next = temp;
+//
+//     if ((learnRate === 0) || (anychart.math.venn.norm2(current.fxprime) < 1e-5)) break;
+//   }
+//
+//   return current;
+// };
 
 
 ////////////////////////////////////////////////////////////////////
@@ -1031,9 +1032,9 @@ anychart.math.venn.addMissingAreas = function(areas) {
 /**
  * Returns two matrices, one of the euclidean distances between the sets and the other indicating
  * if there are subset or disjoint set relationships.
- * @param areas
- * @param sets
- * @param setids
+ * @param {Array.<anychart.charts.Venn.DataReflection>} areas - .
+ * @param {Array.<anychart.charts.Venn.DataReflection>} sets - .
+ * @param {Object.<string, number>} setids - .
  * @return {Object}
  */
 anychart.math.venn.getDistanceMatrices = function(areas, sets, setids) {
@@ -1072,10 +1073,10 @@ anychart.math.venn.getDistanceMatrices = function(areas, sets, setids) {
 /**
  * TODO (A.Kudryavtsev): Descr.
  * Computes the gradient and loss simulatenously for our constrained MDS optimizer.
- * @param x
- * @param fxprime
- * @param distances
- * @param constraints
+ * @param {Array.<number>} x - .
+ * @param {Array.<number>} fxprime - .
+ * @param {Array.<Array.<number>>} distances - .
+ * @param {Array.<Array.<number>>} constraints - .
  * @return {number}
  */
 anychart.math.venn.constrainedMDSGradient = function(x, fxprime, distances, constraints) {
@@ -1142,8 +1143,8 @@ anychart.math.venn.bestInitialLayout = function(areas, params) {
 
 /**
  * Use the constrained MDS variant to generate an initial layout.
- * @param areas
- * @param params
+ * @param {Array.<anychart.charts.Venn.DataReflection>} areas - Data reflections.
+ * @param {Object} params - .
  * @return {Object}
  */
 anychart.math.venn.constrainedMDSLayout = function(areas, params) {
@@ -1179,7 +1180,8 @@ anychart.math.venn.constrainedMDSLayout = function(areas, params) {
 
   var best, current;
   for (i = 0; i < restarts; ++i) {
-    var initial = anychart.math.venn.zeros(distances.length * 2).map(Math.random);
+    // var initial = anychart.math.venn.zeros(distances.length * 2).map(Math.random);
+    var initial = anychart.math.venn.zeros(distances.length * 2);
 
     current = anychart.math.venn.conjugateGradient(obj, initial, params);
     if (!best || (current.fx < best.fx)) {
@@ -1199,11 +1201,12 @@ anychart.math.venn.constrainedMDSLayout = function(areas, params) {
     };
   }
 
-  if (params.history) {
-    for (i = 0; i < params.history.length; ++i) {
-      anychart.math.venn.scale(params.history[i].x, norm);
-    }
-  }
+  // if (params.history) {
+  //   for (i = 0; i < params.history.length; ++i) {
+  //     //TODO (A.Kudryavtsev): was anychart.math.venn.scale(params.history[i].x, norm)
+  //     anychart.math.venn.scale(params.history[i].x, norm, -1);
+  //   }
+  // }
   return circles;
 };
 
@@ -1390,9 +1393,9 @@ anychart.math.venn.lossFunction = function(sets, overlaps) {
 /**
  * TODO (A.Kudryavtsev): Descr.
  * Orientates a bunch of circles to point in orientation.
- * @param circles
- * @param orientation
- * @param orientationOrder
+ * @param {Array.<anychart.math.venn.Circle>} circles - .
+ * @param {number} orientation - .
+ * @param {?Function} orientationOrder - Sort function.
  */
 anychart.math.venn.orientateCircles = function(circles, orientation, orientationOrder) {
   if (orientationOrder === null) {
@@ -1454,8 +1457,8 @@ anychart.math.venn.orientateCircles = function(circles, orientation, orientation
 
 /**
  * TODO (A.Kudryavtsev): Descr.
- * @param circles
- * @return {Array}
+ * @param {Array.<anychart.math.venn.Circle>} circles - .
+ * @return {Array.<Array.<anychart.math.venn.Circle>>} - .
  */
 anychart.math.venn.disjointCluster = function(circles) {
   // union-find clustering to get disjoint sets
@@ -1514,8 +1517,8 @@ anychart.math.venn.disjointCluster = function(circles) {
 
 /**
  * TODO (A.Kudryavtsev): Descr.
- * @param circles
- * @return {Object}
+ * @param {Array.<anychart.math.venn.Circle>} circles - .
+ * @return {Object} - .
  */
 anychart.math.venn.getBoundingBox = function(circles) {
   var minMax = function(d) {
@@ -1538,7 +1541,7 @@ anychart.math.venn.getBoundingBox = function(circles) {
  * TODO (A.Kudryavtsev): Descr.
  * @param {Object.<string, anychart.math.venn.SizedCircle>} solution - .
  * @param {number} orientation - .
- * @param {Object} orientationOrder - .
+ * @param {?function(number, number): number} orientationOrder - .
  * @return {Object.<string, anychart.math.venn.Circle>} - .
  */
 anychart.math.venn.normalizeSolution = function(solution, orientation, orientationOrder) {
@@ -1682,6 +1685,11 @@ anychart.math.venn.scaleSolution = function(solution, width, height, padding) {
 ////////////////////////////////////////////////////////////////////
 // layout.js
 ////////////////////////////////////////////////////////////////////
+/**
+ *
+ * @param {Object.<string, anychart.math.venn.Circle>} circles - Circles.
+ * @return {Object.<Array.<string>>} - .
+ */
 anychart.math.venn.getOverlappingCircles = function(circles) {
   var ret = {}, circleids = [];
   for (var circleid in circles) {
@@ -1706,6 +1714,13 @@ anychart.math.venn.getOverlappingCircles = function(circles) {
 };
 
 
+/**
+ *
+ * @param {anychart.math.venn.Point} current - .
+ * @param {Array.<anychart.math.venn.Circle>} interior - .
+ * @param {Array.<anychart.math.venn.Circle>} exterior - .
+ * @return {number}
+ */
 anychart.math.venn.circleMargin = function(current, interior, exterior) {
   var margin = interior[0].radius - anychart.math.venn.distance(interior[0], current), i, m;
   for (i = 1; i < interior.length; ++i) {
@@ -1725,6 +1740,12 @@ anychart.math.venn.circleMargin = function(current, interior, exterior) {
 };
 
 
+/**
+ * Computes text centre.
+ * @param {Array.<anychart.math.venn.Circle>} interior - .
+ * @param {Array.<anychart.math.venn.Circle>} exterior - .
+ * @return {anychart.math.venn.Point} - Text center.
+ */
 anychart.math.venn.computeTextCentre = function(interior, exterior) {
   // get an initial estimate by sampling around the interior circles
   // and taking the point with the biggest margin
@@ -1755,8 +1776,7 @@ anychart.math.venn.computeTextCentre = function(interior, exterior) {
       {maxIterations: 500, minErrorDelta: 1e-10}).x;
   var ret = {x: solution[0], y: solution[1]};
 
-  // check solution, fallback as needed (happens if fully overlapped
-  // etc)
+  // check solution, fallback as needed (happens if fully overlapped etc)
   var valid = true;
   for (i = 0; i < interior.length; ++i) {
     if (anychart.math.venn.distance(ret, interior[i]) > interior[i].radius) {
@@ -1808,10 +1828,22 @@ anychart.math.venn.computeTextCentre = function(interior, exterior) {
 };
 
 
+/**
+ * Calculates text centers.
+ * @param {Object.<string, anychart.math.venn.Circle>} circles - Circles data.
+ * @param {Array.<anychart.charts.Venn.DataReflection>} areas - Areas.
+ * @return {Array.<anychart.math.venn.Point>} - Text centers.
+ */
 anychart.math.venn.computeTextCentres = function(circles, areas) {
-  var ret = {}, overlapped = anychart.math.venn.getOverlappingCircles(circles);
+  var ret = [];
+  var overlapped = anychart.math.venn.getOverlappingCircles(circles);
+
   for (var i = 0; i < areas.length; ++i) {
-    var area = areas[i].sets, areaids = {}, exclude = {};
+    var area = areas[i].sets;
+    var areaids = {};
+    var exclude = {};
+    var iteratorIndex = areas[i].iteratorIndex;
+
     for (var j = 0; j < area.length; ++j) {
       areaids[area[j]] = true;
       var overlaps = overlapped[area[j]];
@@ -1832,7 +1864,7 @@ anychart.math.venn.computeTextCentres = function(circles, areas) {
       }
     }
     var centre = anychart.math.venn.computeTextCentre(interior, exterior);
-    ret[area] = centre;
+    ret[iteratorIndex] = centre;
     if (centre.disjoint && (areas[i].size > 0)) {
       console.log('WARNING: area ' + area + ' not represented on screen');
     }

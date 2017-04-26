@@ -5042,7 +5042,7 @@ goog.provide('anychart.themes.defaultTheme');
     },
 
     'venn': {
-      'setsSeparator': '&',
+      'dataSeparator': '&',
       'background': {
         'zIndex': 0
       },
@@ -5064,9 +5064,35 @@ goog.provide('anychart.themes.defaultTheme');
       'hoverFill': function() {
         return global['anychart']['color']['lighten'](this['paletteFill']);
       },
+      'selectFill': defaultSelectColor,
       'tooltip': {
         'titleFormat': '{%X}',
         'format': 'Value: {%Value}'
+      },
+      'stroke': 'none',
+      'hoverStroke': 'none',
+      'selectStroke': 'none',
+      'labels': {
+        'fontColor': '#f4f4f4',
+        'format': function() {
+          var splitter = this['chart']['dataSeparator']();
+          var splitted = this['x'].split(splitter);
+          return (splitted.length == 1) ? this['x'] : '';
+        },
+        'anchor': 'center',
+        'enabled': true,
+        'disablePointerEvents': true,
+        'zIndex': 100,
+        'fontWeight': 'normal'
+      },
+      'legend': {
+        'enabled': true,
+        'zIndex': 0,
+        'tooltip': {
+          'enabled': false
+        },
+        'padding': {'top': 10, 'right': 10, 'bottom': 0, 'left': 10},
+        'position': 'bottom'
       }
     },
 

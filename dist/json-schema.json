@@ -22,7 +22,8 @@
         {"$ref": "#/definitions/anychart.charts.Sparkline"},
         {"$ref": "#/definitions/anychart.charts.HeatMap"},
         {"$ref": "#/definitions/anychart.charts.TreeMap"},
-        {"$ref": "#/definitions/anychart.charts.Pert"}
+        {"$ref": "#/definitions/anychart.charts.Pert"},
+        {"$ref": "#/definitions/anychart.charts.Venn"}
       ],
       "properties": {
         "container": {
@@ -1971,6 +1972,18 @@
             "string"
           ]
         }
+      },
+      "required": ["type"]
+    },
+
+    "anychart.charts.Venn": {
+      "type": "object",
+      "allOf": [
+        {"$ref": "#/definitions/anychart.core.Chart"}
+      ],
+      "properties": {
+        "type": {"enum": ["venn"]},
+        "dataSeparator": {"type": "string"}
       },
       "required": ["type"]
     },

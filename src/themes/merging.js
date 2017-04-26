@@ -625,7 +625,8 @@ anychart.themes.merging.mergingMap_ = [
       'defaultTimeline.header.midLevel.labels',
       'defaultTimeline.header.lowLevel.labels',
       'resource.activities.labels',
-      'resource.conflicts.labels'
+      'resource.conflicts.labels',
+      'venn.labels'
     ]
   },
   {

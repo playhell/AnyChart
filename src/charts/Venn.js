@@ -1,9 +1,13 @@
 goog.provide('anychart.charts.Venn');
 
 goog.require('anychart.core.IShapeManagerUser');
+goog.require('anychart.core.Point');
 goog.require('anychart.core.SeparateChart');
 goog.require('anychart.core.settings');
 goog.require('anychart.core.shapeManagers');
+goog.require('anychart.core.ui.LabelsFactory');
+goog.require('anychart.core.utils.IInteractiveSeries');
+goog.require('anychart.core.utils.InteractivityState');
 goog.require('anychart.data.Set');
 goog.require('anychart.format.Context');
 goog.require('anychart.math.venn');
@@ -72,6 +76,12 @@ anychart.charts.Venn = function(opt_data, opt_csvSettings) {
    * @private
    */
   this.circlesMap_ = {};
+
+  /**
+   * @type {Object.<string, anychart.math.venn.Point>}
+   * @private
+   */
+  this.textCenters_ = null;
 
   this.solution_ = null;
 
@@ -145,6 +155,7 @@ anychart.charts.Venn.DataReflection;
 
 
 //endregion
+//region -- Series-like behaviour
 /** @inheritDoc */
 anychart.charts.Venn.prototype.getType = function() {
   return anychart.enums.ChartTypes.VENN;
@@ -153,10 +164,23 @@ anychart.charts.Venn.prototype.getType = function() {
 
 /** @inheritDoc */
 anychart.charts.Venn.prototype.getAllSeries = function() {
-  return [];
+  return [this];
 };
 
 
+/** @inheritDoc */
+anychart.charts.Venn.prototype.isSizeBased = function() {
+  return false;
+};
+
+
+/** @inheritDoc **/
+anychart.charts.Venn.prototype.applyAppearanceToSeries = function(pointState) {
+  debugger;
+};
+
+
+//endregion
 //region -- Descriptors
 /**
  * Simple descriptors.
@@ -165,9 +189,9 @@ anychart.charts.Venn.prototype.getAllSeries = function() {
 anychart.charts.Venn.prototype.SIMPLE_PROPS_DESCRIPTORS = (function() {
   /** @type {!Object.<string, anychart.core.settings.PropertyDescriptor>} */
   var map = {};
-  map['setsSeparator'] = anychart.core.settings.createDescriptor(
+  map['dataSeparator'] = anychart.core.settings.createDescriptor(
       anychart.enums.PropertyHandlerType.SINGLE_ARG,
-      'setsSeparator',
+      'dataSeparator',
       anychart.core.settings.stringNormalizer,
       anychart.ConsistencyState.VENN_DATA,
       anychart.Signal.NEEDS_REDRAW);
@@ -176,7 +200,7 @@ anychart.charts.Venn.prototype.SIMPLE_PROPS_DESCRIPTORS = (function() {
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'fill',
       anychart.core.settings.fillOrFunctionNormalizer,
-      anychart.ConsistencyState.VENN_APPEARANCE,
+      anychart.ConsistencyState.VENN_APPEARANCE | anychart.ConsistencyState.CHART_LEGEND,
       anychart.Signal.NEEDS_REDRAW);
 
   map['hoverFill'] = anychart.core.settings.createDescriptor(
@@ -197,7 +221,7 @@ anychart.charts.Venn.prototype.SIMPLE_PROPS_DESCRIPTORS = (function() {
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'hatchFill',
       anychart.core.settings.hatchFillOrFunctionNormalizer,
-      anychart.ConsistencyState.VENN_APPEARANCE,
+      anychart.ConsistencyState.VENN_APPEARANCE | anychart.ConsistencyState.CHART_LEGEND,
       anychart.Signal.NEEDS_REDRAW);
 
   map['hoverHatchFill'] = anychart.core.settings.createDescriptor(
@@ -218,21 +242,21 @@ anychart.charts.Venn.prototype.SIMPLE_PROPS_DESCRIPTORS = (function() {
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'stroke',
       anychart.core.settings.strokeOrFunctionNormalizer,
-      anychart.ConsistencyState.APPEARANCE | anychart.ConsistencyState.ANNOTATIONS_SHAPES,
+      anychart.ConsistencyState.VENN_APPEARANCE | anychart.ConsistencyState.CHART_LEGEND,
       anychart.Signal.NEEDS_REDRAW);
 
   map['hoverStroke'] = anychart.core.settings.createDescriptor(
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'hoverStroke',
       anychart.core.settings.strokeOrFunctionNormalizer,
-      anychart.ConsistencyState.APPEARANCE | anychart.ConsistencyState.ANNOTATIONS_SHAPES,
+      anychart.ConsistencyState.VENN_APPEARANCE,
       anychart.Signal.NEEDS_REDRAW);
 
   map['selectStroke'] = anychart.core.settings.createDescriptor(
       anychart.enums.PropertyHandlerType.MULTI_ARG,
       'selectStroke',
       anychart.core.settings.strokeOrFunctionNormalizer,
-      anychart.ConsistencyState.APPEARANCE | anychart.ConsistencyState.ANNOTATIONS_SHAPES,
+      anychart.ConsistencyState.VENN_APPEARANCE,
       anychart.Signal.NEEDS_REDRAW);
 
   return map;
@@ -403,6 +427,184 @@ anychart.charts.Venn.prototype.paletteInvalidated_ = function(event) {
 
 
 //endregion
+//region -- Labels
+/**
+ * Getter/setter for labels.
+ * @param {(Object|boolean|null)=} opt_value .
+ * @return {!(anychart.core.ui.LabelsFactory|anychart.charts.Venn)} .
+ */
+anychart.charts.Venn.prototype.labels = function(opt_value) {
+  if (!this.labels_) {
+    this.labels_ = new anychart.core.ui.LabelsFactory();
+
+    this.labels_.listenSignals(this.labelsInvalidated_, this);
+    this.labels_.setParentEventTarget(this);
+    this.registerDisposable(this.labels_);
+    this.invalidate(anychart.ConsistencyState.PYRAMID_FUNNEL_LABELS, anychart.Signal.NEEDS_REDRAW);
+  }
+
+  if (goog.isDef(opt_value)) {
+    if (goog.isObject(opt_value) && !('enabled' in opt_value))
+      opt_value['enabled'] = true;
+    this.labels_.setup(opt_value);
+    return this;
+  }
+  return this.labels_;
+};
+
+
+/**
+ * Getter/setter for series hover data labels.
+ * @param {(Object|boolean|null)=} opt_value chart hover data labels settings.
+ * @return {!(anychart.core.ui.LabelsFactory|anychart.charts.Venn)} Labels instance or itself for chaining call.
+ */
+anychart.charts.Venn.prototype.hoverLabels = function(opt_value) {
+  if (!this.hoverLabels_) {
+    this.hoverLabels_ = new anychart.core.ui.LabelsFactory();
+    this.registerDisposable(this.hoverLabels_);
+  }
+
+  if (goog.isDef(opt_value)) {
+    if (goog.isObject(opt_value) && !('enabled' in opt_value))
+      opt_value['enabled'] = true;
+    this.hoverLabels_.setup(opt_value);
+    return this;
+  }
+  return this.hoverLabels_;
+};
+
+
+/**
+ * Getter/setter for series select data labels.
+ * @param {(Object|boolean|null)=} opt_value chart hover data labels settings.
+ * @return {!(anychart.core.ui.LabelsFactory|anychart.charts.Venn)} Labels instance or itself for chaining call.
+ */
+anychart.charts.Venn.prototype.selectLabels = function(opt_value) {
+  if (!this.selectLabels_) {
+    this.selectLabels_ = new anychart.core.ui.LabelsFactory();
+    this.registerDisposable(this.selectLabels_);
+  }
+
+  if (goog.isDef(opt_value)) {
+    if (goog.isObject(opt_value) && !('enabled' in opt_value))
+      opt_value['enabled'] = true;
+    this.selectLabels_.setup(opt_value);
+    return this;
+  }
+  return this.selectLabels_;
+};
+
+
+/**
+ * Internal label invalidation handler.
+ * @param {anychart.SignalEvent} event Event object.
+ * @private
+ */
+anychart.charts.Venn.prototype.labelsInvalidated_ = function(event) {
+  if (event.hasSignal(anychart.Signal.NEEDS_REDRAW)) {
+    this.invalidate(anychart.ConsistencyState.VENN_LABELS, anychart.Signal.NEEDS_REDRAW);
+  }
+};
+
+
+//endregion
+//region -- Legend
+/**
+ * @inheritDoc
+ */
+anychart.charts.Venn.prototype.createLegendItemsProvider = function(sourceMode, itemsFormat) {
+  this.calculate();
+
+  /**
+   * @type {!Array.<anychart.core.ui.Legend.LegendItemProvider>}
+   */
+  var data = [];
+  var iterator = this.getIterator().reset();
+  var x, index;
+
+  while (iterator.advance()) {
+    x = iterator.get('x');
+    index = iterator.getIndex();
+
+    var legendItem = /** @type {Object} */ (iterator.get('legendItem') || {});
+    var itemText = null;
+    if (goog.isFunction(itemsFormat)) {
+      var format = this.createFormatProvider();
+      format.pointInternal = this.getPoint(index);
+      itemText = itemsFormat.call(format, format);
+    }
+    if (!goog.isString(itemText)) {
+      itemText = String(goog.isDef(iterator.get('name')) ? iterator.get('name') : iterator.get('x'));
+    }
+    var fillResolver = anychart.color.getColorResolver(['fill'], anychart.enums.ColorType.FILL);
+    var strokeResolver = anychart.color.getColorResolver(['stroke'], anychart.enums.ColorType.STROKE);
+    var hatchFillResolver = anychart.color.getColorResolver(['hatchFill'], anychart.enums.ColorType.HATCH_FILL);
+    var obj = {
+      'enabled': true,
+      'meta': {
+        'pointIndex': index,
+        'pointValue': iterator.get('value'),
+        series: this
+      },
+      'iconType': anychart.enums.LegendItemIconType.SQUARE,
+      'text': itemText,
+      'iconStroke': strokeResolver(this, anychart.PointState.NORMAL, true),
+      'iconFill': fillResolver(this, anychart.PointState.NORMAL, true),
+      'hatchFill': hatchFillResolver(this, anychart.PointState.NORMAL, true)
+    };
+    goog.object.extend(obj, legendItem);
+    obj['sourceUid'] = goog.getUid(this);
+    obj['sourceKey'] = index;
+    data.push(/** @type {anychart.core.ui.Legend.LegendItemProvider} */ (obj));
+  }
+
+  return data;
+};
+
+
+/** @inheritDoc */
+anychart.charts.Venn.prototype.legendItemCanInteractInMode = function(mode) {
+  return true;
+};
+
+
+/** @inheritDoc */
+anychart.charts.Venn.prototype.legendItemClick = function(item, event) {
+  var sourceKey = item.sourceKey();
+  if (item && !goog.isDefAndNotNull(sourceKey) && !isNaN(sourceKey))
+    return;
+
+  var tag = anychart.utils.extractTag(event['domTarget']);
+  if (tag)
+    tag.series = this;
+};
+
+
+/** @inheritDoc */
+anychart.charts.Venn.prototype.legendItemOver = function(item, event) {
+  var sourceKey = item.sourceKey();
+  if (item && !goog.isDefAndNotNull(sourceKey) && !isNaN(sourceKey))
+    return;
+
+  var tag = anychart.utils.extractTag(event['domTarget']);
+  if (tag)
+    tag.series = this;
+};
+
+
+/** @inheritDoc */
+anychart.charts.Venn.prototype.legendItemOut = function(item, event) {
+  var sourceKey = item.sourceKey();
+  if (item && !goog.isDefAndNotNull(sourceKey) && !isNaN(sourceKey))
+    return;
+
+  var tag = anychart.utils.extractTag(event['domTarget']);
+  if (tag)
+    tag.series = this;
+};
+
+
+//endregion
 //region -- Data
 /**
  * Getter/setter for chart data.
@@ -450,6 +652,18 @@ anychart.charts.Venn.prototype.getResetIterator = function() {
 };
 
 
+/**
+ * Data reflection comparator.
+ * @param {anychart.charts.Venn.DataReflection} val1 - First value.
+ * @param {anychart.charts.Venn.DataReflection} val2 - Second value.
+ * @return {number}
+ * @private
+ */
+anychart.charts.Venn.prototype.dataReflectionSort_ = function(val1, val2) {
+  return val1.sets.length - val2.sets.length;
+};
+
+
 //endregion
 //region -- Interactivity
 /** @inheritDoc */
@@ -478,11 +692,6 @@ anychart.charts.Venn.prototype.makeBrowserEvent = function(e) {
   };
   var tag = anychart.utils.extractTag(res['domTarget']);
   res['pointIndex'] = anychart.utils.toNumber(tag.index);
-  var index = res['pointIndex'];
-  if (!isNaN(index)) {
-    this.getIterator().select(index);
-    console.log(this.getIterator().get('x'));
-  }
   return res;
 };
 
@@ -612,8 +821,6 @@ anychart.charts.Venn.prototype.unhover = function(opt_indexOrIndexes) {
   else
     index = (this.state.seriesState == anychart.PointState.NORMAL ? NaN : undefined);
   this.state.removePointState(anychart.PointState.HOVER, index);
-
-  this.hideTooltip();
 };
 
 
@@ -624,12 +831,7 @@ anychart.charts.Venn.prototype.unhover = function(opt_indexOrIndexes) {
 anychart.charts.Venn.prototype.applyAppearanceToPoint = function(pointState) {
   var iterator = this.getIterator();
   this.shapeManager_.updateColors(pointState, /** @type {Object.<string, acgraph.vector.Shape>} */(iterator.meta('shapes')));
-  // if (this.supportsOutliers()) {
-  //   this.drawPointOutliers(iterator, pointState);
-  // }
-  // this.drawer.updatePoint(iterator, pointState);
-  // this.drawMarker(iterator, pointState);
-  // this.drawLabel(iterator, pointState);
+  this.drawLabel_(pointState, iterator);
 };
 
 
@@ -637,6 +839,72 @@ anychart.charts.Venn.prototype.applyAppearanceToPoint = function(pointState) {
  * Finalization point appearance. For drawing labels and markers.
  */
 anychart.charts.Venn.prototype.finalizePointAppearance = goog.nullFunction;
+
+
+/**
+ * @param {(anychart.enums.HoverMode)=} opt_value Selection mode.
+ * @return {anychart.charts.Venn|anychart.enums.HoverMode} .
+ */
+anychart.charts.Venn.prototype.hoverMode = function(opt_value) {
+  return /** @type {anychart.enums.HoverMode} */ (this.interactivity().hoverMode(opt_value));
+};
+
+
+/**
+ * @param {(anychart.enums.SelectionMode|string)=} opt_value Selection mode.
+ * @return {anychart.charts.Venn|anychart.enums.SelectionMode|null} .
+ */
+anychart.charts.Venn.prototype.selectionMode = function(opt_value) {
+  return /** @type {anychart.enums.SelectionMode} */ (this.interactivity().selectionMode(opt_value));
+};
+
+
+/**
+ * Selects a point of the series by its index.
+ * @param {number|Array<number>} indexOrIndexes Index of the point to select.
+ * @param {anychart.core.MouseEvent=} opt_event Event that initiate point selecting.
+ * @return {!anychart.charts.Venn} {@link anychart.core.series.Cartesian} instance for method chaining.
+ */
+anychart.charts.Venn.prototype.selectPoint = function(indexOrIndexes, opt_event) {
+  var unselect = !(opt_event && opt_event.shiftKey);
+
+  if (goog.isArray(indexOrIndexes)) {
+    if (!opt_event)
+      this.unselect();
+
+    this.state.setPointState(anychart.PointState.SELECT, indexOrIndexes, unselect ? anychart.PointState.HOVER : undefined);
+  } else if (goog.isNumber(indexOrIndexes)) {
+    this.state.setPointState(anychart.PointState.SELECT, indexOrIndexes, unselect ? anychart.PointState.HOVER : undefined);
+  }
+
+  return this;
+};
+
+
+/**
+ * @inheritDoc
+ */
+anychart.charts.Venn.prototype.unselect = function(opt_indexOrIndexes) {
+  if (!this.enabled())
+    return;
+
+  var index;
+  if (goog.isDef(opt_indexOrIndexes))
+    index = opt_indexOrIndexes;
+  else
+    index = (this.state.seriesState == anychart.PointState.NORMAL ? NaN : undefined);
+  this.state.removePointState(anychart.PointState.SELECT, index);
+};
+
+
+/**
+ * Returns point state by it's index.
+ * @param {number} index
+ * @return {anychart.PointState|number}
+ */
+anychart.charts.Venn.prototype.getPointState = function(index) {
+  return this.state.getPointStateByIndex(index);
+};
 
 
 //endregion
@@ -673,7 +941,10 @@ anychart.charts.Venn.prototype.createFormatProvider = function(opt_force) {
  * @protected
  */
 anychart.charts.Venn.prototype.showTooltip = function(opt_event) {
-  console.log('show tooltip');
+  if (opt_event && opt_event['target'] == this.legend()) {
+    return;
+  }
+
   var tooltip = /** @type {anychart.core.ui.Tooltip} */(this.tooltip());
   var formatProvider = this.createFormatProvider();
   if (opt_event) {
@@ -682,24 +953,8 @@ anychart.charts.Venn.prototype.showTooltip = function(opt_event) {
 };
 
 
-anychart.charts.Venn.prototype.hideTooltip = function() {
-  console.log('hide tooltip');
-};
 //endregion
-
-
-/**
- * Data reflection comparator.
- * @param {anychart.charts.Venn.DataReflection} val1 - First value.
- * @param {anychart.charts.Venn.DataReflection} val2 - Second value.
- * @return {number}
- * @private
- */
-anychart.charts.Venn.prototype.dataReflectionSort_ = function(val1, val2) {
-  return val1.sets.length - val2.sets.length;
-};
-
-
+//region -- Draw and calculation
 /** @inheritDoc */
 anychart.charts.Venn.prototype.calculate = function() {
   if (this.hasInvalidationState(anychart.ConsistencyState.VENN_DATA) && this.data_) {
@@ -709,9 +964,9 @@ anychart.charts.Venn.prototype.calculate = function() {
 
     while (iterator.advance()) {
       var x = String(iterator.get('x'));
-      var value = /** @type {number} */ (iterator.get('value'));
+      var value = Number(iterator.get('value'));
       var index = iterator.getIndex();
-      var separator = this.getOption('setsSeparator');
+      var separator = this.getOption('dataSeparator');
       var splittedData = x.split(separator);
       var reflection = {sets: splittedData, size: value, iteratorIndex: index};
       this.dataReflections_.push(reflection);
@@ -723,6 +978,8 @@ anychart.charts.Venn.prototype.calculate = function() {
     //This sort allows to get raw data order independence.
     goog.array.sort(this.dataReflections_, this.dataReflectionSort_);
 
+    this.updatePaletteFill_();
+
     var solution = anychart.math.venn.venn(this.dataReflections_);
     this.solution_ = anychart.math.venn.normalizeSolution(solution, Math.PI / 2, null);
 
@@ -731,9 +988,44 @@ anychart.charts.Venn.prototype.calculate = function() {
 };
 
 
+/**
+ * Updates palette fill.
+ * @private
+ */
+anychart.charts.Venn.prototype.updatePaletteFill_ = function() {
+  var iterator = this.getResetIterator();
+  for (var i = 0; i < this.dataReflections_.length; i++) {
+    var refl = this.dataReflections_[i];
+    var iteratorIndex = refl.iteratorIndex;
+    iterator.select(iteratorIndex);
+    var sets = refl.sets;
+
+    var set;
+    if (sets.length == 1) { //Main circle, not an intersection.
+      var color = this.palette().itemAt(i);
+      iterator.meta('paletteFill', color);
+      set = sets[0];
+      this.circlesMap_[set].paletteFill = color;
+    } else {
+      var parentColors = [];
+      for (var j = 0; j < sets.length; j++) {
+        set = sets[j];
+        var parent = this.circlesMap_[set];
+        parentColors.push(parent.paletteFill);
+      }
+      var paletteFill = this.blendColors_(parentColors);
+      iterator.select(iteratorIndex);
+      iterator.meta('paletteFill', paletteFill);
+    }
+  }
+};
+
+
 /** @inheritDoc */
 anychart.charts.Venn.prototype.drawContent = function(bounds) {
   this.calculate();
+
+  var i, refl, iteratorIndex, iterator;
 
   if (!this.baseLayer_) { //Dom init.
     this.baseLayer_ = this.rootElement.layer();
@@ -741,114 +1033,89 @@ anychart.charts.Venn.prototype.drawContent = function(bounds) {
 
     this.shapeManager_ = new anychart.core.shapeManagers.PerPoint(this, [
       anychart.core.shapeManagers.pathFillConfig,
+      anychart.core.shapeManagers.pathStrokeConfig,
       anychart.core.shapeManagers.pathHatchConfig
     ], true);
 
     this.shapeManager_.setContainer(this.baseLayer_);
 
-    // this.circlesLayer_ = new anychart.core.utils.TypedLayer(function() {
-    //   var path = acgraph.path();
-    //   path.stroke('none');
-    //   return path;
-    // }, function(child) {
-    //   (/** @type {acgraph.vector.Path} */ (child)).clear();
-    //   (/** @type {acgraph.vector.Path} */ (child)).tag = void 0;
-    // });
-    // this.circlesLayer_.zIndex(1);
-    // this.circlesLayer_.parent(this.baseLayer_);
+    this.labels().container(this.baseLayer_);
   }
 
   if (this.hasInvalidationState(anychart.ConsistencyState.BOUNDS)) {
-    // this.circlesLayer_.clear();
-
     this.shapeManager_.clearShapes();
-
-
-    // var group = this.shapeManager_.getShapesGroup(anychart.PointState.NORMAL);
-    // var fillPath = group['fill'];
-    // fillPath
-    //     .moveTo(0, 0)
-    //     .lineTo(100, 100)
-    //     .lineTo(10, 100)
-    //     .close()
-    //     .stroke('blue');
-    //
-    // group = this.shapeManager_.getShapesGroup(anychart.PointState.NORMAL);
-    // fillPath = group['fill'];
-    // fillPath
-    //     .moveTo(0, 0)
-    //     .lineTo(100, 90)
-    //     .lineTo(90, 10)
-    //     .close()
-    //     .stroke('green');
-
-
     var circles = anychart.math.venn.scaleSolution(this.solution_, bounds.width, bounds.height, 0);
-    var textCenters = anychart.math.venn.computeTextCentres(circles, this.dataReflections_);
+    this.textCenters_ = anychart.math.venn.computeTextCentres(circles, this.dataReflections_);
 
-    var pixelShift = .5;
-
-    var path;
-
-    // for (var key in circles) {
-    //   var circ = circles[key];
-    //   path = this.circlesLayer_.genNextChild();
-    //   path.stroke('10 yellow');
-    //
-    //   path.moveTo(circ.x + pixelShift + circ.radius + bounds.left, circ.y + pixelShift + bounds.top)
-    //       .arcTo(circ.radius, circ.radius, 0, 360);
-    //
-    //   circlesArr.push(circ);
-    // }
-
-
-
-    for (var i = 0; i < this.dataReflections_.length; i++) {
-      var refl = this.dataReflections_[i];
-      var iteratorIndex = refl.iteratorIndex;
-      var iterator = this.getIterator();
+    for (i = 0; i < this.dataReflections_.length; i++) {
+      refl = this.dataReflections_[i];
+      iteratorIndex = refl.iteratorIndex;
+      iterator = this.getIterator();
+      iterator.select(iteratorIndex);
       var sets = refl.sets;
 
       var setData = [];
       var set;
       if (sets.length == 1) { //Main circle, not an intersection.
-        var color = this.palette().itemAt(i);
-        iterator.select(iteratorIndex);
-        iterator.meta('paletteFill', color);
         set = sets[0];
         setData.push(circles[set]);
-        this.circlesMap_[set].paletteFill = color;
       } else {
-        var parentColors = [];
         for (var j = 0; j < sets.length; j++) {
           set = sets[j];
-          var parent = this.circlesMap_[set];
-          parentColors.push(parent.paletteFill);
           setData.push(circles[set]);
         }
-        var paletteFill = this.blendColors_(parentColors);
-        iterator.select(iteratorIndex);
-        iterator.meta('paletteFill', paletteFill);
       }
-
 
       var stats = /** @type {anychart.math.venn.Stats} */ ({});
       anychart.math.venn.intersectionArea(setData, stats);
 
-      var group = this.shapeManager_.getShapesGroup(anychart.PointState.NORMAL);
-      var fillPath = group['fill'];
-      this.doArc_(fillPath, stats, bounds);
+      var group = this.shapeManager_.getShapesGroup(this.getPointState(iteratorIndex));
+      var fillPath = /** @type {acgraph.vector.Path} */ (group['fill']);
+      var hatchFillPath = /** @type {acgraph.vector.Path} */ (group['hatchFill']);
+      var strokePath = /** @type {acgraph.vector.Path} */ (group['stroke']);
+      this.drawArc_(fillPath, stats, bounds);
+      this.drawArc_(hatchFillPath, stats, bounds);
+      this.drawArc_(strokePath, stats, bounds);
+      this.invalidate(anychart.ConsistencyState.VENN_LABELS);
     }
+  }
 
+  if (this.hasInvalidationState(anychart.ConsistencyState.VENN_LABELS)) {
+    if (this.labels().enabled()) {
+      this.labels().clear();
 
-    // for (var key in textCenters) {
-    //   var textCirc = textCenters[key];
-    //   path = this.circlesLayer_.genNextChild();
-    //   path.stroke('black');
-    //   path.moveTo(textCirc.x + pixelShift + 5 + bounds.left, textCirc.y + pixelShift + bounds.top)
-    //       .arcTo(5, 5, 0, 360);
-    // }
+      for (i = 0; i < this.dataReflections_.length; i++) {
+        refl = this.dataReflections_[i];
+        iteratorIndex = refl.iteratorIndex;
+        iterator = this.getIterator();
+        iterator.select(iteratorIndex);
+        var textCenter = this.textCenters_[iteratorIndex];
+        var labelsFormatProvider = this.createFormatProvider(true);
+        var positionProvider = {
+          'value': {
+            'x': bounds.left + textCenter.x,
+            'y': bounds.top + textCenter.y
+          }
+        };
+        var label = this.labels().add(labelsFormatProvider, positionProvider, iteratorIndex);
+        iterator.meta('label', label);
+        this.drawLabel_(this.state.getPointStateByIndex(iteratorIndex), iterator);
+      }
 
+      this.labels().draw();
+      this.markConsistent(anychart.ConsistencyState.VENN_LABELS);
+    }
+  }
+
+  if (this.hasInvalidationState(anychart.ConsistencyState.VENN_APPEARANCE)) {
+    this.updatePaletteFill_();
+
+    iterator = this.getResetIterator();
+    while (iterator.advance()) {
+      this.shapeManager_.updateColors(this.getPointState(iterator.getIndex()),
+          /** @type {Object.<string, acgraph.vector.Shape>} */(iterator.meta('shapes')));
+    }
+    this.markConsistent(anychart.ConsistencyState.VENN_APPEARANCE);
   }
 
 };
@@ -864,8 +1131,7 @@ anychart.charts.Venn.prototype.blendColors_ = function(colors) {
   if (colors.length) {
     var blended;
     for (var i = 0; i < colors.length; i++) {
-      var color = colors[i];
-      var norm = acgraph.vector.normalizeFill(color);
+      var norm = acgraph.vector.normalizeFill(colors[i]);
       var arrColor = goog.color.hexToRgb(goog.isString(norm) ? norm : norm.color);
       blended = blended ? goog.color.blend(blended, arrColor, .5) : arrColor;
     }
@@ -876,46 +1142,72 @@ anychart.charts.Venn.prototype.blendColors_ = function(colors) {
 };
 
 
-anychart.charts.Venn.prototype.doArc_ = function(path, stats, bounds) {
-  console.log(stats);
+/**
+ * Draws arcs.
+ * @param {acgraph.vector.Path} path - Arc path.
+ * @param {anychart.math.venn.Stats} stats - Stats storage.
+ * @param {anychart.math.Rect} bounds - Bounds.
+ * @private
+ */
+anychart.charts.Venn.prototype.drawArc_ = function(path, stats, bounds) {
   var arcs = stats.arcs;
   if (!arcs.length)
     return;
 
-  // path.stroke('blue');
-  var pixelShift = .5;
-
-  // function getRandomColor() {
-  //   var letters = '0123456789ABCDEF';
-  //   var color = '#';
-  //   for (var i = 0; i < 6; i++) {
-  //     color += letters[Math.floor(Math.random() * 16)];
-  //   }
-  //   return color;
-  // }
-
+  var pixelShift = 0;
 
   if (arcs.length == 1) {
     var circle = arcs[0].circle;
     path.moveTo(circle.x + pixelShift + circle.radius + bounds.left, circle.y + pixelShift + bounds.top)
         .arcTo(circle.radius, circle.radius, 0, 360);
-    // path.fill(getRandomColor());
   } else if (arcs.length > 1) {
-    // path.fill(getRandomColor());
-
     path.moveTo(arcs[0].p2.x + bounds.left, arcs[0].p2.y + bounds.top);
     for (var i = 0; i < arcs.length; ++i) {
       var arc = arcs[i];
       path.arcToByEndPoint(arc.p1.x + bounds.left, arc.p1.y + bounds.top, arc.circle.radius, arc.circle.radius, arc.width > arc.circle.radius, true);
     }
-
     path.close();
-
-    // path.stroke({thickness: thi, color: '#000', opacity: 0.5});
   }
 };
 
 
+/**
+ * Draws a label with its state settings.
+ * @param {anychart.PointState|number} state - State.
+ * @param {!anychart.data.IIterator} iterator - Iterator.
+ * @private
+ */
+anychart.charts.Venn.prototype.drawLabel_ = function(state, iterator) {
+  var label = iterator.meta('label');
+
+  label.resetSettings();
+
+  var hovered = this.state.isStateContains(state, anychart.PointState.HOVER);
+  var selected = this.state.isStateContains(state, anychart.PointState.SELECT);
+
+  var pointLabel = iterator.get('label') || null;
+  var hoverLabel = iterator.get('hoverLabel') || null;
+  var selectLabel = iterator.get('selectLabel') || null;
+
+  var priority = 0;
+  if (selected) {
+    label.state('selectLabel', pointLabel, 0);
+    label.state('selectThemeLabel', this.selectLabels(), 1);
+    priority = 2;
+  }
+  if (hovered) {
+    label.state('hoverLabel', hoverLabel, priority);
+    label.state('hoverThemeLabel', this.hoverLabels(), priority + 1);
+    priority += 2;
+  }
+  label.state('pointLabel', pointLabel, priority);
+  label.state('pointThemeLabel', this.labels(), priority + 1);
+
+  label.draw();
+};
+
+
+//endregion
 //region -- Serialization/Deserialization
 /**
  * Sets default settings.
@@ -938,7 +1230,14 @@ anychart.charts.Venn.prototype.serialize = function() {
 
   anychart.core.settings.serialize(this, this.SIMPLE_PROPS_DESCRIPTORS, json, 'Venn');
 
-  return json;
+  json['type'] = this.getType();
+  json['data'] = this.data().serialize();
+  json['labels'] = this.labels().serialize();
+  json['selectLabels'] = this.selectLabels().serialize();
+  json['hoverLabels'] = this.hoverLabels().serialize();
+  json['palette'] = this.palette().serialize();
+
+  return {'chart': json};
 };
 
 
@@ -947,7 +1246,17 @@ anychart.charts.Venn.prototype.setupByJSON = function(config, opt_default) {
   anychart.charts.Venn.base(this, 'setupByJSON', config, opt_default);
   if (opt_default)
     this.themeSettings = config;
+
   anychart.core.settings.deserialize(this, this.SIMPLE_PROPS_DESCRIPTORS, config);
+  this.data(config['data']);
+
+  this.labels().setupByVal(config['labels'], opt_default);
+  this.hoverLabels().setupByVal(config['hoverLabels'], opt_default);
+  this.selectLabels().setupByVal(config['selectLabels'], opt_default);
+
+  this.hoverLabels(config['hoverLabels']);
+  this.selectLabels(config['selectLabels']);
+  this.palette(config['palette']);
 };
 
 
